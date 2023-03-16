@@ -1,0 +1,17 @@
+name: robusta_events
+version: 0.1.0+1
+homepage: https://robusta.covalab.io
+repository: https://github.com/covalab/robusta
+issue_tracker: https://github.com/covalab/robusta/issues
+description: Add custom hook (event) to domain-specific for extending.
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  logger: ^1.2.0
+
+dev_dependencies:
+  test: ^1.19.2
+  very_good_analysis: ^4.0.0

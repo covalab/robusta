@@ -1,0 +1,27 @@
+name: flutter_robusta
+homepage: https://robusta.covalab.io
+repository: https://github.com/covalab/robusta
+issue_tracker: https://github.com/covalab/robusta/issues
+description: Robusta runner extensions for Flutter.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+  flutter: ">=3.7.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  robusta_runner: ^0.1.0
+  flutter_riverpod: ^2.2.0
+  go_router_plus: ^3.0.0
+  meta: ^1.8.0
+  copy_with_extension: ^5.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^4.0.0
+  copy_with_extension_gen: ^5.0.0
+  build_runner: ^2.3.0

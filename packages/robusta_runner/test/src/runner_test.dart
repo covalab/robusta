@@ -1,0 +1,133 @@
+// ignore_for_file: prefer_const_constructors
+import 'dart:async';
+
+import 'package:logger/logger.dart';
+import 'package:robusta_runner/robusta_runner.dart';
+import 'package:test/test.dart';
+
+void main() {
+  group('runner', () {
+    test('can run runner', () async {
+      var counter = 0;
+      final r = Runner(
+        boots: {
+          (_) => counter++: 1,
+        },
+      );
+
+      expect(r, isNotNull);
+      expect(counter, equals(0));
+      await r.run();
+      expect(counter, equals(1));
+    });
+
+    test('can read providers on boot phase', () async {
+      final r = Runner(
+        boots: {
+          (c) {
+            final em = c.read(eventManagerProvider);
+            final logger = c.read(loggerProvider);
+
+            expect(em is EventManager, isTrue);
+            expect(logger is Logger, isTrue);
+          }: 0,
+        },
+      );
+
+      await r.run();
+    });
+
+    test('can handle run event', () async {
+      var counter = 0;
+
+      final r = Runner(
+        boots: {
+          (c) {
+            c.read(eventManagerProvider).addEventListener((RunEvent e) {
+              counter++;
+            });
+          }: 0,
+        },
+      );
+
+      expect(counter, equals(0));
+      await r.run();
+      expect(counter, equals(1));
+    });
+
+    test('work with extensions', () async {
+      var counter = 0;
+
+      final r = Runner(
+        logger: Logger(
+          output: MemoryOutput(),
+        ),
+        extensions: [
+          EventExtension(
+            listeners: {
+              (RunEvent e) {
+                counter++;
+                throw Exception();
+              }: 0,
+            },
+          ),
+          EventExtension(
+            listeners: {
+              (ExceptionEvent e) => counter++: 0,
+            },
+          ),
+        ],
+      );
+
+      expect(counter, equals(0));
+
+      r.run();
+
+      await Future.delayed(Duration.zero);
+
+      expect(counter, equals(2));
+    });
+
+    test('use custom dependencies', () async {
+      final logger = Logger();
+      final em = DefaultEventManager();
+      final r = Runner(
+        eventManager: em,
+        logger: logger,
+        boots: {
+          (c) {
+            expect(c.read(loggerProvider), equals(logger));
+            expect(c.read(eventManagerProvider), equals(em));
+          }: 0,
+        },
+      );
+
+      await r.run();
+    });
+
+    test('can order boots by priority', () async {
+      var counter = 0;
+
+      final r = Runner(
+        boots: {
+          (_) {
+            expect(counter, equals(100));
+            counter += 10;
+          }: 9,
+          (_) {
+            expect(counter, equals(0));
+            counter += 100;
+          }: 99,
+          (_) {
+            expect(counter, equals(110));
+            counter += 1000;
+          }: -9,
+        },
+      );
+
+      await r.run();
+
+      expect(counter, equals(1110));
+    });
+  });
+}
