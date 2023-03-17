@@ -9,10 +9,10 @@ environment:
   sdk: ">=2.19.0 <3.0.0"
 
 dependencies:
-  riverpod: ^2.2.0
   logger: ^1.2.0
-  robusta_events: ^0.1.0
   meta: ^1.8.0
+  riverpod: ^2.2.0
+  robusta_events: ^0.1.0
 
 dev_dependencies:
   test: ^1.19.2

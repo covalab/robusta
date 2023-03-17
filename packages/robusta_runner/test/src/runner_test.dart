@@ -25,11 +25,8 @@ void main() {
       final r = Runner(
         boots: {
           (c) {
-            final em = c.read(eventManagerProvider);
-            final logger = c.read(loggerProvider);
-
-            expect(em is EventManager, isTrue);
-            expect(logger is Logger, isTrue);
+            expect(() => c.read(eventManagerProvider), returnsNormally);
+            expect(() => c.read(loggerProvider), returnsNormally);
           }: 0,
         },
       );
@@ -81,11 +78,10 @@ void main() {
 
       expect(counter, equals(0));
 
+      // ignore: unawaited_futures
       r.run();
 
-      await Future.delayed(Duration.zero);
-
-      expect(counter, equals(2));
+      await Future.delayed(Duration.zero, () => expect(counter, equals(2)));
     });
 
     test('use custom dependencies', () async {
