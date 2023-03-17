@@ -7,7 +7,7 @@ import 'stub.dart';
 void main() {
   group('event extension', () {
     test('can initialize', () {
-      final e = EventExtension();
+      final e = EventExtension({});
 
       expect(e, isNotNull);
     });
@@ -22,15 +22,15 @@ void main() {
       final runner = Runner(
         extensions: [
           EventExtension(
-            listeners: {
+            {
               (TestEvent e) {
                 counter++;
               }: 1,
             },
           ),
           EventExtension(
-            listeners: {
-              (RunEvent e) {
+            {
+                  (RunEvent e) {
                 counter += 2;
               }: 1,
             },
@@ -51,7 +51,7 @@ void main() {
 
         final runner = Runner(
           extensions: [
-            EventExtension(),
+            EventExtension({}),
             ImplementingCallbackExtension(),
           ],
           boots: {

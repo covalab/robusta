@@ -1,0 +1,14 @@
+name: robusta_runner_example
+description: Robusta runner example
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  robusta_runner:
+
+dev_dependencies:
+  test: ^1.19.2
+  very_good_analysis: ^4.0.0
