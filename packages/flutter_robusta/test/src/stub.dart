@@ -22,7 +22,7 @@ class TestExtension implements Extension {
 
 class TestScreen extends Screen implements InitialScreen {
   @override
-  Widget builder(BuildContext context, GoRouterState state) {
+  Widget build(BuildContext context, GoRouterState state) {
     return const Text(
       'Test Screen',
       textDirection: TextDirection.ltr,
