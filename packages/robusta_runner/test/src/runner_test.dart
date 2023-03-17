@@ -64,7 +64,7 @@ void main() {
         ),
         extensions: [
           EventExtension(
-            listeners: {
+            {
               (RunEvent e) {
                 counter++;
                 throw Exception();
@@ -72,7 +72,7 @@ void main() {
             },
           ),
           EventExtension(
-            listeners: {
+            {
               (ExceptionEvent e) => counter++: 0,
             },
           ),

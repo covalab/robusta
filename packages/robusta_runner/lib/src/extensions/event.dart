@@ -7,9 +7,7 @@ part of '../extensions.dart';
 @sealed
 class EventExtension<E extends Event> implements Extension {
   /// {@macro runner.event_extension}
-  EventExtension({
-    Map<EventListener<E>, int>? listeners,
-  }) : _listeners = {...listeners ?? {}};
+  EventExtension(this._listeners);
 
   final Map<EventListener<E>, int> _listeners;
 
