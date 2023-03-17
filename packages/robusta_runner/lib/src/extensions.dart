@@ -6,4 +6,5 @@ import 'package:meta/meta.dart';
 import 'package:riverpod/riverpod.dart';
 
 part 'extensions/event.dart';
+
 part 'extensions/implementing_callback.dart';
