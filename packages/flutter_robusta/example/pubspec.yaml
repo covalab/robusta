@@ -9,9 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_riverpod:
   flutter_robusta:
   go_router_plus:
-  flutter_riverpod:
 
 dev_dependencies:
   flutter_test:
