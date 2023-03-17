@@ -1,0 +1,23 @@
+name: flutter_robusta_example
+description: Flutter Robusta example.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_robusta:
+  go_router_plus:
+  flutter_riverpod:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
