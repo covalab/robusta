@@ -173,14 +173,14 @@ packages:
       path: "../../robusta_events"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.2.0"
   robusta_runner:
     dependency: "direct overridden"
     description:
       path: "../../robusta_runner"
       relative: true
     source: path
-    version: "0.1.0+1"
+    version: "0.1.1"
   sky_engine:
     dependency: transitive
     description: flutter
