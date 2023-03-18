@@ -11,7 +11,7 @@ abstract class EventManager {
   /// Add event listener, it will be trigger when event dispatched.
   void addEventListener<E extends Event>(
     EventListener<E> listener, {
-    int? priority,
+    int priority = 0,
   });
 
   /// Remove event listener had registered before.
@@ -46,7 +46,7 @@ class DefaultEventManager implements EventManager {
   @override
   void addEventListener<E extends Event>(
     EventListener<E> listener, {
-    int? priority,
+    int priority = 0,
   }) =>
       _store<E>().addEventListener(listener, priority: priority);
 
