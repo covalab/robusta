@@ -2,8 +2,8 @@
 part of '../extensions.dart';
 
 /// Callback function will be call when instances of Riverpod providers
-/// implementing [E] type.
-typedef ImplementingCallback<E> = void Function(E, ProviderContainer);
+/// implementing [T] type.
+typedef ImplementingCallback<T> = void Function(T, ProviderContainer);
 
 /// An interface implements by classes aware loggable.
 abstract class LoggerAware {
@@ -21,13 +21,17 @@ abstract class EventManagerAware {
 @sealed
 class ImplementingCallbackExtension implements Extension {
   late final _observer = _ImplementingCallbackObserver(
-    callbacks: [
-      _ImplementingCallback<EventManagerAware>((instance, container) {
-        instance.setEventManager(container.read(eventManagerProvider));
-      }),
-      _ImplementingCallback<LoggerAware>((instance, container) {
-        instance.setLogger(container.read(loggerProvider));
-      }),
+    [
+      _ImplementingCallbackResolver<EventManagerAware>(
+        (instance, container) => instance.setEventManager(
+          container.read(eventManagerProvider),
+        ),
+      ),
+      _ImplementingCallbackResolver<LoggerAware>(
+        (instance, container) => instance.setLogger(
+          container.read(loggerProvider),
+        ),
+      ),
     ],
   );
 
@@ -46,11 +50,11 @@ class ImplementingCallbackExtension implements Extension {
 /// When instance of provider will provide created, and it implement
 /// class/interface had registered callback before, a callback will be call.
 class _ImplementingCallbackObserver extends ProviderObserver {
-  _ImplementingCallbackObserver({
-    List<_ImplementingCallback<dynamic>>? callbacks,
-  }) : _callbacks = [...callbacks ?? []];
+  _ImplementingCallbackObserver(
+    List<_ImplementingCallbackResolver<dynamic>>? resolvers,
+  ) : _resolvers = [...resolvers ?? []];
 
-  final List<_ImplementingCallback<dynamic>> _callbacks;
+  final List<_ImplementingCallbackResolver<dynamic>> _resolvers;
 
   @override
   void didAddProvider(
@@ -58,23 +62,23 @@ class _ImplementingCallbackObserver extends ProviderObserver {
     Object? value,
     ProviderContainer container,
   ) {
-    for (final callback in _callbacks) {
-      callback(value, container);
+    for (final resolver in _resolvers) {
+      resolver.resolve(value, container);
     }
   }
 
-  void addImplementingCallback<E>(ImplementingCallback<E> item) {
-    _callbacks.add(_ImplementingCallback<E>(item));
+  void addImplementingCallback<T>(ImplementingCallback<T> callback) {
+    _resolvers.add(_ImplementingCallbackResolver<T>(callback));
   }
 }
 
-class _ImplementingCallback<E> {
-  _ImplementingCallback(this._callback);
+class _ImplementingCallbackResolver<T> {
+  _ImplementingCallbackResolver(this._callback);
 
-  final ImplementingCallback<E> _callback;
+  final ImplementingCallback<T> _callback;
 
-  void call(dynamic value, ProviderContainer container) {
-    if (value is E) {
+  void resolve(dynamic value, ProviderContainer container) {
+    if (value is T) {
       _callback(value, container);
     }
   }

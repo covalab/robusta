@@ -4,6 +4,7 @@ part of '../runner.dart';
 /// Riverpod provider container options
 /// Use it for share and enhance settings.
 /// {@endtemplate}
+@sealed
 class ContainerOptions {
   /// {@macro runner.container_options}
   ContainerOptions({
