@@ -1,6 +1,7 @@
 part of '../runner.dart';
 
 /// Collects exceptions throw by [Runner].
+@sealed
 class RunnerException implements Exception {
   RunnerException._(this._msg);
 

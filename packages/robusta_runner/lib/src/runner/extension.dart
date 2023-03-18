@@ -1,6 +1,7 @@
 part of '../runner.dart';
 
 /// Support to settings runner
+@sealed
 class Configurator {
   Configurator._(this._runner);
 

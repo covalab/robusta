@@ -4,10 +4,14 @@ import 'package:robusta_events/robusta_events.dart';
 
 /// Event manager provider
 final eventManagerProvider = Provider<EventManager>(
-  (_) => throw UnimplementedError('Do you forgot to add event extension?'),
+  (_) => throw UnimplementedError(
+    'Run your app with runner to initial this provider',
+  ),
 );
 
 /// Logger provider
 final loggerProvider = Provider<Logger>(
-  (_) => throw UnimplementedError('Do you forgot to add logger extension?'),
+  (_) => throw UnimplementedError(
+    'Run your app with runner to initial this provider',
+  ),
 );
