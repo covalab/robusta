@@ -19,14 +19,13 @@ abstract class Event {
 /// A callable will be call when <E> event dispatched.
 typedef EventListener<E extends Event> = FutureOr<void> Function(E);
 
-/// Store [EventListener] of events type <E> and trigger all of them
-/// when calling method dispatch().
+/// Store [EventListener] and it priority of events type [E].
 class EventStore<E extends Event> {
   final _listeners = <EventListener<E>, int>{};
 
   /// Add [EventListener] of event [E].
-  void addEventListener(EventListener<E> listener, {int? priority}) {
-    _listeners[listener] = priority ?? 0;
+  void addEventListener(EventListener<E> listener, {int priority = 0}) {
+    _listeners[listener] = priority;
   }
 
   /// [EventListener] iterable of event [E] had add before.
