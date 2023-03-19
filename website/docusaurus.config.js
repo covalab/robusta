@@ -71,7 +71,7 @@ const config = {
                 title: 'Robusta',
                 items: [
                     {
-                        href: 'https://github.com/gbox-proxy/gbox',
+                        href: 'https://github.com/covalab/robusta',
                         className: 'header-github-link',
                         'aria-label': 'GitHub repository',
                         position: 'right',
