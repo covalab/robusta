@@ -38,7 +38,7 @@ class Configurator {
 }
 
 /// Extension interface for extensible, implementing classes will extend runner
-/// by adding feature to it like boot, container override, container observers.
+/// by adding features to it like boots, container overrides, container observers.
 // ignore: one_member_abstracts
 abstract class Extension {
   /// Load extension features to runner via configurator.

@@ -2,7 +2,7 @@ part of '../runner.dart';
 
 /// {@template runner.container_options}
 /// Riverpod provider container options
-/// Use it for share and enhance settings.
+/// Use it for sharing and enhancing settings.
 /// {@endtemplate}
 @sealed
 class ContainerOptions {

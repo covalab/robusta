@@ -17,7 +17,7 @@ abstract class EventManagerAware {
   void setEventManager(EventManager manager);
 }
 
-/// An extension providing implementing callback feature for runner providers.
+/// An extension providing callback implementation feature for runner providers.
 @sealed
 class ImplementingCallbackExtension implements Extension {
   late final _observer = _ImplementingCallbackObserver(
@@ -46,9 +46,9 @@ class ImplementingCallbackExtension implements Extension {
   }
 }
 
-/// Riverpod observer for adding implementing callback feature.
-/// When instance of provider will provide created, and it implement
-/// class/interface had registered callback before, a callback will be call.
+/// Riverpod observer observes adding implementing callback feature.
+/// When instance of provider created, and its implement
+/// class/interface had registered callback before, a callback will be called.
 class _ImplementingCallbackObserver extends ProviderObserver {
   _ImplementingCallbackObserver(
     List<_ImplementingCallbackResolver<dynamic>>? resolvers,

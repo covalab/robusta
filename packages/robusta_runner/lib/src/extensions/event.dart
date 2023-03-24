@@ -1,8 +1,8 @@
 part of '../extensions.dart';
 
 /// {@template runner.event_extension}
-/// Event extension support to add system events,
-/// set event manager for provider instance aware it.
+/// Event extension support adding system events,
+/// set event manager for provider instance to aware it.
 /// {@endtemplate}
 @sealed
 class EventExtension<E extends Event> implements Extension {
