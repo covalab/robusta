@@ -1,0 +1,22 @@
+name: flutter_robusta_auth
+description: Robusta auth extension for securing app purposes.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+  flutter: 3.3.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  robusta_runner: ^0.1.0
+  flutter_robusta: ^0.1.0
+  flutter_robusta_hive: ^0.1.0
+  go_router_plus: ^4.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^0.3.0
+  very_good_analysis: ^3.1.0
