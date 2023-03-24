@@ -1,0 +1,22 @@
+name: flutter_robusta_hive_example
+description: Flutter Robusta Hive example.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_robusta:
+  flutter_robusta_hive:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
