@@ -34,10 +34,10 @@ class DefaultEventManager implements EventManager {
 
   /// Get [EventStore] by [Event] type.
   EventStore<E> _getEventStore<E extends Event>() {
-    final manager = _stores[E];
+    final store = _stores[E];
 
-    if (null != manager && manager.runtimeType == EventStore<E>) {
-      return manager as EventStore<E>;
+    if (null != store && store.runtimeType == EventStore<E>) {
+      return store as EventStore<E>;
     } else {
       return _stores[E] = EventStore<E>();
     }
