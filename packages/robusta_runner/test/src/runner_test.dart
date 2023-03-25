@@ -5,6 +5,8 @@ import 'package:logger/logger.dart';
 import 'package:robusta_runner/robusta_runner.dart';
 import 'package:test/test.dart';
 
+import 'stub.dart';
+
 void main() {
   group('runner', () {
     test('can run runner', () async {
@@ -124,6 +126,33 @@ void main() {
       await r.run();
 
       expect(counter, equals(1110));
+    });
+
+    test('missing extension dependencies cause exception', () {
+      expect(
+        () => Runner(
+          extensions: [
+            TestDependenceExtension(),
+          ],
+        ),
+        throwsA(
+          predicate(
+            (e) => e is RunnerException && e.toString().contains('depends on'),
+          ),
+        ),
+      );
+    });
+
+    test('can run with dependence extension', () {
+      expect(
+        () => Runner(
+          extensions: [
+            TestExtension(),
+            TestDependenceExtension(),
+          ],
+        ),
+        returnsNormally,
+      );
     });
   });
 }

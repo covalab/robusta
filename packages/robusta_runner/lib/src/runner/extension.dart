@@ -1,3 +1,4 @@
+// ignore_for_file: one_member_abstracts
 part of '../runner.dart';
 
 /// Support to settings runner
@@ -39,9 +40,17 @@ class Configurator {
 
 /// Extension interface for extensible, implementing classes will extend runner
 /// by adding feature to it like boot, container override, container observers.
-// ignore: one_member_abstracts
 abstract class Extension {
   /// Load extension features to runner via configurator.
   @visibleForOverriding
   FutureOr<void> load(Configurator configurator);
+}
+
+/// {@template dependence}
+/// An interface represent for extensions need specific extensions to load.
+/// {@endtemplate}
+abstract class DependenceExtension extends Extension {
+  /// List extensions [Type] depends on.
+  @visibleForOverriding
+  List<Type> dependsOn();
 }
