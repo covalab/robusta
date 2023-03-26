@@ -8,8 +8,11 @@ import 'package:robusta_events/robusta_events.dart';
 import 'package:robusta_runner/src/provider.dart';
 
 part 'runner/container.dart';
+
 part 'runner/event.dart';
+
 part 'runner/exception.dart';
+
 part 'runner/extension.dart';
 
 /// Bootable type.
@@ -65,6 +68,16 @@ class Runner {
       }
 
       _extensions[extension.runtimeType] = extension;
+    }
+
+    for (final extension in extensions) {
+      if (extension is! DependenceExtension) {
+        continue;
+      }
+
+      if (!extension.dependsOn().every(_extensions.containsKey)) {
+        throw RunnerException.missingExtensionDependencies(extension);
+      }
     }
   }
 

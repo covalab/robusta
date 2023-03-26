@@ -14,6 +14,12 @@ class RunnerException implements Exception {
         'Extension $e not exist, do you forget to add it to runner extensions?',
       );
 
+  /// Throw in case user forgot to add dependencies of extension.
+  factory RunnerException.missingExtensionDependencies(DependenceExtension e) =>
+      RunnerException._(
+        'Extension $e depends on ${e.dependsOn()}, do you forgot to add them?',
+      );
+
   final String _msg;
 
   @override
