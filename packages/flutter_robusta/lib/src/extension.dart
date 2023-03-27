@@ -18,9 +18,9 @@ typedef AppWidgetWrapper = Widget Function(Widget appWidget);
 /// Robusta extension for running Flutter apps.
 /// {@endtemplate}
 @sealed
-class AppExtension implements Extension {
+class FlutterAppExtension implements Extension {
   /// {@macro app_extension}
-  AppExtension({
+  FlutterAppExtension({
     required RouterSettings routerSettings,
     Map<AppWidgetWrapper, int>? wrappers,
     CupertinoAppSettings? cupertinoAppSettings,
@@ -170,40 +170,40 @@ class AppExtension implements Extension {
   }
 }
 
-/// Dart extension for adding utils to interact with [AppExtension].
-extension AppExtensionConfigurator on Configurator {
+/// Dart extension for adding utils to interact with [FlutterAppExtension].
+extension FlutterAppExtensionConfigurator on Configurator {
   /// Get [GoRouter] settings.
   RouterSettings get routerSettings {
-    return getExtension<AppExtension>()._routerSettings;
+    return getExtension<FlutterAppExtension>()._routerSettings;
   }
 
   /// Set [GoRouter] settings.
   set routerSettings(RouterSettings settings) {
-    getExtension<AppExtension>()._routerSettings = settings;
+    getExtension<FlutterAppExtension>()._routerSettings = settings;
   }
 
   /// Get [MaterialApp] settings.
   MaterialAppSettings? get materialAppSettings {
-    return getExtension<AppExtension>()._materialAppSettings;
+    return getExtension<FlutterAppExtension>()._materialAppSettings;
   }
 
   /// Set [MaterialApp] settings.
   set materialAppSettings(MaterialAppSettings? settings) {
-    getExtension<AppExtension>()._materialAppSettings = settings;
+    getExtension<FlutterAppExtension>()._materialAppSettings = settings;
   }
 
   /// Get [CupertinoApp] settings.
   CupertinoAppSettings? get cupertinoAppSettings {
-    return getExtension<AppExtension>()._cupertinoAppSettings;
+    return getExtension<FlutterAppExtension>()._cupertinoAppSettings;
   }
 
   /// Set [CupertinoApp] settings.
   set cupertinoAppSettings(CupertinoAppSettings? settings) {
-    getExtension<AppExtension>()._cupertinoAppSettings = settings;
+    getExtension<FlutterAppExtension>()._cupertinoAppSettings = settings;
   }
 
   /// Add app wrapper for adding feature like inherited widget for your app.
   void addAppWidgetWrapper(AppWidgetWrapper wrapper, {int priority = 0}) {
-    getExtension<AppExtension>()._wrappers[wrapper] = priority;
+    getExtension<FlutterAppExtension>()._wrappers[wrapper] = priority;
   }
 }

@@ -20,7 +20,7 @@ class HomeScreen extends Screen implements InitialScreen {
 final runner = Runner(
   extensions: [
     ImplementingCallbackExtension(),
-    AppExtension(
+    FlutterAppExtension(
       routerSettings: RouterSettings(
         screenFactories: [
           (_) => HomeScreen(),

@@ -8,14 +8,14 @@ import 'stub.dart';
 void main() {
   group('material extension', () {
     test('can initialize', () {
-      expect(AppExtension(routerSettings: RouterSettings()), isNotNull);
+      expect(FlutterAppExtension(routerSettings: RouterSettings()), isNotNull);
     });
 
     testWidgets('can boot and run default Material app', (tester) async {
       final runner = Runner(
         extensions: [
           TestExtension(),
-          AppExtension(routerSettings: RouterSettings()),
+          FlutterAppExtension(routerSettings: RouterSettings()),
         ],
       );
 
@@ -30,7 +30,7 @@ void main() {
       final runner = Runner(
         extensions: [
           TestExtension(),
-          AppExtension(
+          FlutterAppExtension(
             cupertinoAppSettings: CupertinoAppSettings(),
             routerSettings: RouterSettings(),
           ),
@@ -48,7 +48,7 @@ void main() {
       final runner = Runner(
         extensions: [
           TestExtension(),
-          AppExtension(
+          FlutterAppExtension(
             routerSettings: RouterSettings(),
             wrappers: {
               (widget) =>
@@ -69,7 +69,7 @@ void main() {
       final runner = Runner(
         extensions: [
           TestExtension(),
-          AppExtension(
+          FlutterAppExtension(
             routerSettings: RouterSettings(),
             wrappers: {
               (widget) {

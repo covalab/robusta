@@ -12,7 +12,7 @@ class TestExtension implements DependenceExtension {
   }
 
   @override
-  List<Type> dependsOn() => [AppExtension];
+  List<Type> dependsOn() => [FlutterAppExtension];
 }
 
 class TestScreen extends Screen implements InitialScreen {
