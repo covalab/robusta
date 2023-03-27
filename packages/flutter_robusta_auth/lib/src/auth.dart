@@ -5,67 +5,83 @@ import 'package:flutter_robusta_auth/src/exception.dart';
 import 'package:flutter_robusta_hive/flutter_robusta_hive.dart';
 import 'package:go_router_plus/go_router_plus.dart';
 
-part 'auth/events.dart';
+class _AuthEvent extends Event {
+  _AuthEvent(this.credentials);
 
-abstract class Identity {
-  @override
-  String toString();
+  final Map<String, String> credentials;
 }
 
-/// Providing identity by token given.
-typedef IdentityProvider<T extends Identity> = T Function(String);
+class LoginEvent extends _AuthEvent {
+  LoginEvent(super.credentials);
+}
+
+class LogoutEvent extends _AuthEvent {
+  LogoutEvent(super.credentials);
+}
 
 /// {@template auth}
-/// Auth service of system.
+/// Service support to login/logout and manage credentials of current user.
+/// Credentials are JWT token, Basic auth token, refresh token, cookie
+/// or something to identify current user with your upstream.
 /// {@endtemplate}
 class Auth implements LoggedInState {
   /// {@macro auth}
   Auth({
-    IdentityStorage? identityStorage,
+    Box<String>? credentialsBox,
     EventManager? eventManager,
-  })  : _identityStorage = identityStorage,
+  })  : _credentialsBox = credentialsBox,
         _eventManager = eventManager;
 
-  final IdentityStorage? _identityStorage;
+  final Box<String>? _credentialsBox;
 
   final EventManager? _eventManager;
 
-  Identity? _currentIdentity;
-
-  Identity? get currentIdentity => _currentIdentity;
+  Map<String, String>? _currentCredentials;
 
   @override
-  bool get loggedIn =>
-      null != currentIdentity || null != _identityStorage?.read();
+  bool get loggedIn => null != currentCredentials;
 
-  Future<void> login(Identity identity) async {
-    _currentIdentity = identity;
-    await _identityStorage?.write(identity);
-    await _eventManager?.dispatchEvent(LoginEvent(identity));
+  Future<void> login(Map<String, String> credentials) async {
+    if (null != currentCredentials) {
+      throw AuthException.loginWithExistCredentials();
+    }
+
+    for (final entry in credentials.entries) {
+      await _credentialsBox?.put(entry.key, entry.value);
+    }
+
+    await _eventManager?.dispatchEvent(LoginEvent(credentials));
   }
 
   Future<void> logout() async {
-    if (null == _currentIdentity) {
-      throw FlutterAuthException.logoutWithNullIdentity();
+    final credentials = currentCredentials;
+
+    if (null == credentials) {
+      throw AuthException.logoutWithNullCredentials();
     }
 
-    await _identityStorage?.purge();
-    await _eventManager?.dispatchEvent(LogoutEvent(_currentIdentity!));
+    await _credentialsBox?.clear();
 
-    _currentIdentity = null;
+    _currentCredentials = null;
+
+    await _eventManager?.dispatchEvent(LogoutEvent(credentials));
   }
-}
 
-class IdentityStorage<I extends Identity> {
-  IdentityStorage({
-    required Box<I> identityBox,
-  }) : _identityBox = identityBox;
+  Map<String, String>? get currentCredentials {
+    if (null != _currentCredentials) {
+      return _currentCredentials;
+    }
 
-  final Box<I> _identityBox;
+    if (null == _credentialsBox || _credentialsBox!.isEmpty) {
+      return null;
+    }
 
-  FutureOr<void> write(I identity) => _identityBox.put(0, identity);
+    final credentials = <String, String>{};
 
-  I? read() => _identityBox.getAt(0);
+    for (final key in _credentialsBox!.keys) {
+      credentials[key.toString()] = _credentialsBox!.get(key)!;
+    }
 
-  Future<void> purge() => _identityBox.deleteAt(0);
+    return _currentCredentials = credentials;
+  }
 }

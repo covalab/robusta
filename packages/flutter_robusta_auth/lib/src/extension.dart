@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_robusta/flutter_robusta.dart';
-import 'package:flutter_robusta_auth/src/exception.dart';
 import 'package:flutter_robusta_hive/flutter_robusta_hive.dart';
 import 'package:go_router_plus/go_router_plus.dart';
 
@@ -24,20 +23,6 @@ class FlutterAuthExtension implements DependenceExtension {
 
   @override
   FutureOr<void> load(Configurator configurator) {
-    RouterSettings? routerSettings;
 
-    if (configurator.hasExtension<MaterialExtension>()) {
-      routerSettings =
-          configurator.getExtension<MaterialExtension>().routerSettings;
-    } else if (configurator.hasExtension<CupertinoExtension>()) {
-      routerSettings =
-          configurator.getExtension<CupertinoExtension>().routerSettings;
-    }
-
-    if (null == routerSettings) {
-      throw FlutterAuthException.appExtensionNotFound();
-    }
-
-    routerSettings.redirectorFactories.add((_) => ScreenRedirector());
   }
 }

@@ -1,19 +1,16 @@
-import 'package:flutter_robusta/flutter_robusta.dart';
-
 /// An exception presents for all exception cause by this extension.
-class FlutterAuthException implements Exception {
-  /// Throws in cases not found app extension.
-  factory FlutterAuthException.appExtensionNotFound() => FlutterAuthException._(
-        '$MaterialExtension or $CupertinoExtension should be use',
+class AuthException implements Exception {
+  /// Throws in cases call logout but current credentials is null.
+  factory AuthException.logoutWithNullCredentials() => AuthException._(
+        'Current credentials is null, can not logout!',
       );
 
-  /// Throws in cases call logout but current identity is null.
-  factory FlutterAuthException.logoutWithNullIdentity() =>
-      FlutterAuthException._(
-        'Current user identity is null, can not logout!',
+  /// Throws in cases call login but current credentials is NOT null.
+  factory AuthException.loginWithExistCredentials() => AuthException._(
+        'You should logout before login with new credentials!',
       );
 
-  FlutterAuthException._(this._msg);
+  AuthException._(this._msg);
 
   final String _msg;
 
