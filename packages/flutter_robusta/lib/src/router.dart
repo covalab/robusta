@@ -25,7 +25,7 @@ typedef RedirectorFactory = _Factory<Redirector>;
 typedef NavigatorObserverFactory = _Factory<NavigatorObserver>;
 
 /// {@template router.settings}
-/// Instances of this class support to settings router
+/// Instances of this class supports router settings.
 /// {@endtemplate}
 @CopyWith(skipFields: true)
 class RouterSettings {

@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 part 'material.g.dart';
 
 /// {@template material.settings}
-/// Instances of this class will support to settings [MaterialApp] properties.
+/// Instances of this class will support settings [MaterialApp]'s properties.
 /// {@endtemplate material.settings}
 @CopyWith(skipFields: true)
 class MaterialAppSettings {
@@ -134,7 +134,7 @@ class MaterialAppSettings {
 
 /// {@template material_extension}
 /// An extension to settings, run [MaterialApp] with [GoRouter], and open for
-/// another extensions collaborating.
+/// collaboration of other extensions.
 /// {@endtemplate}
 @sealed
 class MaterialExtension extends AppExtension {

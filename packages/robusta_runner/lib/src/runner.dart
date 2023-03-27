@@ -18,8 +18,8 @@ part 'runner/extension.dart';
 /// Bootable type.
 typedef Bootable = FutureOr<void> Function(ProviderContainer);
 
-/// Runner class use to create an instance to run your application,
-/// with runner your app will be easy to scale, extend and maintain.
+/// Runner class creates an instance to run your application,
+/// with this runner your app will be easy to scale, extend and maintain.
 @sealed
 class Runner {
   /// Runner factory
@@ -33,7 +33,7 @@ class Runner {
         _logger = logger ?? Logger(),
         _containerOptions = containerOptions ?? ContainerOptions() {
     _eventManager = eventManager ?? DefaultEventManager(logger: _logger);
-    _normalizeExtensions(extensions);
+    _initExtensions(extensions);
   }
 
   late final _container = ProviderContainer(
@@ -55,7 +55,11 @@ class Runner {
 
   late final Map<Type, Extension> _extensions;
 
-  void _normalizeExtensions(List<Extension> extensions) {
+  /// Stores incoming list of extensions
+  /// Notice that each extension should be unquie
+  /// If the same extensions are initalized
+  /// an exception will be thrown - duplicateExtension
+  void _initExtensions(List<Extension> extensions) {
     _extensions = {};
 
     for (final extension in extensions) {
@@ -78,8 +82,12 @@ class Runner {
   }
 
   /// Run your application.
+  /// This should be your app starting point
   Future<void> run() async => runZonedGuarded(_rawRun, _errorHandle);
 
+  /// This function will reposnsible for booting up any
+  /// services/utils/extensions,...
+  /// before your application runs.
   Future<void> _rawRun() async {
     await _boot();
 
@@ -108,6 +116,7 @@ class Runner {
     }
   }
 
+  /// This function is in charge of running any given extensions
   Future<void> _loadExtensions() async {
     final configurator = Configurator._(this);
 
@@ -121,6 +130,9 @@ class Runner {
     );
   }
 
+  /// Sorts all bootable [Services or Utils] by
+  /// their priority - From highest to lowest
+  /// Bootables are which needed to be run before your application runs.
   Iterable<Bootable> get _sortedBoots {
     final entries = _boots.entries.toList()
       ..sort(

@@ -68,7 +68,7 @@ abstract class AppExtension implements Extension {
   @protected
   Widget appWidget(GoRouter router);
 
-  /// Methods support for another extensions can collaborate.
+  /// Methods support nother extensions can collaborate.
   void addAppWidgetWrapper(AppWidgetWrapper wrapper, {int priority = 0}) {
     _wrappers[wrapper] = priority;
   }
@@ -82,7 +82,7 @@ abstract class AppExtension implements Extension {
     return entries.map((e) => e.key);
   }
 
-  /// Get router base on current [routerSettings] values.
+  /// Get router based on current [routerSettings] values.
   Future<GoRouter> _getRouter(ProviderContainer container) async {
     return createGoRouter(
       screens: await routerSettings.getScreens(container),

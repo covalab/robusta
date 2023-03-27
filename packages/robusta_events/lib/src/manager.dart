@@ -14,7 +14,7 @@ abstract class EventManager {
     int priority = 0,
   });
 
-  /// Remove event listener had registered before.
+  /// Remove registered event listener
   void removeEventListener<E extends Event>(EventListener<E> listener);
 
   /// Dispatch given events.
@@ -33,11 +33,11 @@ class DefaultEventManager implements EventManager {
   final Map<Type, EventStore<Event>> _stores = {};
 
   /// Get [EventStore] by [Event] type.
-  EventStore<E> _store<E extends Event>() {
-    final manager = _stores[E];
+  EventStore<E> _getEventStore<E extends Event>() {
+    final store = _stores[E];
 
-    if (null != manager && manager.runtimeType == EventStore<E>) {
-      return manager as EventStore<E>;
+    if (null != store && store.runtimeType == EventStore<E>) {
+      return store as EventStore<E>;
     } else {
       return _stores[E] = EventStore<E>();
     }
@@ -48,15 +48,15 @@ class DefaultEventManager implements EventManager {
     EventListener<E> listener, {
     int priority = 0,
   }) =>
-      _store<E>().addEventListener(listener, priority: priority);
+      _getEventStore<E>().addEventListener(listener, priority: priority);
 
   @override
   void removeEventListener<E extends Event>(EventListener<E> listener) =>
-      _store<E>().removeEventListener(listener);
+      _getEventStore<E>().removeEventListener(listener);
 
   @override
   FutureOr<void> dispatchEvent<E extends Event>(E event) async {
-    final listeners = _store<E>().eventListeners;
+    final listeners = _getEventStore<E>().eventListeners;
 
     _logger?.d('Dispatching event: $E to ${listeners.length} listener(s)...');
 

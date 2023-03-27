@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 part 'cupertino.g.dart';
 
 /// {@template cupertino.settings}
-/// Instances of this class will support to settings [CupertinoApp] properties.
+/// Instances of this class will support setting [CupertinoApp]'s properties.
 /// {@endtemplate cupertino.settings}
 @CopyWith(skipFields: true)
 class CupertinoAppSettings {
@@ -102,7 +102,7 @@ class CupertinoAppSettings {
 
 /// {@template cupertino_extension}
 /// An extension to settings, run [CupertinoApp] with [GoRouter], and open for
-/// another extensions collaborating.
+/// collaboration of other extensions.
 /// {@endtemplate}
 @sealed
 class CupertinoExtension extends AppExtension {
