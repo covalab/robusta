@@ -1,8 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_robusta/src/app_extension.dart';
-import 'package:go_router_plus/go_router_plus.dart';
-import 'package:meta/meta.dart';
 
 part 'cupertino.g.dart';
 
@@ -98,49 +95,4 @@ class CupertinoAppSettings {
 
   /// Alias of [CupertinoApp.useInheritedMediaQuery]
   final bool useInheritedMediaQuery;
-}
-
-/// {@template cupertino_extension}
-/// An extension to settings, run [CupertinoApp] with [GoRouter], and open for
-/// collaboration of other extensions.
-/// {@endtemplate}
-@sealed
-class CupertinoExtension extends AppExtension {
-  /// {@macro cupertino_extension}
-  CupertinoExtension({
-    super.wrappers,
-    super.routerSettings,
-    CupertinoAppSettings? settings,
-  }) : settings = settings ?? CupertinoAppSettings();
-
-  /// Store settings of [CupertinoApp].
-  CupertinoAppSettings settings;
-
-  @override
-  CupertinoApp appWidget(GoRouter router) {
-    return CupertinoApp.router(
-      routerConfig: router,
-      key: settings.key,
-      backButtonDispatcher: settings.backButtonDispatcher,
-      title: settings.title,
-      onGenerateTitle: settings.onGenerateTitle,
-      color: settings.color,
-      theme: settings.theme,
-      locale: settings.locale,
-      localizationsDelegates: settings.localizationsDelegates,
-      localeListResolutionCallback: settings.localeListResolutionCallback,
-      localeResolutionCallback: settings.localeResolutionCallback,
-      supportedLocales: settings.supportedLocales,
-      showPerformanceOverlay: settings.showPerformanceOverlay,
-      checkerboardRasterCacheImages: settings.checkerboardRasterCacheImages,
-      checkerboardOffscreenLayers: settings.checkerboardOffscreenLayers,
-      showSemanticsDebugger: settings.showSemanticsDebugger,
-      debugShowCheckedModeBanner: settings.debugShowCheckedModeBanner,
-      shortcuts: settings.shortcuts,
-      actions: settings.actions,
-      restorationScopeId: settings.restorationScopeId,
-      scrollBehavior: settings.scrollBehavior,
-      useInheritedMediaQuery: settings.useInheritedMediaQuery,
-    );
-  }
 }

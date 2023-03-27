@@ -20,10 +20,10 @@ class HomeScreen extends Screen implements InitialScreen {
 final runner = Runner(
   extensions: [
     ImplementingCallbackExtension(),
-    MaterialExtension(
+    AppExtension(
       routerSettings: RouterSettings(
         screenFactories: [
-              (_) => HomeScreen(),
+          (_) => HomeScreen(),
         ],
       ),
     ),
