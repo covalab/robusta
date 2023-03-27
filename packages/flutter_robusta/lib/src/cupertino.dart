@@ -1,5 +1,6 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:meta/meta.dart';
 
 part 'cupertino.g.dart';
 
@@ -7,6 +8,7 @@ part 'cupertino.g.dart';
 /// Instances of this class will support setting [CupertinoApp]'s properties.
 /// {@endtemplate cupertino.settings}
 @CopyWith(skipFields: true)
+@sealed
 class CupertinoAppSettings {
   /// {macro cupertino.settings}
   CupertinoAppSettings({

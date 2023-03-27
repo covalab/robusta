@@ -4,6 +4,7 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router_plus/go_router_plus.dart';
+import 'package:meta/meta.dart';
 
 part 'router.g.dart';
 
@@ -28,6 +29,7 @@ typedef NavigatorObserverFactory = _Factory<NavigatorObserver>;
 /// Instances of this class supports router settings.
 /// {@endtemplate}
 @CopyWith(skipFields: true)
+@sealed
 class RouterSettings {
   /// {@macro router.settings}
   RouterSettings({

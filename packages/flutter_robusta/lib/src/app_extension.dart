@@ -7,6 +7,7 @@ import 'package:flutter_robusta/src/cupertino.dart';
 import 'package:flutter_robusta/src/material.dart';
 import 'package:flutter_robusta/src/router.dart';
 import 'package:go_router_plus/go_router_plus.dart';
+import 'package:meta/meta.dart';
 import 'package:robusta_runner/robusta_runner.dart';
 
 /// Use to wrap app widget with another widget for providing
@@ -16,6 +17,7 @@ typedef AppWidgetWrapper = Widget Function(Widget appWidget);
 /// {@template app_extension}
 /// Robusta extension for running Flutter apps.
 /// {@endtemplate}
+@sealed
 class AppExtension implements Extension {
   /// {@macro app_extension}
   AppExtension({

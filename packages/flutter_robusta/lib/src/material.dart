@@ -1,5 +1,6 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
 
 part 'material.g.dart';
 
@@ -7,6 +8,7 @@ part 'material.g.dart';
 /// Instances of this class will support settings [MaterialApp]'s properties.
 /// {@endtemplate material.settings}
 @CopyWith(skipFields: true)
+@sealed
 class MaterialAppSettings {
   /// {@macro material.settings}
   MaterialAppSettings({
