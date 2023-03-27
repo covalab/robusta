@@ -1,0 +1,22 @@
+name: flutter_robusta_firebase_core
+version: 0.1.0
+homepage: https://robusta.covalab.io
+repository: https://github.com/covalab/robusta
+issue_tracker: https://github.com/covalab/robusta/issues
+description: Providing bridge to integrate Robusta with Firebase Core features.
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+  flutter: 3.3.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  robusta_runner: ^0.1.0
+  flutter_riverpod: ^2.2.0
+  firebase_core: ^2.8.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^3.1.0
