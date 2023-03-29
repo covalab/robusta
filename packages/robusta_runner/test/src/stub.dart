@@ -10,15 +10,21 @@ class TestExtension implements Extension {
 
 class TestDependenceExtension implements DependenceExtension {
   @override
-  List<Type> dependsOn() => [TestExtension];
+  List<Type> dependsOn() => [ImplementingCallbackExtension];
 
   @override
-  FutureOr<void> load(Configurator configurator) {}
+  FutureOr<void> load(Configurator configurator) {
+    configurator.addImplementingCallback(
+          (Test testImpl, _) => testImpl.num = 1,
+    );
+  }
 }
 
 class TestEvent extends Event {}
 
 class Test implements EventManagerAware {
+  int num = 0;
+
   EventManager? em;
 
   @override

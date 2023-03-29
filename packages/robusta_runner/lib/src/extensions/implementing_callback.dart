@@ -46,6 +46,16 @@ class ImplementingCallbackExtension implements Extension {
   }
 }
 
+/// Dart extension of [Configurator] help to
+/// settings [ImplementingCallbackExtension].
+extension ImplementingCallbackExtensionConfigurator on Configurator {
+  /// Register implementing [T] callback.
+  void addImplementingCallback<T>(ImplementingCallback<T> callback) {
+    getExtension<ImplementingCallbackExtension>()
+        .addImplementingCallback<T>(callback);
+  }
+}
+
 /// Riverpod observer observes adding implementing callback feature.
 /// When instance of provider created, and its implement
 /// class/interface had registered callback before, a callback will be called.
