@@ -27,16 +27,5 @@ void main() {
 
       await runner.run();
     });
-
-    // test('able to use firebase app after providing extension', () async {
-    //   final runner = Runner(extensions: [
-    //     FlutterFirebaseCoreExtension(),
-    //     EventExtension<RunEvent>({
-    //       (e) => expect(Firebase.app(), returnsNormally): 0,
-    //     })
-    //   ]);
-
-    //   await runner.run();
-    // });
   });
 }

@@ -18,7 +18,7 @@ class FlutterFirebaseCoreExtension implements Extension {
 
   @override
   void load(Configurator configurator) {
-    configurator.addBoot(_boot, priority: 5429);
+    configurator.addBoot(_boot, priority: 8192);
   }
 
   FutureOr<void> _boot(ProviderContainer providerContainer) async {
