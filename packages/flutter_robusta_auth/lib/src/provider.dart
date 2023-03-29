@@ -10,12 +10,14 @@ final authManagerProvider = Provider<AuthManager>(
   ),
 );
 
-final currentUserProvider = Provider<User?>(
+final currentUserProvider = StateProvider<User?>(
   (_) => throw UnimplementedError(
     'Outside of FlutterAuthExtension, this provider not implemented.',
   ),
 );
 
 final userFamily = Provider.family<FutureOr<User>, Map<String, String>>(
-  (ref, credentials) async => throw UnimplementedError(),
+  (ref, credentials) async => throw UnimplementedError(
+    'Outside of FlutterAuthExtension, this provider not implemented.',
+  ),
 );

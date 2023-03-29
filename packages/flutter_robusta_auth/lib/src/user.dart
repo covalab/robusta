@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Present for current identity using app.
+/// Present for current user using app.
 abstract class User {
   /// Identify of user
   String get id;
 
   /// Public information of user.
-  Map<String, String> get data => {};
+  Map<String, dynamic> get data => {};
 }
 
 /// Providing user by credentials given, exceptions MUST be throws in cases

@@ -36,11 +36,35 @@ class FlutterAuthExtension implements DependenceExtension {
   Future<void> load(Configurator configurator) async {
     configurator
       ..addContainerOverride(await _authManagerOverride())
-      ..addContainerOverride(_userFamilyOverride());
+      ..addContainerOverride(_userFamilyOverride())
+      ..addContainerOverride(_currentUserOverride())
+      ..addBoot(_boot);
   }
+
+  Future<void> _boot(ProviderContainer container) async {
+    final authManager = container.read(authManagerProvider);
+
+    if (null != authManager.currentCredentials) {
+      final currentUser = await _userProvider(
+        authManager.currentCredentials!,
+        container,
+      );
+
+      container.read(currentUserProvider.notifier).state = currentUser;
+    }
+  }
+
+  Override _currentUserOverride() => currentUserProvider.overrideWith(
+        (ref) => null,
+      );
 
   Override _userFamilyOverride() {
     return userFamily.overrideWith((ref, credentials) async {
+      final em = ref.read(eventManagerProvider);
+      void onLogout(LogoutEvent event) => ref.invalidateSelf();
+      ref.onDispose(() => em.removeEventListener<LogoutEvent>(onLogout));
+      em.addEventListener<LogoutEvent>(onLogout);
+
       return _userProvider(credentials, ref.container);
     });
   }
@@ -58,15 +82,23 @@ class FlutterAuthExtension implements DependenceExtension {
     }
 
     return authManagerProvider.overrideWith((ref) {
-      void logoutHandler(LogoutEvent event) => ref.invalidate(userFamily);
+      void onLogin(LoginEvent event) {
+        ref.read(currentUserProvider.notifier).state = event.currentUser;
+      }
+
+      void onLogout(LogoutEvent event) {
+        ref.read(currentUserProvider.notifier).state = null;
+      }
 
       final em = ref.read(eventManagerProvider)
-        ..addEventListener<LogoutEvent>(logoutHandler);
+        ..addEventListener<LoginEvent>(onLogin)
+        ..addEventListener<LogoutEvent>(onLogout);
 
       ref.onDispose(() {
+        em
+          ..removeEventListener<LoginEvent>(onLogin)
+          ..removeEventListener<LogoutEvent>(onLogout);
         box?.close();
-        ref.invalidate(userFamily);
-        em.removeEventListener<LogoutEvent>(logoutHandler);
       });
 
       return AuthManager(

@@ -27,7 +27,8 @@ class LogoutEvent extends _AuthEvent {
   LogoutEvent(super.currentUser);
 }
 
-typedef AuthUserProvider = User Function(Map<String, String>);
+/// User provider by the credentials given.
+typedef AuthUserProvider = FutureOr<User> Function(Map<String, String>);
 
 /// {@template auth_manager}
 /// Service support to login/logout and manage credentials of current user.
@@ -36,45 +37,48 @@ class AuthManager {
   /// {@macro auth_manager}
   AuthManager({
     required CredentialsStorage credentialsStorage,
-    required this.userProvider,
+    required AuthUserProvider userProvider,
     required EventManager eventManager,
   })  : _credentialsStorage = credentialsStorage,
+        _userProvider = userProvider,
         _eventManager = eventManager;
 
   final CredentialsStorage _credentialsStorage;
 
-  final FutureOr<User> Function(Map<String, String>) userProvider;
+  final AuthUserProvider _userProvider;
 
   final EventManager _eventManager;
 
   Future<void> loginByCrendentials(Map<String, String> credentials) async {
-    if (null != _credentialsStorage.read()) {
-      throw AuthException.loginWithExistCredentials();
+    if (null != currentCredentials) {
+      throw AuthException.invalidLoggedState();
     }
 
     await _credentialsStorage.write(credentials);
+
     await _eventManager.dispatchEvent(
       LoginEvent(
-        await userProvider(credentials),
+        await _userProvider(credentials),
       ),
     );
   }
 
   Future<void> logout() async {
-    final credentials = _credentialsStorage.read();
-
-    if (null == credentials) {
-      throw AuthException.logoutWithNullCredentials();
+    if (null == currentCredentials) {
+      throw AuthException.invalidLoggedState();
     }
 
     await _eventManager.dispatchEvent(
       LogoutEvent(
-        await userProvider(credentials),
+        await _userProvider(currentCredentials!),
       ),
     );
 
     await _credentialsStorage.delete();
   }
+
+  /// Current credentials of current user
+  Map<String, String>? get currentCredentials => _credentialsStorage.read();
 }
 
 /// {@template credentials_storage}
