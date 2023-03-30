@@ -1,51 +1,49 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_robusta/flutter_robusta.dart';
 import 'package:flutter_robusta_auth/src/exception.dart';
-import 'package:flutter_robusta_auth/src/user.dart';
 import 'package:flutter_robusta_hive/flutter_robusta_hive.dart';
-
-class _AuthEvent extends Event {
-  _AuthEvent(this.currentUser);
-
-  final User currentUser;
-}
+import 'package:go_router_plus/go_router_plus.dart';
+import 'package:meta/meta.dart';
 
 /// {@template auth.login_event}
 /// An event will be dispatch when user logged-in.
 /// {@endtemplate}
-class LoginEvent extends _AuthEvent {
+@sealed
+class LoggedInEvent extends Event {
   /// {@macro auth.login_event}
-  LoginEvent(super.currentUser);
+  LoggedInEvent(this.credentials);
+
+  /// Credentials of identity used to logged-in.
+  final Map<String, String> credentials;
 }
 
 /// {@template auth.logout_event}
 /// An event will be dispatch when user logged-out.
 /// {@endtemplate}
-class LogoutEvent extends _AuthEvent {
+@sealed
+class LoggedOutEvent extends Event {
   /// {@macro auth.logout_event}
-  LogoutEvent(super.currentUser);
-}
+  LoggedOutEvent(this.oldCredentials);
 
-/// User provider by the credentials given.
-typedef AuthUserProvider = FutureOr<User> Function(Map<String, String>);
+  /// Old credentials of identity had used to logged-in.
+  final Map<String, String> oldCredentials;
+}
 
 /// {@template auth_manager}
 /// Service support to login/logout and manage credentials of current user.
 /// {@endtemplate}
-class AuthManager {
+@sealed
+class AuthManager with ChangeNotifier implements LoggedInState {
   /// {@macro auth_manager}
   AuthManager({
     required CredentialsStorage credentialsStorage,
-    required AuthUserProvider userProvider,
     required EventManager eventManager,
   })  : _credentialsStorage = credentialsStorage,
-        _userProvider = userProvider,
         _eventManager = eventManager;
 
   final CredentialsStorage _credentialsStorage;
-
-  final AuthUserProvider _userProvider;
 
   final EventManager _eventManager;
 
@@ -56,29 +54,30 @@ class AuthManager {
 
     await _credentialsStorage.write(credentials);
 
-    await _eventManager.dispatchEvent(
-      LoginEvent(
-        await _userProvider(credentials),
-      ),
-    );
+    await _eventManager.dispatchEvent(LoggedInEvent(credentials));
+
+    notifyListeners();
   }
 
   Future<void> logout() async {
-    if (null == currentCredentials) {
+    final credentials = currentCredentials;
+
+    if (null == credentials) {
       throw AuthException.invalidLoggedState();
     }
 
-    await _eventManager.dispatchEvent(
-      LogoutEvent(
-        await _userProvider(currentCredentials!),
-      ),
-    );
-
     await _credentialsStorage.delete();
+
+    await _eventManager.dispatchEvent(LoggedOutEvent(credentials));
+
+    notifyListeners();
   }
 
-  /// Current credentials of current user
+  /// Current credentials of identity logged in to app.
   Map<String, String>? get currentCredentials => _credentialsStorage.read();
+
+  @override
+  bool get loggedIn => null != currentCredentials;
 }
 
 /// {@template credentials_storage}
@@ -86,6 +85,7 @@ class AuthManager {
 /// basic auth token, refresh token, cookie
 /// or something to identify current user with upstream.
 /// {@endtemplate}
+@internal
 class CredentialsStorage {
   /// {@macro credentials_storage}
   CredentialsStorage({

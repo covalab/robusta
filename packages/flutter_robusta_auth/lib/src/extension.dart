@@ -9,21 +9,23 @@ import 'package:flutter_robusta_auth/src/provider.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
 import 'package:flutter_robusta_hive/flutter_robusta_hive.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:meta/meta.dart';
 
 /// {@template flutter_robusta_auth}
 /// An extension providing authn/authz features.
 /// {@endtemplate}
+@sealed
 class FlutterAuthExtension implements DependenceExtension {
   /// {@macro flutter_robusta_auth}
   FlutterAuthExtension({
     bool persistCredentials = true,
-    required UserProvider userProvider,
+    required IdentityProvider identityProvider,
   })  : _persistCredentials = persistCredentials,
-        _userProvider = userProvider;
+        _identityProvider = identityProvider;
 
   final bool _persistCredentials;
 
-  final UserProvider _userProvider;
+  final IdentityProvider _identityProvider;
 
   @override
   List<Type> dependsOn() {
@@ -35,38 +37,55 @@ class FlutterAuthExtension implements DependenceExtension {
   @override
   Future<void> load(Configurator configurator) async {
     configurator
-      ..addContainerOverride(await _authManagerOverride())
-      ..addContainerOverride(_userFamilyOverride())
-      ..addContainerOverride(_currentUserOverride())
-      ..addBoot(_boot);
+      ..addBoot(_boot, priority: 8)
+      ..addContainerOverride(_userOverride())
+      ..addContainerOverride(await _authManagerOverride());
   }
 
   Future<void> _boot(ProviderContainer container) async {
-    final authManager = container.read(authManagerProvider);
-
-    if (null != authManager.currentCredentials) {
-      final currentUser = await _userProvider(
-        authManager.currentCredentials!,
-        container,
-      );
-
-      container.read(currentUserProvider.notifier).state = currentUser;
-    }
+    await container.read(userProvider).refreshIdentity();
   }
 
-  Override _currentUserOverride() => currentUserProvider.overrideWith(
-        (ref) => null,
-      );
+  Override _userOverride() {
+    return userProvider.overrideWith(
+      (ref) {
+        final em = ref.read(eventManagerProvider);
+        final user = User(
+          authManager: ref.read(authManagerProvider),
+          eventManager: ref.read(eventManagerProvider),
+          identityProvider: (credentials) => _identityProvider(
+            credentials,
+            ref.container,
+          ),
+        );
 
-  Override _userFamilyOverride() {
-    return userFamily.overrideWith((ref, credentials) async {
-      final em = ref.read(eventManagerProvider);
-      void onLogout(LogoutEvent event) => ref.invalidateSelf();
-      ref.onDispose(() => em.removeEventListener<LogoutEvent>(onLogout));
-      em.addEventListener<LogoutEvent>(onLogout);
+        Future<void> onAuthEvent(_) => user.refreshIdentity();
+        void onRefreshIdentity(_) => ref.notifyListeners();
 
-      return _userProvider(credentials, ref.container);
-    });
+        ref.onDispose(
+          () => em
+            ..removeEventListener<IdentityRefreshEvent>(onRefreshIdentity)
+            ..removeEventListener<LoggedInEvent>(onAuthEvent)
+            ..removeEventListener<LoggedOutEvent>(onAuthEvent),
+        );
+
+        em
+          ..addEventListener<IdentityRefreshEvent>(
+            onRefreshIdentity,
+            priority: 8,
+          )
+          ..addEventListener<LoggedInEvent>(
+            onAuthEvent,
+            priority: 8,
+          )
+          ..addEventListener<LoggedOutEvent>(
+            onAuthEvent,
+            priority: 8,
+          );
+
+        return user;
+      },
+    );
   }
 
   Future<Override> _authManagerOverride() async {
@@ -82,30 +101,21 @@ class FlutterAuthExtension implements DependenceExtension {
     }
 
     return authManagerProvider.overrideWith((ref) {
-      void onLogin(LoginEvent event) {
-        ref.read(currentUserProvider.notifier).state = event.currentUser;
-      }
+      final auth = AuthManager(
+        credentialsStorage: CredentialsStorage(box: box),
+        eventManager: ref.read(eventManagerProvider),
+      );
 
-      void onLogout(LogoutEvent event) {
-        ref.read(currentUserProvider.notifier).state = null;
-      }
-
-      final em = ref.read(eventManagerProvider)
-        ..addEventListener<LoginEvent>(onLogin)
-        ..addEventListener<LogoutEvent>(onLogout);
+      void onStateChange() => ref.notifyListeners();
 
       ref.onDispose(() {
-        em
-          ..removeEventListener<LoginEvent>(onLogin)
-          ..removeEventListener<LogoutEvent>(onLogout);
         box?.close();
+        auth.removeListener(onStateChange);
       });
 
-      return AuthManager(
-        userProvider: (credentials) => ref.read(userFamily(credentials)),
-        credentialsStorage: CredentialsStorage(box: box),
-        eventManager: em,
-      );
+      auth.addListener(onStateChange);
+
+      return auth;
     });
   }
 
