@@ -1,4 +1,4 @@
-name: flutter_robusta_firebase_core
+name: robusta_firebase_core
 version: 0.1.0
 homepage: https://robusta.covalab.io
 repository: https://github.com/covalab/robusta
@@ -19,4 +19,5 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  very_good_analysis: ^3.1.0
+  mockito: ^5.4.0
+  very_good_analysis: ^4.0.0+1
