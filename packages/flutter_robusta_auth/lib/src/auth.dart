@@ -47,6 +47,7 @@ class AuthManager with ChangeNotifier implements LoggedInState {
 
   final EventManager _eventManager;
 
+  /// Login app by credentials like JWT token, basic auth token, cookie based...
   Future<void> loginByCrendentials(Map<String, String> credentials) async {
     if (null != currentCredentials) {
       throw AuthException.invalidLoggedState();
@@ -59,6 +60,7 @@ class AuthManager with ChangeNotifier implements LoggedInState {
     notifyListeners();
   }
 
+  /// Logout app.
   Future<void> logout() async {
     final credentials = currentCredentials;
 

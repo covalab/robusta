@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_robusta/flutter_robusta.dart';
+import 'package:flutter_robusta_auth/src/access.dart';
 import 'package:flutter_robusta_auth/src/auth.dart';
 import 'package:flutter_robusta_auth/src/provider.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
@@ -26,6 +27,8 @@ class FlutterAuthExtension implements DependenceExtension {
   final bool _persistCredentials;
 
   final IdentityProvider _identityProvider;
+
+  final AccessController _accessController = AccessController();
 
   @override
   List<Type> dependsOn() {
@@ -51,8 +54,9 @@ class FlutterAuthExtension implements DependenceExtension {
       (ref) {
         final em = ref.read(eventManagerProvider);
         final user = User(
+          accessController: _accessController,
           authManager: ref.read(authManagerProvider),
-          eventManager: ref.read(eventManagerProvider),
+          eventManager: em,
           identityProvider: (credentials) => _identityProvider(
             credentials,
             ref.container,
@@ -64,13 +68,13 @@ class FlutterAuthExtension implements DependenceExtension {
 
         ref.onDispose(
           () => em
-            ..removeEventListener<IdentityRefreshEvent>(onRefreshIdentity)
+            ..removeEventListener<IdentityChangedEvent>(onRefreshIdentity)
             ..removeEventListener<LoggedInEvent>(onAuthEvent)
             ..removeEventListener<LoggedOutEvent>(onAuthEvent),
         );
 
         em
-          ..addEventListener<IdentityRefreshEvent>(
+          ..addEventListener<IdentityChangedEvent>(
             onRefreshIdentity,
             priority: 8,
           )
@@ -145,5 +149,18 @@ class FlutterAuthExtension implements DependenceExtension {
     }
 
     return base64Url.decode(key!);
+  }
+
+  /// Define access ability.
+  void defineAccess<Arg>(String ability, Rule<Arg> rule) {
+    _accessController.define(ability, rule);
+  }
+}
+
+/// [Configurator] extension for settings [FlutterAuthExtension].
+extension FlutterAuthExtensionConfigurator on Configurator {
+  /// Alias of [FlutterAuthExtension.defineAccess]
+  void defineAccess<Arg>(String ability, Rule<Arg> rule) {
+    getExtension<FlutterAuthExtension>().defineAccess(ability, rule);
   }
 }
