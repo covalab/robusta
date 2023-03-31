@@ -2,16 +2,37 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_robusta/flutter_robusta.dart';
+import 'package:flutter_robusta_auth/src/access.dart';
 import 'package:flutter_robusta_auth/src/auth.dart';
+import 'package:flutter_robusta_auth/src/exception.dart';
 import 'package:meta/meta.dart';
 
-/// Present for identity using app.
-abstract class Identity {
-  /// Unique id.
-  String get id;
+/// {@template user.identity}
+/// Present for identity using app
+/// {@endtemplate}
+@sealed
+class Identity {
+  /// {@macro user.identity}
+  Identity(this.id, this.data);
 
-  /// Data related of identity.
-  Map<String, dynamic> get data => {};
+  /// Unique identify.
+  final String id;
+
+  /// Identity data.
+  final Map<String, dynamic> data;
+
+  late final AccessController _accessController;
+
+  /// Verify identity has [ability] with [arg].
+  bool allows<Arg>(String ability, [Arg? arg]) => _accessController.check<Arg>(
+        this,
+        ability,
+        arg,
+      );
+
+  /// Like [allows] but throws [AccessException.deny].
+  void authorize<Arg>(String ability, [Arg? arg]) =>
+      _accessController.authorize<Arg>(this, ability, arg);
 }
 
 /// Providing user by credentials and container given,
@@ -28,19 +49,19 @@ typedef SimpleIdentityProvider = FutureOr<Identity> Function(
   Map<String, String>,
 );
 
-/// {@template user.identity_refresh_event}
-/// An event dispatch in cases [User.refreshIdentity] called.
+/// {@template user.identity_changed_event}
+/// An event dispatch in cases [User.currentIdentity] changed.
 /// {@endtemplate}
 @sealed
-class IdentityRefreshEvent extends Event {
-  /// {@macro user.identity_refresh_event}
-  IdentityRefreshEvent(this.oldIdentity, this.newIdentity);
+class IdentityChangedEvent extends Event {
+  /// {@macro user.identity_changed_event}
+  IdentityChangedEvent(this.oldIdentity, this.newIdentity);
 
   /// Old identity before refresh
   final Identity? oldIdentity;
 
   /// New identity refreshed.
-  final Identity newIdentity;
+  final Identity? newIdentity;
 }
 
 /// {@template user.user}
@@ -53,15 +74,19 @@ class User {
     required SimpleIdentityProvider identityProvider,
     required AuthManager authManager,
     required EventManager eventManager,
+    required AccessController accessController,
   })  : _identityProvider = identityProvider,
         _authManager = authManager,
-        _eventManager = eventManager;
+        _eventManager = eventManager,
+        _accessController = accessController;
 
   final SimpleIdentityProvider _identityProvider;
 
   final AuthManager _authManager;
 
   final EventManager _eventManager;
+
+  final AccessController _accessController;
 
   Identity? _identity;
 
@@ -73,16 +98,17 @@ class User {
     final oldIdentity = _identity;
     final credentials = _authManager.currentCredentials;
 
-    _identity = null;
-
-    if (null == credentials) {
-      return;
+    if (null != credentials) {
+      _identity = await _identityProvider(credentials);
+      _identity!._accessController = _accessController;
+    } else {
+      _identity = null;
     }
 
-    _identity = await _identityProvider(credentials);
-
-    await _eventManager.dispatchEvent<IdentityRefreshEvent>(
-      IdentityRefreshEvent(oldIdentity, _identity!),
-    );
+    if (oldIdentity != _identity) {
+      await _eventManager.dispatchEvent<IdentityChangedEvent>(
+        IdentityChangedEvent(oldIdentity, _identity),
+      );
+    }
   }
 }
