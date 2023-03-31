@@ -9,7 +9,7 @@ void main() {
 
   group('FlutterRobustaFirebaseCore', () {
     test('can be instantiated', () {
-      expect(() => FirebaseCoreExtension(), returnsNormally);
+      expect(() => RobustaFirebaseCoreExtension(), returnsNormally);
     });
 
     test('calling firebase app with no extension provided', () async {
