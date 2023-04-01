@@ -32,7 +32,7 @@ class TestScreen extends Screen implements InitialScreen {
   @override
   String get routePath => '/test';
 
-  /// Checks for MaterialApp in the widget tree.
+  /// Checks for CupertinoApp in the widget tree.
   bool isCupertinoApp(Element elem) =>
       elem.findAncestorWidgetOfExactType<CupertinoApp>() != null;
 }
