@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_robusta_auth/src/exception.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
 
 /// The callback to grain access permission for actions of current user
 /// when return true otherwise actions should be deny.
-typedef Rule<Arg> = bool Function(Identity?, [Arg? arg]);
+typedef Rule<Arg> = FutureOr<bool> Function(Identity?, [Arg? arg]);
 
 /// {@template access.rule}
 /// [RuleResolver] identify.
@@ -19,12 +21,12 @@ class _RuleResolver<Arg> {
   final Rule<Arg> rule;
 
   /// Whether given identity can pass the rule.
-  bool resolve(Identity? identity, [Object? arg]) {
-    if (arg is! Arg) {
-      throw AccessException.invalidRuleArgType(arg.runtimeType, ability);
+  FutureOr<bool> resolve(Identity? identity, [Object? arg]) {
+    if (arg is Arg) {
+      return rule(identity, arg);
     }
 
-    return rule(identity, arg);
+    throw AccessException.invalidRuleArgType(arg.runtimeType, ability);
   }
 }
 
@@ -45,14 +47,20 @@ class AccessController {
 
   /// Allows given [identity] to access [ability] with [arg].
   /// If not an [AccessException.deny] will be throws.
-  void authorize<Arg>(Identity? identity, String ability, [Arg? arg]) {
-    if (!check(identity, ability, arg)) {
+  Future<void> authorize<Arg>(
+    Identity? identity,
+    String ability, [
+    Arg? arg,
+  ]) async {
+    final authorized = await check(identity, ability, arg);
+
+    if (!authorized) {
       throw AccessException.deny();
     }
   }
 
   /// Allows given [identity] to access [ability] with [arg].
-  bool check<Arg>(Identity? identity, String ability, [Arg? arg]) {
+  FutureOr<bool> check<Arg>(Identity? identity, String ability, [Arg? arg]) {
     if (null == _abilities[ability]) {
       return false;
     }
@@ -60,4 +68,3 @@ class AccessController {
     return _abilities[ability]!.resolve(identity, arg);
   }
 }
-

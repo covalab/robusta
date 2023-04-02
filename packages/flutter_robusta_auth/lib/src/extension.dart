@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_robusta/flutter_robusta.dart';
@@ -8,34 +6,31 @@ import 'package:flutter_robusta_auth/src/access.dart';
 import 'package:flutter_robusta_auth/src/auth.dart';
 import 'package:flutter_robusta_auth/src/provider.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
-import 'package:flutter_robusta_hive/flutter_robusta_hive.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:meta/meta.dart';
+
+/// Factory of [CredentialsStorage]
+typedef CredentialsStorageFactory = CredentialsStorage Function(
+  ProviderContainer,
+);
 
 /// {@template flutter_robusta_auth}
 /// An extension providing authn/authz features.
 /// {@endtemplate}
 @sealed
-class FlutterAuthExtension implements DependenceExtension {
+class FlutterAuthExtension implements Extension {
   /// {@macro flutter_robusta_auth}
   FlutterAuthExtension({
-    bool persistCredentials = true,
+    CredentialsStorageFactory? credentialsStorageFactory,
     required IdentityProvider identityProvider,
-  })  : _persistCredentials = persistCredentials,
+  })  : _credentialsStorageFactory =
+            credentialsStorageFactory ?? ((_) => CredentialsMemoryStorage()),
         _identityProvider = identityProvider;
 
-  final bool _persistCredentials;
+  final CredentialsStorageFactory _credentialsStorageFactory;
 
   final IdentityProvider _identityProvider;
 
   final AccessController _accessController = AccessController();
-
-  @override
-  List<Type> dependsOn() {
-    return [
-      if (_persistCredentials) FlutterHiveExtension,
-    ];
-  }
 
   @override
   Future<void> load(Configurator configurator) async {
@@ -92,63 +87,21 @@ class FlutterAuthExtension implements DependenceExtension {
     );
   }
 
-  Future<Override> _authManagerOverride() async {
-    Box<String>? box;
-
-    if (_persistCredentials) {
-      box = await Hive.openBox<String>(
-        'flutter_robusta_auth',
-        encryptionCipher: HiveAesCipher(
-          await _upsertHiveBoxSecureKey(),
-        ),
-      );
-    }
-
+  Override _authManagerOverride() {
     return authManagerProvider.overrideWith((ref) {
       final auth = AuthManager(
-        credentialsStorage: CredentialsStorage(box: box),
+        credentialsStorage: _credentialsStorageFactory(ref.container),
         eventManager: ref.read(eventManagerProvider),
       );
 
       void onStateChange() => ref.notifyListeners();
 
-      ref.onDispose(() {
-        box?.close();
-        auth.removeListener(onStateChange);
-      });
+      ref.onDispose(() => auth.removeListener(onStateChange));
 
       auth.addListener(onStateChange);
 
       return auth;
     });
-  }
-
-  Future<Uint8List> _upsertHiveBoxSecureKey() async {
-    const secureStorage = FlutterSecureStorage();
-    const aOptions = AndroidOptions(
-      resetOnError: true,
-      encryptedSharedPreferences: true,
-    );
-
-    var key = await secureStorage.read(
-      key: 'flutter_robusta_auth',
-      aOptions: aOptions,
-    );
-
-    if (key == null) {
-      await secureStorage.write(
-        key: 'flutter_robusta_auth',
-        value: base64Url.encode(Hive.generateSecureKey()),
-        aOptions: aOptions,
-      );
-
-      key = await secureStorage.read(
-        key: 'flutter_robusta_auth',
-        aOptions: aOptions,
-      );
-    }
-
-    return base64Url.decode(key!);
   }
 
   /// Define access ability.

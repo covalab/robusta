@@ -24,14 +24,15 @@ class Identity {
   late final AccessController _accessController;
 
   /// Verify identity has [ability] with [arg].
-  bool allows<Arg>(String ability, [Arg? arg]) => _accessController.check<Arg>(
+  FutureOr<bool> allows<Arg>(String ability, [Arg? arg]) =>
+      _accessController.check<Arg>(
         this,
         ability,
         arg,
       );
 
   /// Like [allows] but throws [AccessException.deny].
-  void authorize<Arg>(String ability, [Arg? arg]) =>
+  Future<void> authorize<Arg>(String ability, [Arg? arg]) =>
       _accessController.authorize<Arg>(this, ability, arg);
 }
 
@@ -96,7 +97,7 @@ class User {
   /// Refresh current identity.
   Future<void> refreshIdentity() async {
     final oldIdentity = _identity;
-    final credentials = _authManager.currentCredentials;
+    final credentials = await _authManager.currentCredentials;
 
     if (null != credentials) {
       _identity = await _identityProvider(credentials);

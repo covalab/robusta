@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_robusta/flutter_robusta.dart';
 import 'package:flutter_robusta_auth/src/exception.dart';
-import 'package:flutter_robusta_hive/flutter_robusta_hive.dart';
 import 'package:go_router_plus/go_router_plus.dart';
 import 'package:meta/meta.dart';
 
@@ -62,7 +61,7 @@ class AuthManager with ChangeNotifier implements LoggedInState {
 
   /// Logout app.
   Future<void> logout() async {
-    final credentials = currentCredentials;
+    final credentials = await currentCredentials;
 
     if (null == credentials) {
       throw AuthException.invalidLoggedState();
@@ -76,10 +75,11 @@ class AuthManager with ChangeNotifier implements LoggedInState {
   }
 
   /// Current credentials of identity logged in to app.
-  Map<String, String>? get currentCredentials => _credentialsStorage.read();
+  FutureOr<Map<String, String>?> get currentCredentials =>
+      _credentialsStorage.read();
 
   @override
-  bool get loggedIn => null != currentCredentials;
+  Future<bool> get loggedIn async => null != (await currentCredentials);
 }
 
 /// {@template credentials_storage}
@@ -87,49 +87,28 @@ class AuthManager with ChangeNotifier implements LoggedInState {
 /// basic auth token, refresh token, cookie
 /// or something to identify current user with upstream.
 /// {@endtemplate}
-@internal
-class CredentialsStorage {
-  /// {@macro credentials_storage}
-  CredentialsStorage({
-    Box<String>? box,
-  }) : _box = box;
-
-  final Box<String>? _box;
-
-  Map<String, String>? _credentials;
-
+abstract class CredentialsStorage {
   /// Write credentials, store in memory buffer and put to disk if
   /// user want to persist.
-  Future<void> write(Map<String, String> credentials) async {
-    _credentials = credentials;
-
-    for (final entry in credentials.entries) {
-      await _box?.put(entry.key, entry.value);
-    }
-  }
+  FutureOr<void> write(Map<String, String> credentials);
 
   /// Remove credentials.
-  Future<void> delete() async {
-    _credentials = null;
-    await _box?.clear();
-  }
+  FutureOr<void> delete();
 
   /// Read credentials.
-  Map<String, String>? read() {
-    if (null != _credentials) {
-      return _credentials;
-    }
+  FutureOr<Map<String, String>?> read();
+}
 
-    if (null == _box || _box!.isEmpty) {
-      return null;
-    }
+/// Store credentials in memory, when app terminated all data will be lose.
+class CredentialsMemoryStorage implements CredentialsStorage {
+  Map<String, String>? _credentials;
 
-    final credentials = <String, String>{};
+  @override
+  void delete() => _credentials = null;
 
-    for (final key in _box!.keys) {
-      credentials[key.toString()] = _box!.get(key)!;
-    }
+  @override
+  Map<String, String>? read() => _credentials;
 
-    return _credentials = credentials;
-  }
+  @override
+  void write(Map<String, String> credentials) => _credentials = credentials;
 }

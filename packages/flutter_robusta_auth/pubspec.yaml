@@ -13,9 +13,7 @@ dependencies:
   robusta_runner: ^0.1.0
   flutter_riverpod: ^2.2.0
   flutter_robusta: ^0.1.0
-  flutter_robusta_hive: ^0.1.0
-  flutter_secure_storage: ^8.0.0
-  go_router_plus: ^4.0.0
+  go_router_plus: ^4.1.1
   meta: ^1.8.0
 
 dev_dependencies:
