@@ -7,18 +7,33 @@ import 'package:flutter_robusta_auth/src/provider.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
 import 'package:go_router_plus/go_router_plus.dart';
 
-/// Access redirector responsible to redirect user to [fallbackPath] when
+/// {@template screen.access_control}
+/// Redirector with responsible to redirect user to [_fallbackPath] when
 /// user not have abilities to access screens.
-class ScreenAccessControl implements Redirector {
-  ScreenAccessControl(this.fallbackPath);
+/// {@endtemplate}
+class ScreenAccessControl<Arg> implements Redirector {
+  /// {@macro screen.access_control}
+  ScreenAccessControl({
+    required String fallbackPath,
+    required Pattern pathPattern,
+    required AccessControl accessControl,
+    required String ability,
+    Arg? arg,
+  })  : _fallbackPath = fallbackPath,
+        _pathPattern = pathPattern,
+        _accessControl = accessControl,
+        _ability = ability,
+        _arg = arg;
 
   final String _fallbackPath;
 
   final Pattern _pathPattern;
 
-  final List<String> _abilities;
+  final String _ability;
 
-  final AccessController _controller;
+  final Arg? _arg;
+
+  final AccessControl _accessControl;
 
   @override
   FutureOr<String?> redirect(
@@ -30,13 +45,13 @@ class ScreenAccessControl implements Redirector {
       return null;
     }
 
-    final results = await Future.wait(
-      _abilities.map(
-        (ability) async => _controller.check(screen.currentIdentity, ability),
-      ),
+    final canAccess = await _accessControl.check(
+      screen.currentIdentity,
+      _ability,
+      _arg,
     );
 
-    return results.every((access) => access) ? null : _fallbackPath;
+    return canAccess ? null : _fallbackPath;
   }
 }
 

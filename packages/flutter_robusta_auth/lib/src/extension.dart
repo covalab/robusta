@@ -8,10 +8,13 @@ import 'package:flutter_robusta_auth/src/provider.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
 import 'package:meta/meta.dart';
 
-/// Factory of [CredentialsStorage]
+/// Factory of [CredentialsStorage].
 typedef CredentialsStorageFactory = CredentialsStorage Function(
   ProviderContainer,
 );
+
+/// Define access based on ability and rule of it.
+typedef DefineAccess = void Function(AccessDefinition);
 
 /// {@template flutter_robusta_auth}
 /// An extension providing authn/authz features.
@@ -22,26 +25,50 @@ class FlutterAuthExtension implements Extension {
   FlutterAuthExtension({
     CredentialsStorageFactory? credentialsStorageFactory,
     required IdentityProvider identityProvider,
+    DefineAccess? defineAccess,
   })  : _credentialsStorageFactory =
             credentialsStorageFactory ?? ((_) => CredentialsMemoryStorage()),
-        _identityProvider = identityProvider;
+        _identityProvider = identityProvider {
+    if (null != defineAccess) {
+      defineAccess(_accessControl);
+    }
+  }
 
   final CredentialsStorageFactory _credentialsStorageFactory;
 
   final IdentityProvider _identityProvider;
 
-  final AccessController _accessController = AccessController();
+  final AccessControl _accessControl = AccessControl();
 
   @override
   Future<void> load(Configurator configurator) async {
     configurator
       ..addBoot(_boot, priority: 8)
+      ..addContainerOverride(_authManagerOverride())
       ..addContainerOverride(_userOverride())
-      ..addContainerOverride(await _authManagerOverride());
+      ..addContainerOverride(_accessDefinitionOverride())
+      ..addContainerOverride(_accessControlOverride());
   }
 
   Future<void> _boot(ProviderContainer container) async {
     await container.read(userProvider).refreshIdentity();
+  }
+
+  Override _authManagerOverride() {
+    return authManagerProvider.overrideWith((ref) {
+      final auth = AuthManager(
+        credentialsStorage: _credentialsStorageFactory(ref.container),
+        eventManager: ref.read(eventManagerProvider),
+      );
+
+      void onStateChange() => ref.notifyListeners();
+
+      ref.onDispose(() => auth.removeListener(onStateChange));
+
+      auth.addListener(onStateChange);
+
+      return auth;
+    });
   }
 
   Override _userOverride() {
@@ -49,7 +76,7 @@ class FlutterAuthExtension implements Extension {
       (ref) {
         final em = ref.read(eventManagerProvider);
         final user = User(
-          accessController: _accessController,
+          accessControl: _accessControl,
           authManager: ref.read(authManagerProvider),
           eventManager: em,
           identityProvider: (credentials) => _identityProvider(
@@ -87,33 +114,11 @@ class FlutterAuthExtension implements Extension {
     );
   }
 
-  Override _authManagerOverride() {
-    return authManagerProvider.overrideWith((ref) {
-      final auth = AuthManager(
-        credentialsStorage: _credentialsStorageFactory(ref.container),
-        eventManager: ref.read(eventManagerProvider),
-      );
-
-      void onStateChange() => ref.notifyListeners();
-
-      ref.onDispose(() => auth.removeListener(onStateChange));
-
-      auth.addListener(onStateChange);
-
-      return auth;
-    });
+  Override _accessDefinitionOverride() {
+    return accessDefinitionProvider.overrideWithValue(_accessControl);
   }
 
-  /// Define access ability.
-  void defineAccess<Arg>(String ability, Rule<Arg> rule) {
-    _accessController.define(ability, rule);
-  }
-}
-
-/// [Configurator] extension for settings [FlutterAuthExtension].
-extension FlutterAuthExtensionConfigurator on Configurator {
-  /// Alias of [FlutterAuthExtension.defineAccess]
-  void defineAccess<Arg>(String ability, Rule<Arg> rule) {
-    getExtension<FlutterAuthExtension>().defineAccess(ability, rule);
+  Override _accessControlOverride() {
+    return accessControlProvider.overrideWithValue(_accessControl);
   }
 }

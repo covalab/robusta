@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_robusta_auth/src/exception.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
+import 'package:meta/meta.dart';
 
 /// The callback to grain access permission for actions of current user
 /// when return true otherwise actions should be deny.
@@ -22,20 +23,21 @@ class _RuleResolver<Arg> {
 
   /// Whether given identity can pass the rule.
   FutureOr<bool> resolve(Identity? identity, [Object? arg]) {
-    if (arg is Arg) {
-      return rule(identity, arg);
+    if (arg is Arg || null == arg) {
+      return rule(identity, arg as Arg?);
     }
 
-    throw AccessException.invalidRuleArgType(arg.runtimeType, ability);
+    throw AccessException.invalidRuleArgType(Arg, ability);
   }
 }
 
-/// App access control by defined [Rule]s.
-class AccessController {
+/// Uses to define access ability.
+@sealed
+class AccessDefinition {
   final _abilities = <String, _RuleResolver<dynamic>>{};
 
-  /// Whether added [rule] or not.
-  void has(String ability) => _abilities.containsKey(ability);
+  /// Whether added [ability] or not.
+  bool has(String ability) => _abilities.containsKey(ability);
 
   /// Define rule use to checking access
   void define<Arg>(String ability, Rule<Arg> rule) {
@@ -44,7 +46,11 @@ class AccessController {
       rule: rule,
     );
   }
+}
 
+/// Control access via abilities defined.
+@sealed
+class AccessControl with AccessDefinition {
   /// Allows given [identity] to access [ability] with [arg].
   /// If not an [AccessException.deny] will be throws.
   Future<void> authorize<Arg>(

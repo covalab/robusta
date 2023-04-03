@@ -12,7 +12,7 @@ import 'package:meta/meta.dart';
 @sealed
 class LoggedInEvent extends Event {
   /// {@macro auth.login_event}
-  LoggedInEvent(this.credentials);
+  LoggedInEvent._(this.credentials);
 
   /// Credentials of identity used to logged-in.
   final Map<String, String> credentials;
@@ -24,7 +24,7 @@ class LoggedInEvent extends Event {
 @sealed
 class LoggedOutEvent extends Event {
   /// {@macro auth.logout_event}
-  LoggedOutEvent(this.oldCredentials);
+  LoggedOutEvent._(this.oldCredentials);
 
   /// Old credentials of identity had used to logged-in.
   final Map<String, String> oldCredentials;
@@ -48,13 +48,19 @@ class AuthManager with ChangeNotifier implements LoggedInState {
 
   /// Login app by credentials like JWT token, basic auth token, cookie based...
   Future<void> loginByCrendentials(Map<String, String> credentials) async {
-    if (null != currentCredentials) {
+    final c = await currentCredentials;
+
+    if (null != c) {
       throw AuthException.invalidLoggedState();
     }
 
     await _credentialsStorage.write(credentials);
 
-    await _eventManager.dispatchEvent(LoggedInEvent(credentials));
+    await _eventManager.dispatchEvent(
+      LoggedInEvent._(
+        Map.unmodifiable(credentials),
+      ),
+    );
 
     notifyListeners();
   }
@@ -69,7 +75,11 @@ class AuthManager with ChangeNotifier implements LoggedInState {
 
     await _credentialsStorage.delete();
 
-    await _eventManager.dispatchEvent(LoggedOutEvent(credentials));
+    await _eventManager.dispatchEvent(
+      LoggedOutEvent._(
+        Map.unmodifiable(credentials),
+      ),
+    );
 
     notifyListeners();
   }
@@ -99,7 +109,8 @@ abstract class CredentialsStorage {
   FutureOr<Map<String, String>?> read();
 }
 
-/// Store credentials in memory, when app terminated all data will be lose.
+/// Store credentials in memory, when app terminated all data will be lost.
+@sealed
 class CredentialsMemoryStorage implements CredentialsStorage {
   Map<String, String>? _credentials;
 

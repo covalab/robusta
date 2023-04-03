@@ -13,7 +13,7 @@ import 'package:meta/meta.dart';
 @sealed
 class Identity {
   /// {@macro user.identity}
-  Identity(this.id, this.data);
+  Identity({required this.id, required this.data});
 
   /// Unique identify.
   final String id;
@@ -21,11 +21,11 @@ class Identity {
   /// Identity data.
   final Map<String, dynamic> data;
 
-  late final AccessController _accessController;
+  late final AccessControl _accessControl;
 
   /// Verify identity has [ability] with [arg].
   FutureOr<bool> allows<Arg>(String ability, [Arg? arg]) =>
-      _accessController.check<Arg>(
+      _accessControl.check<Arg>(
         this,
         ability,
         arg,
@@ -33,7 +33,7 @@ class Identity {
 
   /// Like [allows] but throws [AccessException.deny].
   Future<void> authorize<Arg>(String ability, [Arg? arg]) =>
-      _accessController.authorize<Arg>(this, ability, arg);
+      _accessControl.authorize<Arg>(this, ability, arg);
 }
 
 /// Providing user by credentials and container given,
@@ -75,11 +75,11 @@ class User {
     required SimpleIdentityProvider identityProvider,
     required AuthManager authManager,
     required EventManager eventManager,
-    required AccessController accessController,
+    required AccessControl accessControl,
   })  : _identityProvider = identityProvider,
         _authManager = authManager,
         _eventManager = eventManager,
-        _accessController = accessController;
+        _accessControl = accessControl;
 
   final SimpleIdentityProvider _identityProvider;
 
@@ -87,7 +87,7 @@ class User {
 
   final EventManager _eventManager;
 
-  final AccessController _accessController;
+  final AccessControl _accessControl;
 
   Identity? _identity;
 
@@ -101,7 +101,7 @@ class User {
 
     if (null != credentials) {
       _identity = await _identityProvider(credentials);
-      _identity!._accessController = _accessController;
+      _identity!._accessControl = _accessControl;
     } else {
       _identity = null;
     }
