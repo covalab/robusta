@@ -38,7 +38,7 @@ class FlutterAuthExtension implements DependenceExtension {
             credentialsStorageFactory ?? ((_) => CredentialsMemoryStorage()),
         _identityProvider = identityProvider {
     if (null != defineAccess) {
-      defineAccess(_accessControl);
+      defineAccess(_accessManager);
     }
 
     if (null != defineScreenAccessControl) {
@@ -50,10 +50,10 @@ class FlutterAuthExtension implements DependenceExtension {
 
   final IdentityProvider _identityProvider;
 
-  final AccessControl _accessControl = AccessControl();
+  final AccessManager _accessManager = AccessManager();
 
   late final ScreenAccessDefinition _screenAccessDefinition =
-      ScreenAccessDefinition._(_accessControl);
+      ScreenAccessDefinition._(_accessManager);
 
   @override
   List<Type> dependsOn() => [FlutterAppExtension];
@@ -102,7 +102,7 @@ class FlutterAuthExtension implements DependenceExtension {
       (ref) {
         final em = ref.read(eventManagerProvider);
         final user = User(
-          accessControl: _accessControl,
+          accessControl: _accessManager,
           authManager: ref.read(authManagerProvider),
           eventManager: em,
           identityProvider: (credentials) => _identityProvider(
@@ -141,10 +141,10 @@ class FlutterAuthExtension implements DependenceExtension {
   }
 
   Override _accessDefinitionOverride() {
-    return accessDefinitionProvider.overrideWithValue(_accessControl);
+    return accessDefinitionProvider.overrideWithValue(_accessManager);
   }
 
   Override _accessControlOverride() {
-    return accessControlProvider.overrideWithValue(_accessControl);
+    return accessControlProvider.overrideWithValue(_accessManager);
   }
 }

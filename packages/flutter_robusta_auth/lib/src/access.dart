@@ -31,11 +31,13 @@ class _RuleResolver<Arg> {
   }
 }
 
-/// Uses to define access ability.
-@sealed
-class AccessDefinition {
+/// Mapping ability name with it rule.
+mixin AccessAbility {
   final _abilities = <String, _RuleResolver<dynamic>>{};
+}
 
+/// Defines access [_abilities].
+mixin AccessDefinition on AccessAbility {
   /// Whether added [ability] or not.
   bool has(String ability) => _abilities.containsKey(ability);
 
@@ -48,9 +50,8 @@ class AccessDefinition {
   }
 }
 
-/// Control access via abilities defined.
-@sealed
-class AccessControl with AccessDefinition {
+/// Control access based on [_abilities].
+mixin AccessControl on AccessAbility {
   /// Allows given [identity] to access [ability] with [arg].
   /// If not an [AccessException.deny] will be throws.
   Future<void> authorize<Arg>(
@@ -74,3 +75,7 @@ class AccessControl with AccessDefinition {
     return _abilities[ability]!.resolve(identity, arg);
   }
 }
+
+/// Manage app authorize logics.
+@sealed
+class AccessManager with AccessAbility, AccessDefinition, AccessControl {}

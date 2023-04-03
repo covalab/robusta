@@ -2,32 +2,26 @@ import 'package:flutter_robusta_auth/flutter_robusta_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('access definition', () {
+  group('access manager', () {
     test('can initialize', () {
-      expect(AccessDefinition.new, returnsNormally);
+      expect(AccessManager.new, returnsNormally);
     });
 
     test('can define ability', () {
-      final definition = AccessDefinition()
+      final definition = AccessManager()
         ..define('test', (identity, [arg]) => false);
       expect(definition.has('test'), isTrue);
     });
-  });
-
-  group('access control', () {
-    test('can initialize', () {
-      expect(AccessControl.new, returnsNormally);
-    });
 
     test('can check ability', () {
-      final control = AccessControl()
+      final control = AccessManager()
         ..define('test', (identity, [arg]) => true);
       expect(control.has('test'), isTrue);
       expect(control.check(null, 'test'), isTrue);
     });
 
     test('can authorize ability', () async {
-      final control = AccessControl()
+      final control = AccessManager()
         ..define('deny', (identity, [arg]) async => false)
         ..define('allows', (identity, [arg]) async => true);
 
@@ -50,7 +44,7 @@ void main() {
     });
 
     test('can work with generic arg', () async {
-      final control = AccessControl()
+      final control = AccessManager()
         ..define<bool>('bool', (identity, [arg]) => arg ?? false)
         ..define<String>('string', (identity, [arg]) async {
           if (arg == 'true') {

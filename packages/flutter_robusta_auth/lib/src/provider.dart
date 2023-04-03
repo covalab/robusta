@@ -16,12 +16,13 @@ final userProvider = Provider<User>(
   (_) => throw UnimplementedError(_unimplementedErrorMsg),
 );
 
-/// Providing access control to manage authorization.
+/// Providing access control to manage authorization base on abilities
+/// had define by [accessDefinitionProvider].
 final accessControlProvider = Provider<AccessControl>(
   (_) => throw UnimplementedError(_unimplementedErrorMsg),
 );
 
-/// Providing access definition to define ability.
+/// Providing access definition to define access abilities.
 final accessDefinitionProvider = Provider<AccessDefinition>(
   (_) => throw UnimplementedError(_unimplementedErrorMsg),
 );
