@@ -21,7 +21,7 @@ typedef CredentialsStorageFactory = CredentialsStorage Function(
 typedef DefineAccess = void Function(AccessDefinition);
 
 /// Define screen access control.
-typedef DefineScreenAccessControl = void Function(ScreenAccessDefinition);
+typedef DefineScreenAccess = void Function(ScreenAccessDefinition);
 
 /// {@template extension.flutter_auth}
 /// An extension providing authn/authz features.
@@ -33,7 +33,7 @@ class FlutterAuthExtension implements DependenceExtension {
     CredentialsStorageFactory? credentialsStorageFactory,
     required IdentityProvider identityProvider,
     DefineAccess? defineAccess,
-    DefineScreenAccessControl? defineScreenAccessControl,
+    DefineScreenAccess? defineScreenAccess,
   })  : _credentialsStorageFactory =
             credentialsStorageFactory ?? ((_) => CredentialsMemoryStorage()),
         _identityProvider = identityProvider {
@@ -41,8 +41,8 @@ class FlutterAuthExtension implements DependenceExtension {
       defineAccess(_accessManager);
     }
 
-    if (null != defineScreenAccessControl) {
-      defineScreenAccessControl(_screenAccessDefinition);
+    if (null != defineScreenAccess) {
+      defineScreenAccess(_screenAccessDefinition);
     }
   }
 
