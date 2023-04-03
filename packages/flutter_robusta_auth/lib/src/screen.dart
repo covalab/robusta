@@ -1,57 +1,123 @@
 import 'dart:async';
 
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_robusta_auth/src/access.dart';
 import 'package:flutter_robusta_auth/src/provider.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
 import 'package:go_router_plus/go_router_plus.dart';
 
-/// {@template screen.access_control}
-/// Redirector with responsible to redirect user to [_fallbackPath] when
-/// user not have abilities to access screens.
+/// Strategy to make decision base on list of access abilities
+enum AccessDecisionStrategy {
+  /// Just requires have one of abilities in list.
+  any,
+
+  /// Requires have all abilities in list.
+  every;
+}
+
+/// {@template screen.access_redirector}
+/// Responsible to redirect current identity to
+/// [fallbackLocation] when not they not have abilities to access screen.
 /// {@endtemplate}
-class ScreenAccessControl<Arg> implements Redirector {
-  /// {@macro screen.access_control}
-  ScreenAccessControl({
-    required String fallbackPath,
-    required Pattern pathPattern,
+class ScreenAccessRedirector implements Redirector {
+  /// {@macro screen.access_redirector}
+  ScreenAccessRedirector({
+    required this.fallbackLocation,
+    required this.locationPattern,
+    required this.abilities,
+    required this.strategy,
     required AccessControl accessControl,
-    required String ability,
-    Arg? arg,
-  })  : _fallbackPath = fallbackPath,
-        _pathPattern = pathPattern,
-        _accessControl = accessControl,
-        _ability = ability,
-        _arg = arg;
+  }) : _accessControl = accessControl;
 
-  final String _fallbackPath;
+  /// Location pattern, current location needs to match this pattern to
+  /// apply checking access abilities.
+  final String locationPattern;
 
-  final Pattern _pathPattern;
+  /// Access definitions uses to check current identity
+  /// when screen location match [locationPattern].
+  final List<ScreenAccessAbility<dynamic>> abilities;
 
-  final String _ability;
-
-  final Arg? _arg;
+  /// Strategy uses to make decision to redirect.
+  final AccessDecisionStrategy strategy;
 
   final AccessControl _accessControl;
 
+  /// Fallback location when current identity not have abilities to access
+  /// screen.
+  final String fallbackLocation;
+
   @override
-  FutureOr<String?> redirect(
+  Future<String?> redirect(
     Screen screen,
     BuildContext buildContext,
     GoRouterState state,
   ) async {
-    if (_pathPattern.allMatches(state.location).isEmpty) {
+    if (!RegExp(locationPattern).hasMatch(state.location)) {
       return null;
     }
 
-    final canAccess = await _accessControl.check(
-      screen.currentIdentity,
-      _ability,
-      _arg,
-    );
+    switch (strategy) {
+      case AccessDecisionStrategy.any:
+        for (final item in abilities) {
+          final result = await item._checkWith(
+            _accessControl,
+            screen,
+            state,
+          );
 
-    return canAccess ? null : _fallbackPath;
+          if (result) {
+            return null;
+          }
+        }
+
+        return fallbackLocation;
+      case AccessDecisionStrategy.every:
+        for (final item in abilities) {
+          final result = await item._checkWith(
+            _accessControl,
+            screen,
+            state,
+          );
+
+          if (!result) {
+            return fallbackLocation;
+          }
+        }
+
+        return null;
+    }
+  }
+}
+
+/// {@template screen.access_ability}
+/// Describe screen access with given [ability] and [arg] belong with it.
+/// {@endtemplate}
+class ScreenAccessAbility<Arg> {
+  /// {@macro screen.access_ability}
+  ScreenAccessAbility({required this.ability, this.arg});
+
+  /// Ability need to check
+  final String ability;
+
+  /// Arg of [ability] to put in [AccessControl.check]
+  final Arg? arg;
+
+  /// Check current identity have ability to access [screen].
+  FutureOr<bool> _checkWith(
+    AccessControl accessControl,
+    ScreenBase screen,
+    GoRouterState state,
+  ) {
+    if (Arg is GoRouterState && null == arg) {
+      return accessControl.check(
+        screen.currentIdentity,
+        ability,
+        state,
+      );
+    }
+
+    return accessControl.check(screen.currentIdentity, ability, arg);
   }
 }
 
