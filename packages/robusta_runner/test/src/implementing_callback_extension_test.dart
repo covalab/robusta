@@ -12,21 +12,27 @@ void main() {
 
     test('can trigger callbacks added', () async {
       var counter = 0;
+      var num = 0;
+
       final e = ImplementingCallbackExtension()
         ..addImplementingCallback(
           (Test t, ProviderContainer container) => counter++,
         );
 
       final runner = Runner(
-        extensions: [e],
+        extensions: [
+          e,
+          TestDependenceExtension(),
+        ],
         boots: {
-          (c) => c.read(testProvider): 0,
+          (c) => num = c.read(testProvider).num: 0,
         },
       );
 
       await runner.run();
 
       expect(counter, equals(1));
+      expect(num, equals(1));
     });
   });
 }

@@ -147,7 +147,7 @@ void main() {
       expect(
         () => Runner(
           extensions: [
-            TestExtension(),
+            ImplementingCallbackExtension(),
             TestDependenceExtension(),
           ],
         ),

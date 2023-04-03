@@ -10,7 +10,7 @@ class _RunnerEvent extends Event {
 
 /// {@template runner.run_event}
 /// Will dispatch when [Runner.run()] called,
-/// this event will be dispatch after boot.
+/// this event will be dispatched after boot.
 /// {@endtemplate}
 @sealed
 class RunEvent extends _RunnerEvent {

@@ -1,15 +1,14 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_robusta/src/app_extension.dart';
-import 'package:go_router_plus/go_router_plus.dart';
 import 'package:meta/meta.dart';
 
 part 'material.g.dart';
 
 /// {@template material.settings}
-/// Instances of this class will support to settings [MaterialApp] properties.
+/// Instances of this class will support settings [MaterialApp]'s properties.
 /// {@endtemplate material.settings}
 @CopyWith(skipFields: true)
+@sealed
 class MaterialAppSettings {
   /// {@macro material.settings}
   MaterialAppSettings({
@@ -130,57 +129,4 @@ class MaterialAppSettings {
 
   /// Alias of [MaterialApp.useInheritedMediaQuery]
   final bool useInheritedMediaQuery;
-}
-
-/// {@template material_extension}
-/// An extension to settings, run [MaterialApp] with [GoRouter], and open for
-/// another extensions collaborating.
-/// {@endtemplate}
-@sealed
-class MaterialExtension extends AppExtension {
-  /// {@macro material_extension}
-  MaterialExtension({
-    super.wrappers,
-    super.routerSettings,
-    MaterialAppSettings? settings,
-  }) : settings = settings ?? MaterialAppSettings();
-
-  /// Store settings of [MaterialApp].
-  MaterialAppSettings settings;
-
-  @override
-  MaterialApp appWidget(GoRouter router) {
-    return MaterialApp.router(
-      routerConfig: router,
-      key: settings.key,
-      scaffoldMessengerKey: settings.scaffoldMessengerKey,
-      backButtonDispatcher: settings.backButtonDispatcher,
-      title: settings.title,
-      onGenerateTitle: settings.onGenerateTitle,
-      color: settings.color,
-      theme: settings.theme,
-      darkTheme: settings.darkTheme,
-      highContrastTheme: settings.highContrastTheme,
-      highContrastDarkTheme: settings.highContrastDarkTheme,
-      themeMode: settings.themeMode,
-      themeAnimationDuration: settings.themeAnimationDuration,
-      themeAnimationCurve: settings.themeAnimationCurve,
-      locale: settings.locale,
-      localizationsDelegates: settings.localizationsDelegates,
-      localeListResolutionCallback: settings.localeListResolutionCallback,
-      localeResolutionCallback: settings.localeResolutionCallback,
-      supportedLocales: settings.supportedLocales,
-      debugShowMaterialGrid: settings.debugShowMaterialGrid,
-      showPerformanceOverlay: settings.showPerformanceOverlay,
-      checkerboardRasterCacheImages: settings.checkerboardRasterCacheImages,
-      checkerboardOffscreenLayers: settings.checkerboardOffscreenLayers,
-      showSemanticsDebugger: settings.showSemanticsDebugger,
-      debugShowCheckedModeBanner: settings.debugShowCheckedModeBanner,
-      shortcuts: settings.shortcuts,
-      actions: settings.actions,
-      restorationScopeId: settings.restorationScopeId,
-      scrollBehavior: settings.scrollBehavior,
-      useInheritedMediaQuery: settings.useInheritedMediaQuery,
-    );
-  }
 }

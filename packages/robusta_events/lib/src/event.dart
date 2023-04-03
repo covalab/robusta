@@ -6,7 +6,7 @@ abstract class Event {
 
   /// Stops the propagation of the event to further event listeners.
   /// If multiple event listeners are connected to the same event, no
-  /// further event listener will be triggered once any trigger calls
+  /// further event listener will be triggered once any events call
   /// stopPropagation().
   void stopPropagation() {
     _propagationStopped = true;
@@ -19,7 +19,7 @@ abstract class Event {
 /// A callable will be call when <E> event dispatched.
 typedef EventListener<E extends Event> = FutureOr<void> Function(E);
 
-/// Store [EventListener] and it priority of events type [E].
+/// Store [EventListener] and its priority of events type [E].
 class EventStore<E extends Event> {
   final _listeners = <EventListener<E>, int>{};
 
@@ -38,7 +38,7 @@ class EventStore<E extends Event> {
     return entries.map((e) => e.key);
   }
 
-  /// Remove [EventListener] had registered before.
+  /// Remove registered [EventListener]
   void removeEventListener(EventListener<E> listener) {
     _listeners.remove(listener);
   }
