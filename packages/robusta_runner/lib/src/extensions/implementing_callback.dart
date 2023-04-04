@@ -5,6 +5,11 @@ part of '../extensions.dart';
 /// implementing [T] type.
 typedef ImplementingCallback<T> = void Function(T, ProviderContainer);
 
+/// Helper to help define/add implementing callbacks.
+typedef ImplementingCallbackAddable = void Function(
+  void Function<T>(ImplementingCallback<T>),
+);
+
 /// An interface implements by classes aware loggable.
 abstract class LoggerAware {
   /// Set logger
@@ -17,9 +22,17 @@ abstract class EventManagerAware {
   void setEventManager(EventManager manager);
 }
 
+/// {@template runner.implementing_callback_extension}
 /// An extension providing callback implementation feature for runner providers.
+/// {@endtemplate}
 @sealed
 class ImplementingCallbackExtension implements Extension {
+  /// {@macro runner.implementing_callback_extension}
+  ImplementingCallbackExtension({ImplementingCallbackAddable? adder})
+      : _adder = adder;
+
+  final ImplementingCallbackAddable? _adder;
+
   late final _observer = _ImplementingCallbackObserver(
     [
       _ImplementingCallbackResolver<EventManagerAware>(
@@ -37,6 +50,10 @@ class ImplementingCallbackExtension implements Extension {
 
   @override
   void load(Configurator configurator) {
+    if (null != _adder) {
+      _adder!(addImplementingCallback);
+    }
+
     configurator.addContainerObserver(_observer);
   }
 

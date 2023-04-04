@@ -63,16 +63,17 @@ void main() {
         ),
         extensions: [
           EventExtension(
-            {
-              (RunEvent e) {
-                counter++;
-                throw Exception();
-              }: 0,
-            },
-          ),
-          EventExtension(
-            {
-              (ExceptionEvent e) => counter++: 0,
+            configurator: (em, c) {
+              em
+                ..addEventListener<RunEvent>(
+                  (e) {
+                    counter++;
+                    throw Exception();
+                  },
+                )
+                ..addEventListener<ExceptionEvent>((e) {
+                  counter++;
+                });
             },
           ),
         ],
@@ -80,10 +81,12 @@ void main() {
 
       expect(counter, equals(0));
 
-      // ignore: unawaited_futures
-      r.run();
+      unawaited(r.run());
 
-      await Future.delayed(Duration.zero, () => expect(counter, equals(2)));
+      await expectLater(
+        Future.delayed(Duration.zero, () => counter),
+        completion(equals(2)),
+      );
     });
 
     test('use custom dependencies', () async {
