@@ -1,6 +1,7 @@
 part of '../extension.dart';
 
 /// Uses to define screen access control.
+@sealed
 class ScreenAccessDefinition {
   ScreenAccessDefinition._(this._accessControl);
 
