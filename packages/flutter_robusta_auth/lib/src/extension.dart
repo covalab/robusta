@@ -78,6 +78,8 @@ class FlutterAuthExtension implements DependenceExtension {
   }
 
   Future<void> _boot(ProviderContainer container) async {
+    /// Refresh identity for restoring identity state,
+    /// in cases credentials storage of auth manager is persistent storage.
     await container.read(userProvider).refreshIdentity();
   }
 
