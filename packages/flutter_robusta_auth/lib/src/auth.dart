@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_robusta/flutter_robusta.dart';
 import 'package:flutter_robusta_auth/src/exception.dart';
 import 'package:go_router_plus/go_router_plus.dart';

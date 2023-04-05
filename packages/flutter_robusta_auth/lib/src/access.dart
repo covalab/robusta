@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_robusta_auth/src/exception.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
 import 'package:meta/meta.dart';
