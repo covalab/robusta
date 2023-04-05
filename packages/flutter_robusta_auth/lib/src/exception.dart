@@ -1,5 +1,3 @@
-import 'package:flutter_robusta_auth/src/user.dart';
-
 /// Auth exception
 class AuthException implements Exception {
   /// Throws in cases call logout but current credentials is null.

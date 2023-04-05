@@ -1,4 +1,5 @@
 import 'package:flutter_robusta_auth/flutter_robusta_auth.dart';
+import 'package:flutter_robusta_auth/src/access.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -17,7 +18,7 @@ void main() {
       final control = AccessManager()
         ..define('test', (identity, [arg]) => true);
       expect(control.has('test'), isTrue);
-      expect(control.check(null, 'test'), isTrue);
+      expect(control.check<Object>(null, 'test'), isTrue);
     });
 
     test('can authorize ability', () async {
@@ -30,14 +31,14 @@ void main() {
 
       await expectLater(
         () async {
-          await control.authorize(null, 'deny');
+          await control.authorize<dynamic>(null, 'deny');
         },
         throwsA(isA<AccessException>()),
       );
 
       await expectLater(
         () async {
-          await control.authorize(null, 'allows');
+          await control.authorize<dynamic>(null, 'allows');
         },
         returnsNormally,
       );
@@ -55,7 +56,7 @@ void main() {
         });
 
       expect(control.has('bool'), isTrue);
-      expect(control.check(null, 'bool'), isFalse);
+      expect(control.check<bool>(null, 'bool'), isFalse);
       expect(control.check(null, 'bool', false), isFalse);
       expect(control.check(null, 'bool', true), isTrue);
       expect(
@@ -65,7 +66,7 @@ void main() {
 
       expect(control.has('string'), isTrue);
       expect(
-        await control.check(null, 'string'),
+        await control.check<String>(null, 'string'),
         isFalse,
       );
       expect(

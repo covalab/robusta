@@ -71,6 +71,7 @@ class FlutterAuthExtension implements DependenceExtension {
       ..addContainerOverride(_accessDefinitionOverride())
       ..addContainerOverride(_accessControlOverride())
       ..routerSettings.redirectorFactories.add((_) => ScreenRedirector())
+      ..routerSettings.refreshNotifierFactories.add((_) => _accessManager)
       ..routerSettings.refreshNotifierFactories.add(
             (container) => container.read(authManagerProvider),
           );
@@ -87,57 +88,52 @@ class FlutterAuthExtension implements DependenceExtension {
         eventManager: ref.read(eventManagerProvider),
       );
 
-      void onStateChange() => ref.notifyListeners();
+      ref.onDispose(() => auth.removeListener(ref.notifyListeners));
 
-      ref.onDispose(() => auth.removeListener(onStateChange));
-
-      auth.addListener(onStateChange);
+      auth.addListener(ref.notifyListeners);
 
       return auth;
     });
   }
 
   Override _userOverride() {
-    return userProvider.overrideWith(
-      (ref) {
-        final em = ref.read(eventManagerProvider);
-        final user = User(
-          accessControl: _accessManager,
-          authManager: ref.read(authManagerProvider),
-          eventManager: em,
-          identityProvider: (credentials) => _identityProvider(
-            credentials,
-            ref.container,
-          ),
-        );
+    return userProvider.overrideWith((ref) {
+      final em = ref.read(eventManagerProvider);
+      final user = User(
+        accessControl: _accessManager,
+        authManager: ref.read(authManagerProvider),
+        eventManager: em,
+        identityProvider: (credentials) => _identityProvider(
+          credentials,
+          ref.container,
+        ),
+      );
 
-        Future<void> onAuthEvent(_) => user.refreshIdentity();
-        void onRefreshIdentity(_) => ref.notifyListeners();
+      Future<void> onAuthStateChanged(_) async => user.refreshIdentity();
 
-        ref.onDispose(
-          () => em
-            ..removeEventListener<IdentityChangedEvent>(onRefreshIdentity)
-            ..removeEventListener<LoggedInEvent>(onAuthEvent)
-            ..removeEventListener<LoggedOutEvent>(onAuthEvent),
-        );
+      void onIdentityChanged(IdentityChangedEvent e) {
+        /// Avoid notify change when logout,
+        /// prevent concurrency processing refresh router
+        /// and rebuild widgets.
+        if (null != e.newIdentity) {
+          ref.notifyListeners();
+        }
+      }
 
-        em
-          ..addEventListener<IdentityChangedEvent>(
-            onRefreshIdentity,
-            priority: 8,
-          )
-          ..addEventListener<LoggedInEvent>(
-            onAuthEvent,
-            priority: 8,
-          )
-          ..addEventListener<LoggedOutEvent>(
-            onAuthEvent,
-            priority: 8,
-          );
+      ref.onDispose(
+        () => em
+          ..removeEventListener<IdentityChangedEvent>(onIdentityChanged)
+          ..removeEventListener<LoggedInEvent>(onAuthStateChanged)
+          ..removeEventListener<LoggedOutEvent>(onAuthStateChanged),
+      );
 
-        return user;
-      },
-    );
+      em
+        ..addEventListener<IdentityChangedEvent>(onIdentityChanged)
+        ..addEventListener<LoggedInEvent>(onAuthStateChanged)
+        ..addEventListener<LoggedOutEvent>(onAuthStateChanged);
+
+      return user;
+    });
   }
 
   Override _accessDefinitionOverride() {

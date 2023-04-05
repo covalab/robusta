@@ -6,20 +6,13 @@ import 'package:flutter_robusta_auth/src/access.dart';
 import 'package:flutter_robusta_auth/src/provider.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
 import 'package:go_router_plus/go_router_plus.dart';
-
-/// Strategy to make decision base on list of access abilities
-enum AccessDecisionStrategy {
-  /// Just requires have one of abilities in list.
-  any,
-
-  /// Requires have all abilities in list.
-  every;
-}
+import 'package:meta/meta.dart';
 
 /// {@template screen.access_redirector}
 /// Responsible to redirect current identity to
 /// [fallbackLocation] when not they not have abilities to access screen.
 /// {@endtemplate}
+@internal
 class ScreenAccessRedirector implements Redirector {
   /// {@macro screen.access_redirector}
   ScreenAccessRedirector({
@@ -60,7 +53,7 @@ class ScreenAccessRedirector implements Redirector {
     switch (strategy) {
       case AccessDecisionStrategy.any:
         for (final item in abilities) {
-          final result = await item._checkWith(
+          final result = await item.checkWith(
             _accessControl,
             screen,
             state,
@@ -74,7 +67,7 @@ class ScreenAccessRedirector implements Redirector {
         return fallbackLocation;
       case AccessDecisionStrategy.every:
         for (final item in abilities) {
-          final result = await item._checkWith(
+          final result = await item.checkWith(
             _accessControl,
             screen,
             state,
@@ -91,8 +84,9 @@ class ScreenAccessRedirector implements Redirector {
 }
 
 /// {@template screen.access_ability}
-/// Describe screen access with given [ability] and [arg] belong with it.
+/// Describe screen access with given [ability] and [arg] belongs with it.
 /// {@endtemplate}
+@sealed
 class ScreenAccessAbility<Arg> {
   /// {@macro screen.access_ability}
   ScreenAccessAbility({required this.ability, this.arg});
@@ -104,7 +98,8 @@ class ScreenAccessAbility<Arg> {
   final Arg? arg;
 
   /// Check current identity have ability to access [screen].
-  FutureOr<bool> _checkWith(
+  @visibleForTesting
+  FutureOr<bool> checkWith(
     AccessControl accessControl,
     ScreenBase screen,
     GoRouterState state,

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_robusta_auth/src/exception.dart';
 import 'package:flutter_robusta_auth/src/user.dart';
 import 'package:meta/meta.dart';
@@ -8,8 +9,17 @@ import 'package:meta/meta.dart';
 /// when return true otherwise actions should be deny.
 typedef Rule<Arg> = FutureOr<bool> Function(Identity?, [Arg? arg]);
 
+/// Strategy to make decision base on list of access abilities
+enum AccessDecisionStrategy {
+  /// Just requires have one of abilities in list.
+  any,
+
+  /// Requires have all abilities in list.
+  every;
+}
+
 /// {@template access.rule}
-/// [RuleResolver] identify.
+/// [_RuleResolver] identify.
 /// {@endtemplate}
 class _RuleResolver<Arg> {
   /// {@macro access.rule}
@@ -32,8 +42,17 @@ class _RuleResolver<Arg> {
 }
 
 /// Mapping ability name with it rule.
-mixin AccessAbility {
+@internal
+mixin AccessAbility on ChangeNotifier {
   final _abilities = <String, _RuleResolver<dynamic>>{};
+
+  void _define<Arg>(String ability, Rule<Arg> rule) {
+    _abilities[ability] = _RuleResolver<Arg>(
+      ability: ability,
+      rule: rule,
+    );
+    notifyListeners();
+  }
 }
 
 /// Defines access [_abilities].
@@ -43,10 +62,7 @@ mixin AccessDefinition on AccessAbility {
 
   /// Define rule use to checking access
   void define<Arg>(String ability, Rule<Arg> rule) {
-    _abilities[ability] = _RuleResolver<Arg>(
-      ability: ability,
-      rule: rule,
-    );
+    _define<Arg>(ability, rule);
   }
 }
 
@@ -77,5 +93,6 @@ mixin AccessControl on AccessAbility {
 }
 
 /// Manage app authorize logics.
-@sealed
-class AccessManager with AccessAbility, AccessDefinition, AccessControl {}
+@internal
+class AccessManager
+    with ChangeNotifier, AccessAbility, AccessDefinition, AccessControl {}
