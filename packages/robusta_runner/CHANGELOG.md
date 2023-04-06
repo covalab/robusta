@@ -1,6 +1,8 @@
 ## 0.2.0
 - Add dependence extension.
 - BC break: normalize `EventExtension` and `ImplementingCallbackExtension`.
+- BC break: replace `ExceptionEvent` with `ErrorEvent`.
+- Add `zone` running arg to `RunEvent`.
 
 ## 0.1.1
 - Sealed base classes.
