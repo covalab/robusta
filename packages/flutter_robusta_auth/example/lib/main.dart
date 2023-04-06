@@ -1,21 +1,6 @@
-Flutter Robusta Auth
---------------------
+import 'package:flutter_robusta/flutter_robusta.dart';
+import 'package:flutter_robusta_auth/flutter_robusta_auth.dart';
 
-Providing security features to manage authentication and authorization for current identity using apps.
-
-Installing
-----------
-
-Install this package via pub command:
-
-```
-flutter pub add flutter_robusta_auth
-```
-
-Usages
-------
-
-```dart
 final runner = Runner(
   extensions: [
     FlutterAppExtension(routerSettings: RouterSettings()),
@@ -41,4 +26,3 @@ final runner = Runner(
 );
 
 Future<void> main() => runner.run();
-```
