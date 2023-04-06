@@ -42,6 +42,7 @@ class RouterSettings {
     this.debugLogDiagnostics = false,
     this.restorationScopeId,
     this.navigatorKey,
+    this.initialExtra,
   })  : screenFactories = [...screenFactories],
         refreshNotifierFactories = [...refreshNotifierFactories],
         redirectorFactories = [...redirectorFactories],
@@ -74,6 +75,9 @@ class RouterSettings {
 
   /// The key to use when building the root [Navigator].
   final GlobalKey<NavigatorState>? navigatorKey;
+
+  /// Initial extra data pass to initial screen.
+  final Object? initialExtra;
 
   /// Returns list of screens factored with container given.
   Future<List<ScreenBase>> getScreens(ProviderContainer container) {

@@ -27,7 +27,7 @@ void main() {
               em.addEventListener<RunEvent>(
                 (e) => Hive.openBox('test'),
               );
-              em.addEventListener<ExceptionEvent>(
+              em.addEventListener<ErrorEvent>(
                 (e) => hasError = true,
               );
             },

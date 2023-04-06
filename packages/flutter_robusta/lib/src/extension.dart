@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_robusta/src/cupertino.dart';
@@ -49,19 +50,14 @@ class FlutterAppExtension implements Extension {
   }
 
   void _boot(ProviderContainer container) {
-    FlutterError.onError = (details) {
-      Zone.current.handleUncaughtError(
-        details.exception,
-        details.stack ?? StackTrace.empty,
-      );
-    };
-
     container
         .read(eventManagerProvider)
         .addEventListener<RunEvent>(_onRun, priority: 8192);
   }
 
   Future<void> _onRun(RunEvent event) async {
+    _forwardsFlutterErrorsToRunningZone(event.zone);
+
     final router = await _getRouter(event.container);
     var app = _appWidget(router);
 
@@ -77,6 +73,24 @@ class FlutterAppExtension implements Extension {
     }
 
     runApp(app);
+  }
+
+  void _forwardsFlutterErrorsToRunningZone(Zone zone) {
+    FlutterError.onError = (details) {
+      zone.handleUncaughtError(
+        details.exception,
+        details.stack ?? StackTrace.empty,
+      );
+    };
+
+    PlatformDispatcher.instance.onError = (error, stackTrace) {
+      zone.handleUncaughtError(
+        error,
+        stackTrace,
+      );
+
+      return true;
+    };
   }
 
   Widget _appWidget(GoRouter router) {
@@ -166,6 +180,7 @@ class FlutterAppExtension implements Extension {
       redirectLimit: _routerSettings.redirectLimit,
       restorationScopeId: _routerSettings.restorationScopeId,
       routerNeglect: _routerSettings.routerNeglect,
+      initialExtra: _routerSettings.initialExtra,
     );
   }
 }
