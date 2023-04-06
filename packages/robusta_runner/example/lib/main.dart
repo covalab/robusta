@@ -5,9 +5,9 @@ Future<void> main() async {
 
   final runner = Runner(
     extensions: [
-      EventExtension<RunEvent>(
-        {
-          (RunEvent e) => counter++: 0,
+      EventExtension(
+        configurator: (eventManager, container) {
+          eventManager.addEventListener<RunEvent>((_) => counter++);
         },
       ),
     ],
