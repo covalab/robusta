@@ -29,7 +29,7 @@ class UserScreen extends Screen {
           body: Column(
             children: [
               const Text('user screen'),
-              Text('User id: ${identity!.id}'),
+              Text('User id: ${identity?.id}'),
             ],
           ),
           appBar: AppBar(

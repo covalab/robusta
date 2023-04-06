@@ -112,15 +112,7 @@ class FlutterAuthExtension implements DependenceExtension {
       );
 
       Future<void> onAuthStateChanged(_) async => user.refreshIdentity();
-
-      void onIdentityChanged(IdentityChangedEvent e) {
-        /// Avoid notify change when logout,
-        /// prevent concurrency processing refresh router
-        /// and rebuild widgets.
-        if (null != e.newIdentity) {
-          ref.notifyListeners();
-        }
-      }
+      void onIdentityChanged(_) => ref.notifyListeners();
 
       ref.onDispose(
         () => em

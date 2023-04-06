@@ -40,16 +40,17 @@ void main() {
           FlutterAuthExtension(
             identityProvider: (_, __) => throw UnimplementedError(),
           ),
-          EventExtension<RunEvent>({
-            (e) {
-              e.container.read(authManagerProvider);
-              e.container.read(userProvider);
-              e.container.read(accessDefinitionProvider);
-              e.container.read(accessControlProvider);
-              canReadProviders = true;
-            }: 0,
-          }),
         ],
+        boots: {
+          (c) {
+            c
+              ..read(authManagerProvider)
+              ..read(userProvider)
+              ..read(accessDefinitionProvider)
+              ..read(accessControlProvider);
+            canReadProviders = true;
+          }: 0,
+        },
       );
 
       await expectLater(runner.run(), completes);
