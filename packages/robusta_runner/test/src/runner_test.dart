@@ -66,8 +66,9 @@ void main() {
             configurator: (em, c) {
               em
                 ..addEventListener<RunEvent>(
+                  // ignore: void_checks
                   (e) {
-                    counter++;
+                    counter +=1;
                     throw Exception();
                   },
                 )

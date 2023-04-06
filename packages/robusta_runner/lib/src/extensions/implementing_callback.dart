@@ -6,7 +6,7 @@ part of '../extensions.dart';
 typedef ImplementingCallback<T> = void Function(T, ProviderContainer);
 
 /// Helper to help define/add implementing callbacks.
-typedef ImplementingCallbackAddable = void Function(
+typedef ImplementingCallbackDefinition = void Function(
   void Function<T>(ImplementingCallback<T>),
 );
 
@@ -28,37 +28,48 @@ abstract class EventManagerAware {
 @sealed
 class ImplementingCallbackExtension implements Extension {
   /// {@macro runner.implementing_callback_extension}
-  ImplementingCallbackExtension({ImplementingCallbackAddable? adder})
-      : _adder = adder;
+  ImplementingCallbackExtension({
+    ImplementingCallbackDefinition? definition,
+    bool enabledEventManagerAwareCallback = true,
+    bool enabledLoggerAwareCallback = true,
+  })  : _definition = definition,
+        _enabledEventManagerAwareCallback = enabledEventManagerAwareCallback,
+        _enabledLoggerAwareCallback = enabledLoggerAwareCallback;
 
-  final ImplementingCallbackAddable? _adder;
+  final ImplementingCallbackDefinition? _definition;
+
+  final bool _enabledEventManagerAwareCallback;
+
+  final bool _enabledLoggerAwareCallback;
 
   late final _observer = _ImplementingCallbackObserver(
     [
-      _ImplementingCallbackResolver<EventManagerAware>(
-        (instance, container) => instance.setEventManager(
-          container.read(eventManagerProvider),
+      if (_enabledEventManagerAwareCallback)
+        _ImplementingCallbackResolver<EventManagerAware>(
+          (instance, container) => instance.setEventManager(
+            container.read(eventManagerProvider),
+          ),
         ),
-      ),
-      _ImplementingCallbackResolver<LoggerAware>(
-        (instance, container) => instance.setLogger(
-          container.read(loggerProvider),
+      if (_enabledLoggerAwareCallback)
+        _ImplementingCallbackResolver<LoggerAware>(
+          (instance, container) => instance.setLogger(
+            container.read(loggerProvider),
+          ),
         ),
-      ),
     ],
   );
 
   @override
   void load(Configurator configurator) {
-    if (null != _adder) {
-      _adder!(addImplementingCallback);
+    if (null != _definition) {
+      _definition!(defineCallback);
     }
 
     configurator.addContainerObserver(_observer);
   }
 
   /// Register implementing callback
-  void addImplementingCallback<T>(ImplementingCallback<T> callback) {
+  void defineCallback<T>(ImplementingCallback<T> callback) {
     _observer.addImplementingCallback<T>(callback);
   }
 }
@@ -67,9 +78,8 @@ class ImplementingCallbackExtension implements Extension {
 /// settings [ImplementingCallbackExtension].
 extension ImplementingCallbackExtensionConfigurator on Configurator {
   /// Register implementing [T] callback.
-  void addImplementingCallback<T>(ImplementingCallback<T> callback) {
-    getExtension<ImplementingCallbackExtension>()
-        .addImplementingCallback<T>(callback);
+  void defineImplementingCallback<T>(ImplementingCallback<T> callback) {
+    getExtension<ImplementingCallbackExtension>().defineCallback<T>(callback);
   }
 }
 
