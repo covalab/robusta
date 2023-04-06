@@ -93,7 +93,12 @@ class Runner {
 
     _logger.d('Running...');
 
-    await _eventManager.dispatchEvent(RunEvent(container: _container));
+    await _eventManager.dispatchEvent(
+      RunEvent._(
+        container: _container,
+        zone: Zone.current,
+      ),
+    );
   }
 
   bool _booted = false;
@@ -146,7 +151,7 @@ class Runner {
     _logger.e('Run error...', error, stackTrace);
 
     await _eventManager.dispatchEvent(
-      ExceptionEvent(
+      ErrorEvent._(
         error: error,
         stackTrace: stackTrace,
         container: _container,

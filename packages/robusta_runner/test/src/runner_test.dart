@@ -72,7 +72,7 @@ void main() {
                     throw Exception();
                   },
                 )
-                ..addEventListener<ExceptionEvent>((e) {
+                ..addEventListener<ErrorEvent>((e) {
                   counter++;
                 });
             },

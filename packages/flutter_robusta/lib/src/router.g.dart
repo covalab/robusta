@@ -25,6 +25,7 @@ abstract class _$RouterSettingsCWProxy {
     bool? debugLogDiagnostics,
     String? restorationScopeId,
     GlobalKey<NavigatorState>? navigatorKey,
+    Object? initialExtra,
   });
 }
 
@@ -52,6 +53,7 @@ class _$RouterSettingsCWProxyImpl implements _$RouterSettingsCWProxy {
     Object? debugLogDiagnostics = const $CopyWithPlaceholder(),
     Object? restorationScopeId = const $CopyWithPlaceholder(),
     Object? navigatorKey = const $CopyWithPlaceholder(),
+    Object? initialExtra = const $CopyWithPlaceholder(),
   }) {
     return RouterSettings(
       screenFactories: screenFactories == const $CopyWithPlaceholder() ||
@@ -105,6 +107,10 @@ class _$RouterSettingsCWProxyImpl implements _$RouterSettingsCWProxy {
           ? _value.navigatorKey
           // ignore: cast_nullable_to_non_nullable
           : navigatorKey as GlobalKey<NavigatorState>?,
+      initialExtra: initialExtra == const $CopyWithPlaceholder()
+          ? _value.initialExtra
+          // ignore: cast_nullable_to_non_nullable
+          : initialExtra as Object?,
     );
   }
 }
