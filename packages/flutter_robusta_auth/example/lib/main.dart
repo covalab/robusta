@@ -11,7 +11,7 @@ final runner = Runner(
           ..define('user', (identity, [arg]) => null != identity);
       },
       defineScreenAccess: (definition) {
-        definition.simpleDefine(
+        definition.simpleDefine<void>(
           pattern: '/user',
           abilities: ['user'],
           fallbackLocation: '/guest',
