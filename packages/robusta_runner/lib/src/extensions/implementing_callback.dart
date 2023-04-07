@@ -5,9 +5,14 @@ part of '../extensions.dart';
 /// implementing [T] type.
 typedef ImplementingCallback<T> = void Function(T, ProviderContainer);
 
-/// Helper to help define/add implementing callbacks.
-typedef ImplementingCallbackDefinition = void Function(
-  void Function<T>(ImplementingCallback<T>),
+/// Helper to help define/add implementing callback.
+typedef ImplementingCallbackDefinition = void Function<T>(
+  ImplementingCallback<T>,
+);
+
+/// Uses to add/define callbacks via [ImplementingCallbackDefinition].
+typedef DefineImplementingCallback = void Function(
+  ImplementingCallbackDefinition,
 );
 
 /// An interface implements by classes aware loggable.
@@ -29,14 +34,14 @@ abstract class EventManagerAware {
 class ImplementingCallbackExtension implements Extension {
   /// {@macro runner.implementing_callback_extension}
   ImplementingCallbackExtension({
-    ImplementingCallbackDefinition? definition,
+    DefineImplementingCallback? define,
     bool enabledEventManagerAwareCallback = true,
     bool enabledLoggerAwareCallback = true,
-  })  : _definition = definition,
+  })  : _define = define,
         _enabledEventManagerAwareCallback = enabledEventManagerAwareCallback,
         _enabledLoggerAwareCallback = enabledLoggerAwareCallback;
 
-  final ImplementingCallbackDefinition? _definition;
+  final DefineImplementingCallback? _define;
 
   final bool _enabledEventManagerAwareCallback;
 
@@ -61,8 +66,8 @@ class ImplementingCallbackExtension implements Extension {
 
   @override
   void load(Configurator configurator) {
-    if (null != _definition) {
-      _definition!(defineCallback);
+    if (null != _define) {
+      _define!(defineCallback);
     }
 
     configurator.addContainerObserver(_observer);
