@@ -41,15 +41,15 @@ void main() {
             identityProvider: (_, __) => throw UnimplementedError(),
           ),
         ],
-        boots: {
-          (c) {
+        defineBoot: (def) {
+          def((c) {
             c
               ..read(authManagerProvider)
               ..read(userProvider)
               ..read(accessDefinitionProvider)
               ..read(accessControlProvider);
             canReadProviders = true;
-          }: 0,
+          });
         },
       );
 

@@ -17,10 +17,6 @@ void main() {
     test('can add listeners', () async {
       var counter = 0;
 
-      void boot(ProviderContainer c) {
-        c.read(eventManagerProvider).dispatchEvent(TestEvent());
-      }
-
       final runner = Runner(
         extensions: [
           EventExtension(
@@ -31,7 +27,9 @@ void main() {
             },
           ),
         ],
-        boots: {boot: 0},
+        defineBoot: (def) {
+          def((c) => c.read(eventManagerProvider).dispatchEvent(TestEvent()));
+        },
       );
 
       await runner.run();
@@ -48,8 +46,8 @@ void main() {
           extensions: [
             ImplementingCallbackExtension(),
           ],
-          boots: {
-            (c) => test = c.read(testProvider): 0,
+          defineBoot: (def) {
+            def((c) => test = c.read(testProvider));
           },
         );
 
