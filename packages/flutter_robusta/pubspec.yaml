@@ -14,7 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.2.0
-  go_router_plus: ^4.0.0
+  go_router_plus: ^4.1.1
   meta: ^1.8.0
   robusta_runner: ^0.1.0
 
