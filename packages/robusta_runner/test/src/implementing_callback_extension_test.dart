@@ -17,8 +17,8 @@ void main() {
       final runner = Runner(
         extensions: [
           ImplementingCallbackExtension(
-            definition: (define) {
-              define<Test>((_, __) => counter++);
+            define: (def) {
+              def<Test>((_, __) => counter++);
             },
           ),
           TestDependenceExtension(),
