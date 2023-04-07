@@ -23,8 +23,8 @@ void main() {
           ),
           TestDependenceExtension(),
         ],
-        boots: {
-          (c) => num = c.read(testProvider).num: 0,
+        defineBoot: (def) {
+          def((c) => num = c.read(testProvider).num);
         },
       );
 
@@ -45,10 +45,8 @@ void main() {
           ),
           TestDependenceExtension(),
         ],
-        boots: {
-          (c) {
-            test = c.read(testProvider);
-          }: 0,
+        defineBoot: (def) {
+          def((c) => test = c.read(testProvider));
         },
       );
 
@@ -65,10 +63,8 @@ void main() {
           ImplementingCallbackExtension(),
           TestDependenceExtension(),
         ],
-        boots: {
-          (c) {
-            test = c.read(testProvider);
-          }: 0,
+        defineBoot: (def) {
+          def((c) => test = c.read(testProvider));
         },
       );
 
