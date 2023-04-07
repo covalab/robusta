@@ -12,12 +12,12 @@ class AccessDefiner {
 class ScreenAccessDefiner {
   void call(ScreenAccessDefinition definition) {
     definition
-      ..simpleDefine(
+      ..simpleDefine<void>(
         pattern: '^/guest',
         abilities: ['guest'],
         fallbackLocation: '/user',
       )
-      ..simpleDefine(
+      ..simpleDefine<void>(
         pattern: '^/user',
         abilities: ['user'],
         fallbackLocation: '/guest',

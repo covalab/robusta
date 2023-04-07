@@ -10,7 +10,7 @@ class ScreenAccessDefinition {
   final List<ScreenAccessRedirector> _redirectors = [];
 
   /// Define screen access control with abilities have none arg to pass.
-  void simpleDefine({
+  void simpleDefine<AbilityArg>({
     required String pattern,
     required List<String> abilities,
     required String fallbackLocation,
@@ -21,7 +21,7 @@ class ScreenAccessDefinition {
         fallbackLocation: fallbackLocation,
         locationPattern: pattern,
         abilities: abilities
-            .map((e) => ScreenAccessAbility<void>(ability: e))
+            .map((e) => ScreenAccessAbility<AbilityArg>(ability: e))
             .toList(),
         strategy: strategy,
         accessControl: _accessControl,
