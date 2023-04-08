@@ -14,7 +14,7 @@ void main() {
 
   group('flutter robusta hive', () {
     test('can init extension', () {
-      expect(() => FlutterHiveExtension(), returnsNormally);
+      expect(FlutterHiveExtension.new, returnsNormally);
     });
 
     test('cause error when open box but not have extension', () async {
@@ -24,12 +24,13 @@ void main() {
         extensions: [
           EventExtension(
             configurator: (em, c) {
-              em.addEventListener<RunEvent>(
-                (e) => Hive.openBox('test'),
-              );
-              em.addEventListener<ErrorEvent>(
-                (e) => hasError = true,
-              );
+              em
+                ..addEventListener<RunEvent>(
+                  (e) => Hive.openBox<String>('test'),
+                )
+                ..addEventListener<ErrorEvent>(
+                  (e) => hasError = true,
+                );
             },
           )
         ],
@@ -50,7 +51,7 @@ void main() {
           EventExtension(
             configurator: (em, c) {
               em.addEventListener<RunEvent>(
-                (e) => expectLater(Hive.openBox('test'), completes),
+                (e) => expectLater(Hive.openBox<String>('test'), completes),
               );
             },
           )
