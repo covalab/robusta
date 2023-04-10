@@ -1,5 +1,5 @@
 name: flutter_robusta_graphql
-version: 0.1.0+1
+version: 0.1.0
 homepage: https://robusta.covalab.io
 repository: https://github.com/covalab/robusta
 issue_tracker: https://github.com/covalab/robusta/issues
@@ -14,7 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.2.0
-  flutter_robusta:
+  flutter_robusta: ^0.2.0
   graphql_flutter: ^5.1.0
   meta: ^1.8.0
 

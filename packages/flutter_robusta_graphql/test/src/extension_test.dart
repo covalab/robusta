@@ -1,7 +1,6 @@
 import 'package:flutter_robusta/flutter_robusta.dart';
 import 'package:flutter_robusta_graphql/flutter_robusta_graphql.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'stub.dart';
 
