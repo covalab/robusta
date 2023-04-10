@@ -1,21 +1,3 @@
-Flutter Robusta Hive Auth
--------------------------
-Providing persistent and secure storage for storing auth credentials.
-
-Installation
-============
-
-Install this package via pub command:
-
-```
-flutter pub add flutter_robusta_hive_auth
-```
-
-
-Usages
-======
-
-```dart
 import 'package:flutter_robusta/flutter_robusta.dart';
 import 'package:flutter_robusta_auth/flutter_robusta_auth.dart';
 import 'package:flutter_robusta_hive/flutter_robusta_hive.dart';
@@ -33,4 +15,3 @@ final runner = Runner(
 );
 
 Future<void> main() => runner.run();
-```
