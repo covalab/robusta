@@ -3,7 +3,7 @@ homepage: https://robusta.covalab.io
 repository: https://github.com/covalab/robusta
 issue_tracker: https://github.com/covalab/robusta/issues
 description: Run and extend your apps base on Riverpod, event driven, extensions, and more.
-version: 0.2.0
+version: 0.2.0+1
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
@@ -12,7 +12,7 @@ dependencies:
   logger: ^1.2.0
   meta: ^1.8.0
   riverpod: ^2.2.0
-  robusta_events: ^0.1.0
+  robusta_events: ^0.2.1
 
 dev_dependencies:
   test: ^1.24.1
