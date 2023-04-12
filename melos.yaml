@@ -10,6 +10,10 @@ command:
     usePubspecOverrides: true
 
 scripts:
+  update_cli_versions:
+    run: |
+      dart ./scripts/generate_flutter_robusta_cli_version.dart
+
   analyze:
     run: |
       melos exec -c 1 -- \
