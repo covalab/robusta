@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:flutter_robusta_cli/src/new_command.dart';
+import 'package:flutter_robusta_cli/src/self_update_command.dart';
+import 'package:flutter_robusta_cli/src/version_command.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:robusta_runner/robusta_runner.dart';
 
@@ -30,7 +32,10 @@ class RunListener {
     );
     final logger = container.read(loggerProvider);
 
-    runner.addCommand(NewCommand(logger: logger));
+    runner
+      ..addCommand(NewCommand(logger: logger))
+      ..addCommand(SelfUpdateCommand(logger: logger))
+      ..addCommand(VersionCommand(logger: logger));
 
     return runner;
   }
