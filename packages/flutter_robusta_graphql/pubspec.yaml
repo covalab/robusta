@@ -1,0 +1,26 @@
+name: flutter_robusta_graphql
+version: 0.1.1
+homepage: https://robusta.covalab.io
+repository: https://github.com/covalab/robusta
+issue_tracker: https://github.com/covalab/robusta/issues
+description: Providing bridge to integrate GraphQL Flutter with Robusta.
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+  flutter: 3.3.0
+
+dependencies:
+  copy_with_extension: ^5.0.0
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.2.0
+  flutter_robusta: ^0.2.0
+  graphql_flutter: ^5.1.0
+  meta: ^1.8.0
+
+dev_dependencies:
+  build_runner: ^2.3.0
+  copy_with_extension_gen: ^5.0.0
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^4.0.0+1

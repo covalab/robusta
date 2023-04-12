@@ -15,8 +15,16 @@ part 'runner/exception.dart';
 
 part 'runner/extension.dart';
 
-/// Bootable type.
+/// Bootable type, will be call when call [Runner.run],
+/// it only run exact one time.
 typedef Bootable = FutureOr<void> Function(ProviderContainer);
+
+/// Define boot will be run with priority given uses to ordering boots,
+/// higher priority will be run first.
+typedef BootDefinition = void Function(Bootable, {int priority});
+
+/// Callback function uses to define boots via [BootDefinition].
+typedef DefineBoot = void Function(BootDefinition);
 
 /// Runner class creates an instance to run your application,
 /// with this runner your app will be easy to scale, extend and maintain.
@@ -24,16 +32,21 @@ typedef Bootable = FutureOr<void> Function(ProviderContainer);
 class Runner {
   /// Runner factory
   Runner({
-    Map<Bootable, int>? boots,
+    DefineBoot? defineBoot,
     EventManager? eventManager,
     Logger? logger,
     List<Extension> extensions = const [],
     ContainerOptions? containerOptions,
-  })  : _boots = boots ?? {},
-        _logger = logger ?? Logger(),
+  })  : _logger = logger ?? Logger(),
         _containerOptions = containerOptions ?? ContainerOptions() {
     _eventManager = eventManager ?? DefaultEventManager(logger: _logger);
     _initExtensions(extensions);
+
+    if (null != defineBoot) {
+      defineBoot(
+        (bootable, {int priority = 0}) => _boots[bootable] = priority,
+      );
+    }
   }
 
   late final _container = ProviderContainer(
@@ -51,7 +64,7 @@ class Runner {
 
   final Logger _logger;
 
-  final Map<Bootable, int> _boots;
+  final Map<Bootable, int> _boots = {};
 
   late final Map<Type, Extension> _extensions;
 
@@ -93,7 +106,12 @@ class Runner {
 
     _logger.d('Running...');
 
-    await _eventManager.dispatchEvent(RunEvent(container: _container));
+    await _eventManager.dispatchEvent(
+      RunEvent._(
+        container: _container,
+        zone: Zone.current,
+      ),
+    );
   }
 
   bool _booted = false;
@@ -146,7 +164,7 @@ class Runner {
     _logger.e('Run error...', error, stackTrace);
 
     await _eventManager.dispatchEvent(
-      ExceptionEvent(
+      ErrorEvent._(
         error: error,
         stackTrace: stackTrace,
         container: _container,

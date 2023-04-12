@@ -1,30 +1,27 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_robusta/flutter_robusta.dart';
 import 'package:go_router_plus/go_router_plus.dart';
 
 final testState = StateProvider<String>((_) => 'Test State');
 
-class TestExtension implements Extension {
+class TestExtension implements DependenceExtension {
   @override
   void load(Configurator configurator) {
-    if (configurator.hasExtension<MaterialExtension>()) {
-      final extension = configurator.getExtension<MaterialExtension>();
-      extension.routerSettings.screenFactories.add((_) => TestScreen());
-    }
-
-    if (configurator.hasExtension<CupertinoExtension>()) {
-      final extension = configurator.getExtension<CupertinoExtension>();
-      extension.routerSettings.screenFactories.add((_) => TestScreen());
-    }
+    configurator.routerSettings.screenFactories.add((_) => TestScreen());
   }
+
+  @override
+  List<Type> dependsOn() => [FlutterAppExtension];
 }
 
 class TestScreen extends Screen implements InitialScreen {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const Text(
-      'Test Screen',
+    final isCupertino = isCupertinoApp(context as Element);
+
+    return Text(
+      !isCupertino ? 'Material App' : 'Cupertino App',
       textDirection: TextDirection.ltr,
     );
   }
@@ -34,4 +31,8 @@ class TestScreen extends Screen implements InitialScreen {
 
   @override
   String get routePath => '/test';
+
+  /// Checks for CupertinoApp in the widget tree.
+  bool isCupertinoApp(Element elem) =>
+      elem.findAncestorWidgetOfExactType<CupertinoApp>() != null;
 }
