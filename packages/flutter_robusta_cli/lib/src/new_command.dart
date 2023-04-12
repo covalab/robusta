@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:logger/logger.dart';
-import 'package:pubspec_parse/pubspec_parse.dart';
+import 'package:pub_updater/pub_updater.dart';
 
 /// Uses to run process
 typedef ProcessRunnable = FutureOr<int> Function(
@@ -78,14 +78,20 @@ robusta new <project-name> [args]
   Future<int> run() async {
     await _ensureFlutterInstalled();
 
-    if (!await _createFlutterProject()) {
-      _logger.e('Can not create Flutter project, something went wrong');
-      return 1;
+    try {
+      if (!await _createFlutterProject()) {
+        _logger.e('Can not create Flutter project, something went wrong');
+        return 1;
+      }
+
+      await _addRobustaDependencies();
+
+      _logger.i('Create project: $_projectName successful!');
+    } on Exception catch (e, s) {
+      _deleteFlutterProject();
+
+      _logger.e('Fail to create project!', e, s);
     }
-
-    await _addRobustaDependencies();
-
-    _logger.i('Create project: $_projectName successful!');
 
     return 0;
   }
@@ -130,17 +136,26 @@ robusta new <project-name> [args]
   }
 
   Future<bool> _addRobustaDependencies() async {
+    final pub = PubUpdater();
+    final versions = await Future.wait([
+      pub.getLatestVersion('logger'),
+      pub.getLatestVersion('flutter_riverpod'),
+      pub.getLatestVersion('flutter_robusta'),
+      pub.getLatestVersion('flutter_robusta_auth'),
+      pub.getLatestVersion('flutter_robusta_hive'),
+      pub.getLatestVersion('flutter_robusta_hive_auth'),
+    ]);
     final result = await _processRunnable(
       'flutter',
       args: [
         'pub',
         'add',
-        'logger',
-        'flutter_riverpod',
-        'flutter_robusta',
-        'flutter_robusta_auth',
-        'flutter_robusta_hive',
-        'flutter_robusta_hive_auth',
+        'logger:^${versions[0]}',
+        'flutter_riverpod:^${versions[1]}',
+        'flutter_robusta:^${versions[2]}',
+        'flutter_robusta_auth:^${versions[3]}',
+        'flutter_robusta_hive:^${versions[4]}',
+        'flutter_robusta_hive_auth:^${versions[5]}',
       ],
       workingDirectory: _projectDirectory.path,
     );
