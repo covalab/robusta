@@ -18,7 +18,7 @@ void main() {
       );
     });
 
-    test('can not run without FlutterAppExtension', () {
+    test('can not use without FlutterAppExtension', () {
       expect(
         () => Runner(
           extensions: [
@@ -33,6 +33,26 @@ void main() {
         throwsA(isA<RunnerException>()),
       );
     });
+
+    test(
+      'can use without FlutterAppExtension when disable graphql provider',
+      () {
+        expect(
+          () => Runner(
+            extensions: [
+              FlutterGraphQLExtension(
+                enabledGraphQLProvider: false,
+                settings: GraphQLClientSettings(
+                  linkFactory: (c) => throw UnimplementedError(),
+                  cacheFactory: (c) => throw UnimplementedError(),
+                ),
+              ),
+            ],
+          ),
+          returnsNormally,
+        );
+      },
+    );
 
     testWidgets('runner can run without errors', (tester) async {
       Test? testService;
