@@ -8,5 +8,8 @@ environment:
 
 dependencies:
   riverpod: ^2.3.2
-  robusta_runner: ^0.2.0
   robusta_dio: ^0.1.0
+  robusta_runner: ^0.2.0
+
+dev_dependencies:
+  very_good_analysis: 4.0.0+1

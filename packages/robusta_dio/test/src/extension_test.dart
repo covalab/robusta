@@ -1,5 +1,4 @@
 import 'package:robusta_dio/robusta_dio.dart';
-import 'package:robusta_dio/src/provider.dart';
 import 'package:robusta_runner/robusta_runner.dart';
 import 'package:test/test.dart';
 
