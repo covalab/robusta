@@ -1,5 +1,5 @@
 Flutter Robusta Auth
---------------------
+====================
 
 Providing security features to manage authentication and authorization for current identity using apps.
 

@@ -14,26 +14,21 @@ void main() {
       );
     });
 
-    test('create instance with copyWith', () {
-      var settings = GraphQLClientSettings(
+    test('constructor', () {
+      final link = Link.from([]);
+      final cache = GraphQLCache();
+      final defaultPolicies = DefaultPolicies(query: Policies());
+      final settings = GraphQLClientSettings(
+        linkFactory: (c) => link,
+        cacheFactory: (c) => cache,
         alwaysRebroadcast: true,
-        linkFactory: (c) => throw UnimplementedError(),
-        cacheFactory: (c) => throw UnimplementedError(),
+        defaultPolicies: defaultPolicies,
       );
 
-      settings = settings.copyWith(
-        alwaysRebroadcast: false,
-        linkFactory: (c) => Link.from([]),
-      );
-
-      expect(settings.linkFactory(ProviderContainer()), isA<Link>());
-
-      expect(settings.alwaysRebroadcast, isFalse);
-
-      expect(
-        () => settings.cacheFactory(ProviderContainer()),
-        throwsA(isA<UnimplementedError>()),
-      );
+      expect(settings.linkFactory(ProviderContainer()), link);
+      expect(settings.cacheFactory(ProviderContainer()), cache);
+      expect(settings.alwaysRebroadcast, isTrue);
+      expect(settings.defaultPolicies, defaultPolicies);
     });
   });
 }
