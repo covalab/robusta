@@ -9,9 +9,9 @@ environment:
   flutter: 3.3.0
 
 dependencies:
+  firebase_messaging: ^14.4.0
   flutter:
     sdk: flutter
-  firebase_messaging: ^14.4.0
   flutter_riverpod: ^2.2.0
   meta: ^1.8.0
   robusta_firebase_core: ^0.1.0
