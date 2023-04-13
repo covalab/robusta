@@ -55,13 +55,11 @@ void main() {
     );
 
     testWidgets('runner can run without errors', (tester) async {
-      Test? testService;
       GraphQLClient? client;
 
       final runner = Runner(
         defineBoot: (def) {
           def((c) {
-            testService = c.read(testProvider);
             client = c.read(graphQLClientProvider);
           });
         },
@@ -79,7 +77,6 @@ void main() {
       await expectLater(tester.runAsync(runner.run), completes);
 
       expect(client, isA<GraphQLClient>());
-      expect(testService!.client, isNull);
 
       expect(
         tester.allWidgets.any((element) => element is GraphQLProvider),
@@ -136,7 +133,7 @@ void main() {
         await expectLater(tester.runAsync(runner.run), completes);
 
         expect(testService, isNotNull);
-        expect(testService!.client, isA<GraphQLClient>());
+        expect(testService!.graphQLClient, isA<GraphQLClient>());
       },
     );
   });
