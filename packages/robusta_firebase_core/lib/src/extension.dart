@@ -21,7 +21,7 @@ class FirebaseCoreExtension implements Extension {
     configurator.addBoot(_boot, priority: 4096);
   }
 
-  FutureOr<void> _boot(ProviderContainer providerContainer) async {
+  Future<void> _boot(ProviderContainer providerContainer) async {
     await Firebase.initializeApp(name: _name, options: _firebaseOptions);
   }
 }

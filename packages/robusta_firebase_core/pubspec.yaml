@@ -10,14 +10,13 @@ environment:
   flutter: 3.3.0
 
 dependencies:
+  firebase_core: ^2.8.0
   flutter:
     sdk: flutter
-  robusta_runner: ^0.1.0
   flutter_riverpod: ^2.2.0
-  firebase_core: ^2.8.0
+  robusta_runner: ^0.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: ^5.4.0
   very_good_analysis: ^4.0.0+1

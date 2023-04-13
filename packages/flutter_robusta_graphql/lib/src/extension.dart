@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_robusta/flutter_robusta.dart';
-import 'package:flutter_robusta_graphql/src/graphql_client.dart';
+import 'package:flutter_robusta_graphql/src/graphql.dart';
 import 'package:flutter_robusta_graphql/src/provider.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:meta/meta.dart';
@@ -22,10 +22,14 @@ class FlutterGraphQLExtension implements DependenceExtension {
 
   final bool _enabledGraphQLProvider;
 
-  GraphQLClientSettings _settings;
+  final GraphQLClientSettings _settings;
 
   @override
-  List<Type> dependsOn() => [FlutterAppExtension];
+  List<Type> dependsOn() {
+    return [
+      if (_enabledGraphQLProvider) FlutterAppExtension,
+    ];
+  }
 
   @override
   FutureOr<void> load(Configurator configurator) {
@@ -68,16 +72,4 @@ class FlutterGraphQLExtension implements DependenceExtension {
       child: widget,
     );
   }
-}
-
-/// Dart extension on [Configurator] help to
-/// interact with [FlutterGraphQLExtension].
-extension FlutterGraphQLExtensionConfigurator on Configurator {
-  /// Return graphql client settings.
-  GraphQLClientSettings get graphQLClientSettings =>
-      getExtension<FlutterGraphQLExtension>()._settings;
-
-  /// Set graphql client settings.
-  set graphQLClientSettings(GraphQLClientSettings settings) =>
-      getExtension<FlutterGraphQLExtension>()._settings = settings;
 }
