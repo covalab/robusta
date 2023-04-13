@@ -5,21 +5,26 @@ import 'package:robusta_firebase_core/src/extension.dart';
 import 'package:robusta_runner/robusta_runner.dart';
 
 void main() {
-  TestWidgetsFlutterBinding.ensureInitialized();
-
-  group('FlutterRobustaFirebaseCore', () {
+  group('firebase core extension', () {
     test('can be instantiated', () {
-      expect(() => FirebaseCoreExtension(), returnsNormally);
+      expect(FirebaseCoreExtension.new, returnsNormally);
     });
 
     test('calling firebase app with no extension provided', () async {
-      final runner = Runner(extensions: [
-        EventExtension(configurator: (em, c) {
-          em
-            ..addEventListener<RunEvent>((e) => expect(
-                () => Firebase.app(), throwsA(isA<FirebaseException>())));
-        }),
-      ]);
+      final runner = Runner(
+        extensions: [
+          EventExtension(
+            configurator: (em, c) {
+              em.addEventListener<RunEvent>(
+                (e) => expect(
+                  Firebase.app,
+                  throwsA(isA<FirebaseException>()),
+                ),
+              );
+            },
+          ),
+        ],
+      );
 
       await runner.run();
     });
