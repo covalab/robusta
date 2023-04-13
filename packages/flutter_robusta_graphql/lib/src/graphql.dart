@@ -1,9 +1,6 @@
-import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:meta/meta.dart';
-
-part 'graphql_client.g.dart';
 
 /// Callback to create [Link] with [ProviderContainer] given
 /// to solve dependencies.
@@ -16,7 +13,6 @@ typedef CacheFactory = GraphQLCache Function(ProviderContainer);
 /// {@template graphql_client.settings}
 /// Store settings of [GraphQLClient].
 /// {@endtemplate}
-@CopyWith(skipFields: true)
 @sealed
 class GraphQLClientSettings {
   /// {@macro graphql_client.settings}
@@ -46,4 +42,15 @@ class GraphQLClientSettings {
 abstract class GraphQLClientAware {
   /// Set graphql client, method should be invoke after instance created.
   void setGraphQLClient(GraphQLClient client);
+}
+
+/// Support to quick implement [GraphQLClientAware].
+mixin GraphQLClientSettable implements GraphQLClientAware {
+  late final GraphQLClient _graphQLClient;
+
+  /// GraphQL client had set via [setGraphQLClient].
+  GraphQLClient get graphQLClient => _graphQLClient;
+
+  @override
+  void setGraphQLClient(GraphQLClient client) => _graphQLClient = client;
 }

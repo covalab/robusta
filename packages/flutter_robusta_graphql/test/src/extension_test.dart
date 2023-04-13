@@ -18,7 +18,7 @@ void main() {
       );
     });
 
-    test('can not run without FlutterAppExtension', () {
+    test('can not use without FlutterAppExtension', () {
       expect(
         () => Runner(
           extensions: [
@@ -34,14 +34,32 @@ void main() {
       );
     });
 
+    test(
+      'can use without FlutterAppExtension when disable graphql provider',
+      () {
+        expect(
+          () => Runner(
+            extensions: [
+              FlutterGraphQLExtension(
+                enabledGraphQLProvider: false,
+                settings: GraphQLClientSettings(
+                  linkFactory: (c) => throw UnimplementedError(),
+                  cacheFactory: (c) => throw UnimplementedError(),
+                ),
+              ),
+            ],
+          ),
+          returnsNormally,
+        );
+      },
+    );
+
     testWidgets('runner can run without errors', (tester) async {
-      Test? testService;
       GraphQLClient? client;
 
       final runner = Runner(
         defineBoot: (def) {
           def((c) {
-            testService = c.read(testProvider);
             client = c.read(graphQLClientProvider);
           });
         },
@@ -59,7 +77,6 @@ void main() {
       await expectLater(tester.runAsync(runner.run), completes);
 
       expect(client, isA<GraphQLClient>());
-      expect(testService!.client, isNull);
 
       expect(
         tester.allWidgets.any((element) => element is GraphQLProvider),
@@ -116,7 +133,7 @@ void main() {
         await expectLater(tester.runAsync(runner.run), completes);
 
         expect(testService, isNotNull);
-        expect(testService!.client, isA<GraphQLClient>());
+        expect(testService!.graphQLClient, isA<GraphQLClient>());
       },
     );
   });
