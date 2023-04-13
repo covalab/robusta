@@ -1,21 +1,22 @@
-# Robusta Firebase Core
+Robusta Firebase Core
+=====================
 
 Providing bridge to integrate Robusta with [Firebase Core](https://firebase.flutter.dev/docs/core).
 
-# Prerequisites:
-
+Prerequisites
+-------------
 Please refer to FlutterFire docs for init configuration (https://firebase.flutter.dev/docs/overview)
 
-## Installation
-
+Installation
+------------
 Install this package via pub command:
 
 ```
 flutter pub add robusta_firebase_core
 ```
 
-## Usages
-
+Usages
+------
 Add `FirebaseCoreExtension` to runner:
 
 ```dart
