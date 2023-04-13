@@ -12,13 +12,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  hive_flutter: ^1.1.0
-  robusta_runner: ^0.1.0
   flutter_riverpod: ^2.2.0
+  hive_flutter: ^1.1.0
+  robusta_runner: ^0.2.0+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  very_good_analysis: ^3.1.0
-  path_provider_platform_interface: ^2.0.6
   path_provider: ^2.0.14
+  path_provider_platform_interface: ^2.0.6
   plugin_platform_interface: ^2.1.4
+  very_good_analysis: ^4.0.0+1

@@ -4,6 +4,7 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router_plus/go_router_plus.dart';
+import 'package:meta/meta.dart';
 
 part 'router.g.dart';
 
@@ -28,6 +29,7 @@ typedef NavigatorObserverFactory = _Factory<NavigatorObserver>;
 /// Instances of this class supports router settings.
 /// {@endtemplate}
 @CopyWith(skipFields: true)
+@sealed
 class RouterSettings {
   /// {@macro router.settings}
   RouterSettings({
@@ -40,6 +42,7 @@ class RouterSettings {
     this.debugLogDiagnostics = false,
     this.restorationScopeId,
     this.navigatorKey,
+    this.initialExtra,
   })  : screenFactories = [...screenFactories],
         refreshNotifierFactories = [...refreshNotifierFactories],
         redirectorFactories = [...redirectorFactories],
@@ -72,6 +75,9 @@ class RouterSettings {
 
   /// The key to use when building the root [Navigator].
   final GlobalKey<NavigatorState>? navigatorKey;
+
+  /// Initial extra data pass to initial screen.
+  final Object? initialExtra;
 
   /// Returns list of screens factored with container given.
   Future<List<ScreenBase>> getScreens(ProviderContainer container) {

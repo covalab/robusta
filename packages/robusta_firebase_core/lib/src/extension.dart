@@ -7,9 +7,9 @@ import 'package:robusta_runner/robusta_runner.dart';
 /// {@template robusta_firebase_core}
 /// A Helper class for Firebase core initialization.
 /// {@endtemplate}
-class RobustaFirebaseCoreExtension implements Extension {
+class FirebaseCoreExtension implements Extension {
   /// {@macro flutter_robusta_firebase_core}
-  const RobustaFirebaseCoreExtension({String? name, FirebaseOptions? options})
+  const FirebaseCoreExtension({String? name, FirebaseOptions? options})
       : _name = name,
         _firebaseOptions = options;
 

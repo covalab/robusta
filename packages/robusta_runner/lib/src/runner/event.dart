@@ -12,25 +12,26 @@ class _RunnerEvent extends Event {
 /// Will dispatch when [Runner.run()] called,
 /// this event will be dispatched after boot.
 /// {@endtemplate}
-@sealed
 class RunEvent extends _RunnerEvent {
   /// {@macro runner.run_event}
-  RunEvent({required super.container});
+  RunEvent._({required super.container, required this.zone});
+
+  /// Running zone
+  final Zone zone;
 }
 
 /// {@template runner.exception_event}
 /// Will dispatch when [Runner.run()] throw exceptions.
 /// {@endtemplate}
-@sealed
-class ExceptionEvent extends _RunnerEvent {
+class ErrorEvent extends _RunnerEvent {
   /// {@macro runner.exception_event}
-  ExceptionEvent({
+  ErrorEvent._({
     required super.container,
     required this.error,
     required this.stackTrace,
   });
 
-  /// An exception had been throw.
+  /// An error/exception had been throw.
   final Object error;
 
   /// Exception stack trace.

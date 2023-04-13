@@ -1,0 +1,25 @@
+name: flutter_robusta_hive_auth_example
+description: Flutter Robusta Hive auth example.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.2.0
+  flutter_robusta:
+  flutter_robusta_auth:
+  flutter_robusta_hive:
+  flutter_robusta_hive_auth:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true

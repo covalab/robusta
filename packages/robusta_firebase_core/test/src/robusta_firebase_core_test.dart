@@ -9,14 +9,15 @@ void main() {
 
   group('FlutterRobustaFirebaseCore', () {
     test('can be instantiated', () {
-      expect(() => RobustaFirebaseCoreExtension(), returnsNormally);
+      expect(() => FirebaseCoreExtension(), returnsNormally);
     });
 
     test('calling firebase app with no extension provided', () async {
       final runner = Runner(extensions: [
-        EventExtension<RunEvent>({
-          (e) => expect(
-              () => Firebase.app(), throwsA(isA<FirebaseException>())): 0,
+        EventExtension(configurator: (em, c) {
+          em
+            ..addEventListener<RunEvent>((e) => expect(
+                () => Firebase.app(), throwsA(isA<FirebaseException>())));
         }),
       ]);
 

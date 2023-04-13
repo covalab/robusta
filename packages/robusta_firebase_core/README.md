@@ -1,6 +1,6 @@
 # Robusta Firebase Core
 
-Providing bridge to integrate Robusta with [Flutter Firebase Core](https://firebase.flutter.dev/docs/core).
+Providing bridge to integrate Robusta with [Firebase Core](https://firebase.flutter.dev/docs/core).
 
 # Prerequisites:
 

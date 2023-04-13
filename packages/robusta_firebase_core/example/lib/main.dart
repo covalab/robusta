@@ -3,7 +3,7 @@ import 'package:robusta_firebase_core/robusta_firebase_core.dart';
 
 final runner = Runner(
   extensions: [
-    const RobustaFirebaseCoreExtension(),
+    const FirebaseCoreExtension(),
   ],
 );
 
