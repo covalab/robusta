@@ -3,7 +3,7 @@ homepage: https://robusta.covalab.io
 repository: https://github.com/covalab/robusta
 issue_tracker: https://github.com/covalab/robusta/issues
 description: Robusta auth extension for securing app purposes.
-version: 0.1.0
+version: 0.1.0+1
 
 environment:
   sdk: ">=2.18.0 <3.0.0"

@@ -1,3 +1,7 @@
+## 0.1.0+1
+
+ - **DOCS**: add licenses. ([22658820](https://github.com/covalab/robusta/commit/2265882024f3c7ea03b1b564128b84fb458e9830))
+
 ## 0.1.0
 
 > Note: This release has breaking changes.
