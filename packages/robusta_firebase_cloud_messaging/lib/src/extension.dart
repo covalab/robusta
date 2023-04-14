@@ -43,14 +43,41 @@ class FirebaseCloudMessagingExtension implements DependenceExtension {
     final notiAuthStatus = await messaging.getNotificationSettings();
 
     if (notiAuthStatus.authorizationStatus == AuthorizationStatus.authorized) {
-      FirebaseMessaging.onMessage.listen((RemoteMessage rMessage) async {
-        _eventManager.dispatchEvent(OnMessageEvent._(rMessage));
-      });
-
-      FirebaseMessaging.onBackgroundMessage((RemoteMessage rMessage) async {
-        _eventManager.dispatchEvent(OnBackgroundMessageEvent._(rMessage));
-      });
+      await _foregroundMessageHandler();
+      await _backgroundMessageHandler();
     }
+  }
+
+  /// Foreground Message Handler
+  Future<void> _foregroundMessageHandler() async {
+    FirebaseMessaging.onMessage.listen((RemoteMessage rMessage) async {
+      await _eventManager.dispatchEvent(OnMessageEvent._(rMessage));
+    });
+  }
+
+  /// Background Message Handler
+  Future<void> _backgroundMessageHandler() async {
+    /// Messages come when app's in termniated state
+    /// i.e: App is killed
+    /// And [getInitialMessage] returns value when
+    /// user taps on Notification
+    final rInitialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (rInitialMessage != null) {
+      _eventManager.dispatchEvent(OnBackgroundMessageEvent._(rInitialMessage));
+    }
+
+    /// Handle interaction when app is in background state
+    /// and user taps on Notification
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage rMessage) {
+      _eventManager.dispatchEvent(OnBackgroundMessageEvent._(rMessage));
+    });
+
+    /// When app is in background state and receiving Notification
+    FirebaseMessaging.onBackgroundMessage((RemoteMessage rMessage) async {
+      await _eventManager.dispatchEvent(OnBackgroundMessageEvent._(rMessage));
+    });
   }
 
   /// Request Notification Permission
