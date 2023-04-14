@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:flutter_robusta_cli/mason_bricks/robusta_new_project_bundle.dart';
+import 'package:interact/interact.dart' as interact;
 import 'package:logger/logger.dart';
+import 'package:mason/mason.dart' as mason;
 import 'package:pub_updater/pub_updater.dart';
 
 /// Uses to run process
@@ -76,27 +79,28 @@ robusta new <project-name> [args]
 
   @override
   Future<int> run() async {
-    await _ensureFlutterInstalled();
-
     try {
-      if (!await _createFlutterProject()) {
-        _logger.e('Can not create Flutter project, something went wrong');
-        return 1;
-      }
-
+      await _ensureFlutterInstalled();
+      await _createFlutterProject();
       await _addRobustaDependencies();
+      await _generateBrick();
 
-      _logger.i('Create project: $_projectName successful!');
+      _logger.i('Create new Flutter project: $_projectName successful!');
     } on Exception catch (e, s) {
+      interact.reset();
       _deleteFlutterProject();
-
-      _logger.e('Fail to create project!', e, s);
+      rethrow;
     }
 
     return 0;
   }
 
   Future<void> _ensureFlutterInstalled() async {
+    final loading = _getSpinner(
+      onLoadMessage: 'Checking Flutter bin exist',
+      completedMessage: 'Checking Flutter bin exist',
+    ).interact();
+
     final result = await _processRunnable('flutter', args: ['--version']);
 
     if (0 != result) {
@@ -104,6 +108,8 @@ robusta new <project-name> [args]
         'To uses this command, you MUST be install Flutter first.',
       );
     }
+
+    loading.done();
   }
 
   String get _projectName {
@@ -121,7 +127,12 @@ robusta new <project-name> [args]
 
   String get _org => argResults!['org'] as String;
 
-  Future<bool> _createFlutterProject() async {
+  Future<void> _createFlutterProject() async {
+    final loading = _getSpinner(
+      onLoadMessage: 'Creating Flutter project',
+      completedMessage: 'Creating Flutter project',
+    ).interact();
+
     final result = await _processRunnable(
       'flutter',
       args: [
@@ -132,10 +143,18 @@ robusta new <project-name> [args]
       ],
     );
 
-    return 0 == result;
+    if (0 != result) {
+      throw Exception('Can not create Flutter project');
+    }
+
+    loading.done();
   }
 
-  Future<bool> _addRobustaDependencies() async {
+  Future<void> _addRobustaDependencies() async {
+    final loading = _getSpinner(
+      onLoadMessage: 'Adding Robusta dependencies',
+      completedMessage: 'Adding Robusta dependencies',
+    ).interact();
     final pub = PubUpdater();
     final versions = await Future.wait([
       pub.getLatestVersion('logger'),
@@ -160,8 +179,38 @@ robusta new <project-name> [args]
       workingDirectory: _projectDirectory.path,
     );
 
-    return 0 == result;
+    if (0 != result) {
+      throw Exception('Can not add Robusta dependencies.');
+    }
+
+    loading.done();
+  }
+
+  Future<void> _generateBrick() async {
+    final loading = _getSpinner(
+      onLoadMessage: 'Generating skeleton',
+      completedMessage: 'Generating skeleton',
+    ).interact();
+    final generator = await mason.MasonGenerator.fromBundle(
+      robustaNewProjectBundle,
+    );
+
+    await generator.generate(
+      mason.DirectoryGeneratorTarget(_projectDirectory),
+    );
+
+    loading.done();
   }
 
   void _deleteFlutterProject() => _projectDirectory.deleteSync(recursive: true);
+
+  interact.Spinner _getSpinner({
+    required String onLoadMessage,
+    required String completedMessage,
+  }) {
+    return interact.Spinner(
+      icon: '\u{2714}',
+      rightPrompt: (done) => done ? onLoadMessage : completedMessage,
+    );
+  }
 }

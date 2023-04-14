@@ -15,11 +15,7 @@ Future<void> main(List<String> arguments) async {
     ),
     extensions: [
       ImplementingCallbackExtension(),
-      EventExtension(
-        configurator: (em, c) {
-          em.addEventListener<RunEvent>(RunListener(arguments).call);
-        },
-      ),
+      FlutterCliExtension(args: arguments),
     ],
   );
 

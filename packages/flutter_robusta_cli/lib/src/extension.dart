@@ -8,19 +8,30 @@ import 'package:flutter_robusta_cli/src/version_command.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:robusta_runner/robusta_runner.dart';
 
-/// Run listener
-class RunListener {
+/// Flutter cli extension
+class FlutterCliExtension implements Extension {
   /// Handle run event with args given.
-  RunListener(this.args);
+  FlutterCliExtension({required this.args});
+
+  @override
+  FutureOr<void> load(Configurator configurator) {
+    configurator.addBoot(_boot);
+  }
+
+  void _boot(ProviderContainer container) {
+    container.read(eventManagerProvider)
+      ..addEventListener<RunEvent>(_onRun)
+      ..addEventListener<ErrorEvent>(_onError);
+  }
 
   /// Cli args
   final List<String> args;
 
   /// Handle run event.
-  Future<void> call(RunEvent event) async {
+  Future<void> _onRun(RunEvent event) async {
     final exitCode = await _makeCommandRunner(event.container).run(args);
 
-    await Future.wait([stdout.close(), stderr.close()]);
+    await _terminate();
 
     exit(exitCode ?? -1);
   }
@@ -39,4 +50,11 @@ class RunListener {
 
     return runner;
   }
+
+  Future<void> _onError(ErrorEvent event) async {
+    await _terminate();
+    exit(1);
+  }
+
+  Future<void> _terminate() => Future.wait([stdout.close(), stderr.close()]);
 }
