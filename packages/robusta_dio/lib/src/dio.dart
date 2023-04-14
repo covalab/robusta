@@ -9,8 +9,7 @@ abstract class DioAware {
 
 /// Support to quick implement [DioAware].
 mixin DioSettable implements DioAware {
-  /// Dio instance will be set when call [setDio].
-  late Dio _dio;
+  late final Dio _dio;
 
   /// Providing [Dio] instance had set via [setDio].
   Dio get dio => _dio;
