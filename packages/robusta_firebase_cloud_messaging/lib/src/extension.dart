@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,16 +14,16 @@ part './permission_settings.dart';
 class FirebaseCloudMessagingExtension implements DependenceExtension {
   /// {@macro robusta_firebase_cloud_messaging}
   FirebaseCloudMessagingExtension({
-    required EventManager eventManager,
-    NotiPermissionRequestSettings? settings,
-    NotiRequestStrategy? notiRequestStrategy,
-  })  : _eventManager = eventManager,
-        _notiRequestStrategy = notiRequestStrategy ?? NotiRequestStrategy.init,
-        _settings = settings ?? const NotiPermissionRequestSettings();
+    EventManager? eventManager,
+    PermissionRequestSettings? settings,
+    RequestStrategy? requestStrategy,
+  })  : _eventManager = eventManager ?? DefaultEventManager(),
+        _notiRequestStrategy = requestStrategy ?? RequestStrategy.init,
+        _settings = settings ?? const PermissionRequestSettings();
 
   final EventManager _eventManager;
-  final NotiRequestStrategy _notiRequestStrategy;
-  final NotiPermissionRequestSettings _settings;
+  final RequestStrategy _notiRequestStrategy;
+  final PermissionRequestSettings _settings;
 
   @override
   FutureOr<void> load(Configurator configurator) {
@@ -35,7 +34,7 @@ class FirebaseCloudMessagingExtension implements DependenceExtension {
   List<Type> dependsOn() => [FirebaseCoreExtension];
 
   Future<void> _boot(ProviderContainer container) async {
-    if (_notiRequestStrategy == NotiRequestStrategy.init) {
+    if (_notiRequestStrategy == RequestStrategy.init) {
       await permissionRequest(container);
     }
 
@@ -46,6 +45,10 @@ class FirebaseCloudMessagingExtension implements DependenceExtension {
     if (notiAuthStatus.authorizationStatus == AuthorizationStatus.authorized) {
       FirebaseMessaging.onMessage.listen((RemoteMessage rMessage) async {
         _eventManager.dispatchEvent(OnMessageEvent._(rMessage));
+      });
+
+      FirebaseMessaging.onBackgroundMessage((RemoteMessage rMessage) async {
+        _eventManager.dispatchEvent(OnBackgroundMessageEvent._(rMessage));
       });
     }
   }
@@ -64,7 +67,19 @@ class FirebaseCloudMessagingExtension implements DependenceExtension {
       sound: _settings._sound,
     );
 
-    log('User granted permission: $settings');
+    container.read(loggerProvider).i('User granted permission: $settings');
+  }
+
+  /// Subscribe to a topic in order to receive messages
+  /// If any new messages released on the topic
+  Future<void> subscribeToTopic(String topic) async {
+    await FirebaseMessaging.instance.subscribeToTopic(topic);
+  }
+
+  /// Unsubscribe to a topic
+  /// No longer receives any messages on the subscribed topic
+  Future<void> unsubscribeFromTopic(String topic) async {
+    await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
   }
 }
 
@@ -74,6 +89,18 @@ class FirebaseCloudMessagingExtension implements DependenceExtension {
 @sealed
 class OnMessageEvent extends Event {
   OnMessageEvent._(this.rMessage);
+
+  /// Message comes from Firebase Cloud Messaging
+  RemoteMessage rMessage;
+}
+
+/// {@template firebase_cloud_messaging.on_background_message_event}
+/// An event will be dispatch when background messages comes
+/// from Firebase Cloud Messaging
+/// {@endtemplate}
+@sealed
+class OnBackgroundMessageEvent extends Event {
+  OnBackgroundMessageEvent._(this.rMessage);
 
   /// Message comes from Firebase Cloud Messaging
   RemoteMessage rMessage;

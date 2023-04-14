@@ -1,7 +1,7 @@
 part of './extension.dart';
 
 /// Straties of asking notification permission
-enum NotiRequestStrategy {
+enum RequestStrategy {
   /// Request permission when booting
   init,
 
@@ -13,9 +13,9 @@ enum NotiRequestStrategy {
 ///  Noti Permission Request Settings Obj.
 /// {@endtemplate}
 @sealed
-class NotiPermissionRequestSettings {
+class PermissionRequestSettings {
   /// {@macro noti_permission_request_settings}
-  const NotiPermissionRequestSettings({
+  const PermissionRequestSettings({
     bool? alert,
     bool? announcement,
     bool? badge,

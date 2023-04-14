@@ -54,11 +54,39 @@ void main() {
 
       await expectLater(remoteMessage, equals(mockRemoteMessage));
     });
+
+    test('Get background Message from Cloud Messaging', () async {
+      // Assuming we have Notification Permission
+      // Opt out [FirebaseMessage.onBackgroundMessage(....)]
+
+      var remoteMessage = RemoteMessage();
+
+      final em = DefaultEventManager();
+
+      final mockBackgroundMessage =
+          RemoteMessage(data: {'background': 'message'});
+
+      em
+        ..addEventListener<OnBackgroundMessageEventMock>(
+          (bgEvent) => remoteMessage = bgEvent.rMessage,
+        )
+        ..dispatchEvent(
+          OnBackgroundMessageEventMock(mockBackgroundMessage),
+        );
+
+      await expectLater(remoteMessage, equals(mockBackgroundMessage));
+    });
   });
 }
 
 class OnMessageEventMock extends Event {
   OnMessageEventMock(this.rMessage);
+
+  RemoteMessage rMessage;
+}
+
+class OnBackgroundMessageEventMock extends Event {
+  OnBackgroundMessageEventMock(this.rMessage);
 
   RemoteMessage rMessage;
 }

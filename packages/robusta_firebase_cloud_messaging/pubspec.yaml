@@ -3,6 +3,7 @@ homepage: https://robusta.covalab.io
 repository: https://github.com/covalab/robusta
 issue_tracker: https://github.com/covalab/robusta/issues
 description: Providing bridge to integrate Robusta with Firebase Cloud Messaging features.
+version: 0.1.0
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
