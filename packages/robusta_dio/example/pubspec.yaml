@@ -1,0 +1,15 @@
+name: robusta_dio_example
+description: Robusta Dio example.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  riverpod: ^2.3.2
+  robusta_dio: ^0.1.0
+  robusta_runner: ^0.2.0
+
+dev_dependencies:
+  very_good_analysis: 4.0.0+1

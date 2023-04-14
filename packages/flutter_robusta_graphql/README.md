@@ -1,10 +1,10 @@
 Flutter Robusta GraphQL
------------------------
+=======================
 
 Integrate useful features of [GraphQL Flutter](https://pub.dev/packages/graphql_flutter) for Robusta apps.
 
 Installation
-============
+------------
 
 Install this package via pub command:
 
@@ -13,7 +13,7 @@ flutter pub add flutter_robusta_graphql
 ```
 
 Usages
-======
+------
 
 ```dart
 import 'package:flutter_robusta/flutter_robusta.dart';

@@ -1,5 +1,5 @@
 name: flutter_robusta_hive_auth
-version: 0.1.0
+version: 0.1.1+1
 homepage: https://robusta.covalab.io
 repository: https://github.com/covalab/robusta
 issue_tracker: https://github.com/covalab/robusta/issues
@@ -7,15 +7,15 @@ description: Integrating Hive features for Robusta auth extension.
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
-  flutter: 3.3.0
+  flutter: ">=3.7.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.2.0
   flutter_robusta: ^0.2.0
-  flutter_robusta_auth: ^0.2.0
-  flutter_robusta_hive: ^0.1.0
+  flutter_robusta_auth: ^0.1.0+1
+  flutter_robusta_hive: ^0.1.0+1
   flutter_secure_storage: ^8.0.0
 
 dev_dependencies:
