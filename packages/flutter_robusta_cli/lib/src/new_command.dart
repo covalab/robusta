@@ -86,7 +86,7 @@ robusta new <project-name> [args]
       await _addRobustaDependencies();
 
       _logger.i('Create new Flutter project: $_projectName successful!');
-    } on Exception catch (e, s) {
+    } on Exception {
       interact.reset();
       _deleteFlutterProject();
       rethrow;
