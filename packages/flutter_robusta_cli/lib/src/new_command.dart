@@ -82,8 +82,8 @@ robusta new <project-name> [args]
     try {
       await _ensureFlutterInstalled();
       await _createFlutterProject();
+      await _generateSkeleton();
       await _addRobustaDependencies();
-      await _generateBrick();
 
       _logger.i('Create new Flutter project: $_projectName successful!');
     } on Exception catch (e, s) {
@@ -160,9 +160,7 @@ robusta new <project-name> [args]
       pub.getLatestVersion('logger'),
       pub.getLatestVersion('flutter_riverpod'),
       pub.getLatestVersion('flutter_robusta'),
-      pub.getLatestVersion('flutter_robusta_auth'),
-      pub.getLatestVersion('flutter_robusta_hive'),
-      pub.getLatestVersion('flutter_robusta_hive_auth'),
+      pub.getLatestVersion('go_router_plus'),
     ]);
     final result = await _processRunnable(
       'flutter',
@@ -172,9 +170,7 @@ robusta new <project-name> [args]
         'logger:^${versions[0]}',
         'flutter_riverpod:^${versions[1]}',
         'flutter_robusta:^${versions[2]}',
-        'flutter_robusta_auth:^${versions[3]}',
-        'flutter_robusta_hive:^${versions[4]}',
-        'flutter_robusta_hive_auth:^${versions[5]}',
+        'go_router_plus:^${versions[3]}',
       ],
       workingDirectory: _projectDirectory.path,
     );
@@ -186,17 +182,25 @@ robusta new <project-name> [args]
     loading.done();
   }
 
-  Future<void> _generateBrick() async {
+  Future<void> _generateSkeleton() async {
     final loading = _getSpinner(
       onLoadMessage: 'Generating skeleton',
       completedMessage: 'Generating skeleton',
     ).interact();
+
+    Directory('${_projectDirectory.path}/lib').deleteSync(recursive: true);
+    Directory('${_projectDirectory.path}/test').deleteSync(recursive: true);
+
     final generator = await mason.MasonGenerator.fromBundle(
       robustaNewProjectBundle,
     );
 
     await generator.generate(
       mason.DirectoryGeneratorTarget(_projectDirectory),
+      vars: {
+        'project_name': _projectName,
+      },
+      fileConflictResolution: mason.FileConflictResolution.overwrite,
     );
 
     loading.done();
