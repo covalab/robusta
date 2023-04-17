@@ -1,7 +1,9 @@
 name: flutter_robusta_cli
-description: Robusta CLI help to build and generate codes for your apps.
-version: 0.1.0
-publish_to: none
+homepage: https://robusta.covalab.io
+repository: https://github.com/covalab/robusta
+issue_tracker: https://github.com/covalab/robusta/issues
+description: Robusta CLI help to create new projects and generate codes for your apps.
+version: 0.1.1
 
 environment:
   sdk: ">=2.18.0 <3.0.0"
