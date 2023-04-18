@@ -1,5 +1,5 @@
-name: robusta_firebase_cloud_messaging_example
-description: Robusta Firebase Cloud Messaging example.
+name: robusta_firebase_messaging_example
+description: Robusta Firebase Messaging example.
 version: 1.0.0
 publish_to: none
 
@@ -10,8 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_robusta:
-  robusta_firebase_cloud_messaging:
   robusta_firebase_core:
+  robusta_firebase_messaging:
   robusta_runner:
 
 dev_dependencies:

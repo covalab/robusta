@@ -1,7 +1,7 @@
 part of './extension.dart';
 
 /// Straties of asking notification permission
-enum RequestStrategy {
+enum PermissionRequestStrategy {
   /// Request permission when booting
   init,
 
@@ -40,6 +40,6 @@ class PermissionRequestSettings {
   final bool _sound;
 
   /// Get current Notification Settings
-  Future<NotificationSettings> get currentSettings =>
+  Future<NotificationSettings> get currentSettings async =>
       FirebaseMessaging.instance.getNotificationSettings();
 }

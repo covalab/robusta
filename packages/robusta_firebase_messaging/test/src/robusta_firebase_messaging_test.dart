@@ -2,8 +2,8 @@
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:robusta_firebase_cloud_messaging/robusta_firebase_cloud_messaging.dart';
 import 'package:robusta_firebase_core/robusta_firebase_core.dart';
+import 'package:robusta_firebase_messaging/robusta_firebase_messaging.dart';
 import 'package:robusta_runner/robusta_runner.dart';
 
 void main() {
@@ -11,11 +11,7 @@ void main() {
     test('Cannot be used without FirebaseCoreExtension', () {
       expect(
         () => Runner(
-          extensions: [
-            FirebaseCloudMessagingExtension(
-              eventManager: DefaultEventManager(),
-            )
-          ],
+          extensions: [FirebaseMessagingExtension()],
         ),
         throwsA(isA<RunnerException>()),
       );
@@ -23,12 +19,7 @@ void main() {
 
     test('Can be used with FirebaseCoreExtension initialized', () {
       final runner = Runner(
-        extensions: [
-          FirebaseCloudMessagingExtension(
-            eventManager: DefaultEventManager(),
-          ),
-          FirebaseCoreExtension()
-        ],
+        extensions: [FirebaseMessagingExtension(), FirebaseCoreExtension()],
       );
 
       expectLater(() => runner.run, returnsNormally);

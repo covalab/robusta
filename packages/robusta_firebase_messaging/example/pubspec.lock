@@ -239,17 +239,17 @@ packages:
       relative: true
     source: path
     version: "0.2.1"
-  robusta_firebase_cloud_messaging:
-    dependency: "direct main"
-    description:
-      path: ".."
-      relative: true
-    source: path
-    version: "0.1.0"
   robusta_firebase_core:
     dependency: "direct main"
     description:
       path: "../../robusta_firebase_core"
+      relative: true
+    source: path
+    version: "0.1.0"
+  robusta_firebase_messaging:
+    dependency: "direct main"
+    description:
+      path: ".."
       relative: true
     source: path
     version: "0.1.0"

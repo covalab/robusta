@@ -6,5 +6,5 @@ dependency_overrides:
     path: ../../robusta_runner
   robusta_firebase_core:
     path: ../../robusta_firebase_core
-  robusta_firebase_cloud_messaging:
+  robusta_firebase_messaging:
     path: ../
