@@ -63,7 +63,7 @@ class FirebaseMessagingExtension implements DependenceExtension {
   Future<void> _listenerRegister(ProviderContainer container) async {
     final notiAuthStatus = await _settings.currentSettings;
 
-    ///TODO:  Hold background message Handler
+    // TODO(qu0cquyen):  Hold background message Handler
 
     if (notiAuthStatus.authorizationStatus == AuthorizationStatus.authorized) {
       /// App is Terminated, but there is a notification comes
