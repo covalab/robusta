@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router_plus/go_router_plus.dart';
-import 'package:{{project_name}}/presentation/screens/counter/provider.dart';
+import 'package:{{package_name}}/presentation/screens/counter/provider.dart';
 
 class CounterScreen extends Screen implements InitialScreen {
   @override
