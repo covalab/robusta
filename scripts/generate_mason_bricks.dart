@@ -16,9 +16,8 @@ Future<void> main() async {
 
   for (final entry in stack.entries) {
     final package = entry.key;
-
-    for (final brick in entry.value) {
-      await Process.run(
+    final processes = entry.value.map(
+      (brick) => Process.run(
         'mason',
         [
           'bundle',
@@ -29,8 +28,10 @@ Future<void> main() async {
           './packages/$package/lib/mason_bricks',
         ],
         runInShell: true,
-      );
-    }
+      ),
+    );
+
+    await Future.wait(processes);
   }
 
   await Future.wait([stderr.close(), stdout.close()]);
