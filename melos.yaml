@@ -12,9 +12,7 @@ command:
 scripts:
   make_mason_bundles:
     run: |
-      mason bundle ./packages/flutter_robusta_cli/mason_bricks/new_project \
-      -t dart \
-      -o ./packages/flutter_robusta_cli/lib/mason_bricks
+      dart ./scripts/generate_mason_bricks.dart
 
   update_cli_versions:
     run: |
