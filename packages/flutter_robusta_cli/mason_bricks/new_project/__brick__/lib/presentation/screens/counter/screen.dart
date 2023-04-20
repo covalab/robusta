@@ -6,9 +6,7 @@ import 'package:{{package_name}}/presentation/screens/counter/provider.dart';
 class CounterScreen extends Screen implements InitialScreen {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const _Widget(
-      title: 'Robusta',
-    );
+    return const _CounterScreenWidget();
   }
 
   @override
@@ -18,16 +16,14 @@ class CounterScreen extends Screen implements InitialScreen {
   String get routePath => '/counter';
 }
 
-class _Widget extends ConsumerWidget {
-  const _Widget({required this.title, super.key});
-
-  final String title;
+class _CounterScreenWidget extends ConsumerWidget {
+  const _CounterScreenWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text('Robusta'),
       ),
       body: Center(
         child: Column(
