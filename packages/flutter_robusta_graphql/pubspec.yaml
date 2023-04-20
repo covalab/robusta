@@ -20,4 +20,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  path_provider: ^2.0.14
+  path_provider_platform_interface: ^2.0.6
+  plugin_platform_interface: ^2.1.4
   very_good_analysis: ^4.0.0+1
