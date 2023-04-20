@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter_robusta_cli/mason_bricks/robusta_new_project_bundle.dart';
 import 'package:interact/interact.dart';
 import 'package:mason/mason.dart' as mason;
 import 'package:pubspec_parse/pubspec_parse.dart';
@@ -36,7 +35,10 @@ Future<void> generateBricks({
     final generator = await mason.MasonGenerator.fromBundle(bundle);
 
     if (runHook) {
-      await generator.hooks.preGen(workingDirectory: workingDirectory.path);
+      await generator.hooks.preGen(
+        workingDirectory: workingDirectory.path,
+        vars: vars,
+      );
     }
 
     await generator.generate(
@@ -46,7 +48,10 @@ Future<void> generateBricks({
     );
 
     if (runHook) {
-      await generator.hooks.postGen(workingDirectory: workingDirectory.path);
+      await generator.hooks.postGen(
+        workingDirectory: workingDirectory.path,
+        vars: vars,
+      );
     }
   }
 
