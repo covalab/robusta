@@ -1,6 +1,5 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:robusta_firebase_core/robusta_firebase_core.dart';
 import 'package:robusta_firebase_messaging/robusta_firebase_messaging.dart';

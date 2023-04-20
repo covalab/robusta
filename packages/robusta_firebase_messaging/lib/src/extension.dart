@@ -63,15 +63,15 @@ class FirebaseMessagingExtension implements DependenceExtension {
       await _permissionRequest(container);
     }
 
-    if (_requestStrategy == PermissionRequestStrategy.loggedIn) {
-      final isLoggedIn = await container.read(authManagerProvider).loggedIn;
-
-      if (isLoggedIn) {
-        await _permissionRequest(container);
-      }
-    }
-
     final manager = container.read(eventManagerProvider);
+
+    if (_requestStrategy == PermissionRequestStrategy.loggedIn) {
+      manager.addEventListener<LoggedInEvent>((event) async {
+        if (event.credentials.isNotEmpty) {
+          await _permissionRequest(container);
+        }
+      });
+    }
 
     await _listenerRegister(manager);
   }
@@ -99,8 +99,7 @@ class FirebaseMessagingExtension implements DependenceExtension {
 
   Override _permissionOverride() {
     return firebaseMessagingPermissionProvider.overrideWith((ref) {
-      final manager = ref.read(eventManagerProvider);
-      return PermissionRequestService(_settings, manager);
+      return PermissionRequestService(_settings);
     });
   }
 

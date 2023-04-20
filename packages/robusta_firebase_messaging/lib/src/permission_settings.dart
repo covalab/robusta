@@ -55,12 +55,9 @@ class PermissionRequestService {
   /// {@macro permission_request_service}
   const PermissionRequestService(
     PermissionRequestSettings? settings,
-    EventManager manager,
-  )   : _settings = settings ?? const PermissionRequestSettings(),
-        _eventManager = manager;
+  ) : _settings = settings ?? const PermissionRequestSettings();
 
   final PermissionRequestSettings _settings;
-  final EventManager _eventManager;
 
   /// Request Notification Permission
   Future<void> requestPermission() async {
