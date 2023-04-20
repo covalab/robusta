@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:flutter_robusta_cli/mason_bricks/robusta_new_project_bundle.dart';
 import 'package:flutter_robusta_cli/src/flutter.dart';
 import 'package:flutter_robusta_cli/src/utils.dart';
 import 'package:interact/interact.dart';
@@ -53,8 +54,11 @@ This command may overwrite existing files, do you want to continue?
       ],
       workingDirectory: Directory.current,
     );
-    await generateBrickNewProject(
-      packageName: _packageName,
+    await generateBricks(
+      bundles: [robustaNewProjectBundle],
+      vars: {
+        'package_name': _packageName,
+      },
       workingDirectory: Directory.current,
       runHook: false,
     );

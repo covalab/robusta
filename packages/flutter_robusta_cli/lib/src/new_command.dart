@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:flutter_robusta_cli/mason_bricks/robusta_new_project_bundle.dart';
 import 'package:flutter_robusta_cli/src/flutter.dart';
 import 'package:flutter_robusta_cli/src/utils.dart';
 import 'package:interact/interact.dart' as interact;
@@ -58,8 +59,11 @@ robusta new <project-name> [args]
         ],
         workingDirectory: _projectDirectory,
       );
-      await generateBrickNewProject(
-        packageName: _projectName,
+      await generateBricks(
+        bundles: [robustaNewProjectBundle],
+        vars: {
+          'package_name': _projectName,
+        },
         workingDirectory: _projectDirectory,
       );
 
