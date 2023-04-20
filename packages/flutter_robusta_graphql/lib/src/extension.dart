@@ -17,10 +17,14 @@ class FlutterGraphQLExtension implements DependenceExtension {
   FlutterGraphQLExtension({
     required GraphQLClientSettings settings,
     bool enabledGraphQLProvider = true,
+    bool initHive = true,
   })  : _settings = settings,
-        _enabledGraphQLProvider = enabledGraphQLProvider;
+        _enabledGraphQLProvider = enabledGraphQLProvider,
+        _initHive = initHive;
 
   final bool _enabledGraphQLProvider;
+
+  final bool _initHive;
 
   final GraphQLClientSettings _settings;
 
@@ -45,6 +49,14 @@ class FlutterGraphQLExtension implements DependenceExtension {
           container.read(graphQLClientProvider),
         ),
       );
+    }
+
+    configurator.addBoot(_boot, priority: 8191);
+  }
+
+  Future<void> _boot(ProviderContainer container) async {
+    if (_initHive) {
+      await initHiveForFlutter();
     }
   }
 
