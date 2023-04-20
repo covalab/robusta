@@ -9,6 +9,8 @@ Future<void> main() async {
       'add_graphql',
       'add_hive',
       'add_firebase_core',
+      'gen_repo',
+      'gen_screen',
     ],
   };
 
