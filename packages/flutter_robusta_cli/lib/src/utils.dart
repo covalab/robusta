@@ -18,24 +18,9 @@ Spinner makeSpinner({
   );
 }
 
-/// Generate new project brick
-Future<void> generateBrickNewProject({
-  required String packageName,
-  required Directory workingDirectory,
-  bool runHook = true,
-  mason.FileConflictResolution fileConflictResolution =
-      mason.FileConflictResolution.overwrite,
-}) async {
-  return _generateBrick(
-    generator: await mason.MasonGenerator.fromBundle(robustaNewProjectBundle),
-    workingDirectory: workingDirectory,
-    runHook: runHook,
-    fileConflictResolution: fileConflictResolution,
-  );
-}
-
-Future<void> _generateBrick({
-  required mason.MasonGenerator generator,
+/// Generate brick
+Future<void> generateBricks({
+  required List<mason.MasonBundle> bundles,
   required Directory workingDirectory,
   Map<String, dynamic> vars = const {},
   bool runHook = true,
@@ -43,22 +28,26 @@ Future<void> _generateBrick({
       mason.FileConflictResolution.overwrite,
 }) async {
   final loading = makeSpinner(
-    onLoadMessage: 'Generating Mason brick...',
-    completedMessage: 'Generating Mason brick...',
+    onLoadMessage: 'Generating Mason bricks...',
+    completedMessage: 'Generating Mason bricks...',
   ).interact();
 
-  if (runHook) {
-    await generator.hooks.preGen(workingDirectory: workingDirectory.path);
-  }
+  for (final bundle in bundles) {
+    final generator = await mason.MasonGenerator.fromBundle(bundle);
 
-  await generator.generate(
-    mason.DirectoryGeneratorTarget(workingDirectory),
-    vars: vars,
-    fileConflictResolution: fileConflictResolution,
-  );
+    if (runHook) {
+      await generator.hooks.preGen(workingDirectory: workingDirectory.path);
+    }
 
-  if (runHook) {
-    await generator.hooks.postGen(workingDirectory: workingDirectory.path);
+    await generator.generate(
+      mason.DirectoryGeneratorTarget(workingDirectory),
+      vars: vars,
+      fileConflictResolution: fileConflictResolution,
+    );
+
+    if (runHook) {
+      await generator.hooks.postGen(workingDirectory: workingDirectory.path);
+    }
   }
 
   loading.done();

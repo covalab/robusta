@@ -64,8 +64,8 @@ class FlutterBin {
     required Directory workingDirectory,
   }) async {
     final loading = makeSpinner(
-      onLoadMessage: 'Adding Pub dependencies',
-      completedMessage: 'Adding Pub dependencies',
+      onLoadMessage: 'Adding Pub dependencies: $dependencies',
+      completedMessage: 'Adding Pub dependencies: $dependencies',
     ).interact();
     final pub = PubUpdater();
     final latestVersions = Map.fromIterables(

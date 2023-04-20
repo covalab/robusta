@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:flutter_robusta_cli/src/add_command.dart';
 import 'package:flutter_robusta_cli/src/flutter.dart';
 import 'package:flutter_robusta_cli/src/init_command.dart';
 import 'package:flutter_robusta_cli/src/new_command.dart';
@@ -47,6 +48,7 @@ class FlutterCliExtension implements Extension {
     final flutterBin = FlutterBin(logger: logger);
 
     runner
+      ..addCommand(AddCommand(flutterBin: flutterBin, logger: logger))
       ..addCommand(NewCommand(flutterBin: flutterBin, logger: logger))
       ..addCommand(InitCommand(flutterBin: flutterBin, logger: logger))
       ..addCommand(SelfUpdateCommand(logger: logger))
