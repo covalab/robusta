@@ -7,9 +7,11 @@ environment:
   sdk: ">=2.18.0 <3.0.0"
 
 dependencies:
+  firebase_core: ^2.10.0
   flutter:
     sdk: flutter
   flutter_robusta:
+  flutter_robusta_auth:
   robusta_firebase_core:
   robusta_firebase_messaging:
   robusta_runner:

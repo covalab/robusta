@@ -6,3 +6,5 @@ dependency_overrides:
     path: ../robusta_runner
   robusta_firebase_core:
     path: ../robusta_firebase_core
+  flutter_robusta_auth:
+    path: ../flutter_robusta_auth

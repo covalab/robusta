@@ -14,6 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.2.0
+  flutter_robusta_auth: ^0.1.0
   meta: ^1.8.0
   robusta_firebase_core: ^0.1.0
   robusta_runner: ^0.1.0

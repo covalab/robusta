@@ -7,6 +7,9 @@ enum PermissionRequestStrategy {
 
   /// Request permission later after boot
   later,
+
+  /// User Logged in
+  loggedIn,
 }
 
 /// {@template permission.settings}
@@ -14,7 +17,7 @@ enum PermissionRequestStrategy {
 /// {@endtemplate}
 @sealed
 class PermissionRequestSettings {
-  /// {@macro noti_permission_request_settings}
+  /// {@macro permission_request_settings}
   const PermissionRequestSettings({
     bool? alert,
     bool? announcement,
@@ -42,4 +45,35 @@ class PermissionRequestSettings {
   /// Get current Notification Settings
   Future<NotificationSettings> get currentSettings async =>
       FirebaseMessaging.instance.getNotificationSettings();
+}
+
+/// {@template permission.service}
+///  Noti Permission Request Service Obj.
+/// {@endtemplate}
+@sealed
+class PermissionRequestService {
+  /// {@macro permission_request_service}
+  const PermissionRequestService(
+    PermissionRequestSettings? settings,
+    EventManager manager,
+  )   : _settings = settings ?? const PermissionRequestSettings(),
+        _eventManager = manager;
+
+  final PermissionRequestSettings _settings;
+  final EventManager _eventManager;
+
+  /// Request Notification Permission
+  Future<void> requestPermission() async {
+    final messaging = FirebaseMessaging.instance;
+
+    await messaging.requestPermission(
+      alert: _settings._alert,
+      announcement: _settings._announcement,
+      badge: _settings._badge,
+      carPlay: _settings._carPlay,
+      criticalAlert: _settings._criticalAlert,
+      provisional: _settings._provisional,
+      sound: _settings._sound,
+    );
+  }
 }

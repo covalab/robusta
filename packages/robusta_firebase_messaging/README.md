@@ -17,7 +17,7 @@ flutter pub add robusta_firebase_messaging
 ## Usages
 
 Add `FirebaseCoreExtension` to runner:
-Add `FirebaseCloudMessaging` to runner:
+Add `FirebaseMessagingExtension` to runner:
 
 ```dart
 import 'package:flutter_robusta/flutter_robusta.dart';
@@ -27,8 +27,14 @@ import 'package:robusta_firebase_messaging/robusta_firebase_messaging.dart';
 final runner = Runner(
  extensions: [
   //....
+    EventExtension(configurator: (em, container) {
+      em.addEventListener<OnMessageEvent>((message) {
+        print('Message Comes From FB: ${message.source.name} \n'
+            '- ${message.message.notification?.title}');
+      });
+    }),
     const FirebaseCoreExtension(),
-    const FirebaseMessagingExtension(),
+    FirebaseMessagingExtension(backgroundMessageHandler: _bgMessageHandler),
   ],
 );
 
