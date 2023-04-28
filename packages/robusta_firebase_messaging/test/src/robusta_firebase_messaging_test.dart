@@ -22,7 +22,6 @@ void main() {
     });
 
     test('Work with Firebase Messaging Extension', () async {
-      OnMessageEvent? fakeEvent;
       const fakeToken = 'fake-token';
       const fakeTokenOnRefresh = 'fake-token-on-refresh';
       const initMessageData = {'initMessage': 'Test init Message'};
@@ -63,8 +62,6 @@ void main() {
           EventExtension(
             configurator: (em, container) {
               em.addEventListener((OnMessageEvent event) {
-                fakeEvent = event;
-
                 /// Compare token
                 final token = container.read(tokenProvider.notifier).state;
 

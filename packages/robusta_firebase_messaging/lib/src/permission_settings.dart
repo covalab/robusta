@@ -39,7 +39,8 @@ class PermissionRequestSettings {
   /// iOS/macOS only.
   final bool alert;
 
-  /// Request permission for Siri to automatically read out notification messages over AirPods.
+  /// Request permission for Siri to automatically read out notification
+  /// messages over AirPods.
   /// Defaults to `false`.
   ///
   /// iOS only.
