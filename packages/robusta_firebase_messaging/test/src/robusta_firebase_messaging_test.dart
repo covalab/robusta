@@ -12,7 +12,11 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('Firebase Cloud Messaging Extension', () {
-    test('Cannot be used without FirebaseCoreExtension', () {
+    test('Cannot be used without FirebaseCoreExtension', () async {
+      setupFirebaseCoreMocks();
+
+      await Firebase.initializeApp();
+
       expect(
         () => Runner(
           extensions: [FirebaseMessagingExtension()],
