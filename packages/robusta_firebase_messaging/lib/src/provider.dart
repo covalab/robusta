@@ -5,11 +5,11 @@ const _unimplementedErrorMsg =
     'Outside of FirebaseMessagingExtension, this provider not implemented.';
 
 /// Provider accesses current Permission Request Settings
-final firebaseMessagingPermissionProvider = Provider<PermissionRequestService>(
+final permissionRequestServiceProvider = Provider<PermissionRequestService>(
   (ref) => throw UnimplementedError(_unimplementedErrorMsg),
 );
 
 /// Provide state to access Firebase Token
-final firebaseTokenProvider = StateProvider<String?>(
+final tokenProvider = StateProvider<String?>(
   (ref) => throw UnimplementedError(_unimplementedErrorMsg),
 );

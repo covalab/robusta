@@ -26,25 +26,59 @@ class PermissionRequestSettings {
     bool? criticalAlert,
     bool? provisional,
     bool? sound,
-  })  : _alert = alert ?? true,
-        _announcement = announcement ?? false,
-        _badge = badge ?? true,
-        _carPlay = carPlay ?? false,
-        _criticalAlert = criticalAlert ?? false,
-        _provisional = provisional ?? false,
-        _sound = sound ?? true;
+  })  : alert = alert ?? true,
+        announcement = announcement ?? false,
+        badge = badge ?? true,
+        carPlay = carPlay ?? false,
+        criticalAlert = criticalAlert ?? false,
+        provisional = provisional ?? false,
+        sound = sound ?? true;
 
-  final bool _alert;
-  final bool _announcement;
-  final bool _badge;
-  final bool _carPlay;
-  final bool _criticalAlert;
-  final bool _provisional;
-  final bool _sound;
+  /// Request permission to display alerts. Defaults to `true`.
+  ///
+  /// iOS/macOS only.
+  final bool alert;
+
+  /// Request permission for Siri to automatically read out notification messages over AirPods.
+  /// Defaults to `false`.
+  ///
+  /// iOS only.
+  final bool announcement;
+
+  /// Request permission to update the application badge. Defaults to `true`.
+  ///
+  /// iOS/macOS only.
+  final bool badge;
+
+  /// Request permission to display notifications in a CarPlay environment.
+  /// Defaults to `false`.
+  ///
+  /// iOS only.
+  final bool carPlay;
+
+  /// Request permission for critical alerts. Defaults to `false`.
+  ///
+  /// Note; your application must explicitly state reasoning for enabling
+  /// critical alerts during the App Store review process or your may be
+  /// rejected.
+  ///
+  /// iOS only.
+  final bool criticalAlert;
+
+  /// Request permission to provisionally create non-interrupting notifications.
+  /// Defaults to `false`.
+  ///
+  /// iOS only.
+  final bool provisional;
+
+  /// Request permission to play sounds. Defaults to `true`.
+  ///
+  /// iOS/macOS only.
+  final bool sound;
 
   /// Get current Notification Settings
-  Future<NotificationSettings> get currentSettings async =>
-      FirebaseMessaging.instance.getNotificationSettings();
+  // Future<NotificationSettings> get currentSettings async =>
+  //     FirebaseMessaging.instance.getNotificationSettings();
 }
 
 /// {@template permission.service}
@@ -53,24 +87,28 @@ class PermissionRequestSettings {
 @sealed
 class PermissionRequestService {
   /// {@macro permission_request_service}
-  const PermissionRequestService(
+  PermissionRequestService(
     PermissionRequestSettings? settings,
-  ) : _settings = settings ?? const PermissionRequestSettings();
+    FirebaseMessaging? messaging,
+  )   : _settings = settings ?? const PermissionRequestSettings(),
+        _messaging = messaging ?? FirebaseMessaging.instance;
 
   final PermissionRequestSettings _settings;
+  final FirebaseMessaging _messaging;
 
   /// Request Notification Permission
   Future<void> requestPermission() async {
-    final messaging = FirebaseMessaging.instance;
-
-    await messaging.requestPermission(
-      alert: _settings._alert,
-      announcement: _settings._announcement,
-      badge: _settings._badge,
-      carPlay: _settings._carPlay,
-      criticalAlert: _settings._criticalAlert,
-      provisional: _settings._provisional,
-      sound: _settings._sound,
+    await _messaging.requestPermission(
+      alert: _settings.alert,
+      announcement: _settings.announcement,
+      badge: _settings.badge,
+      carPlay: _settings.carPlay,
+      criticalAlert: _settings.criticalAlert,
+      provisional: _settings.provisional,
+      sound: _settings.sound,
     );
   }
+
+  /// Get current [Permissiosn Request Settings]
+  PermissionRequestSettings get settings => _settings;
 }

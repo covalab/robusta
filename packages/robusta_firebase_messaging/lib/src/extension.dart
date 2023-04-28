@@ -20,14 +20,17 @@ class FirebaseMessagingExtension implements DependenceExtension {
   FirebaseMessagingExtension({
     PermissionRequestSettings? settings,
     PermissionRequestStrategy? requestStrategy,
-    BackgroundMessageHandler backgroundMessageHandler = _bgMessageHandler,
+    FirebaseMessaging? messaging,
+    BackgroundMessageHandler? backgroundMessageHandler,
   })  : _requestStrategy = requestStrategy ?? PermissionRequestStrategy.init,
         _settings = settings ?? const PermissionRequestSettings(),
+        _messaging = messaging ?? FirebaseMessaging.instance,
         _backgroundMessageHandler = backgroundMessageHandler;
 
   final PermissionRequestStrategy _requestStrategy;
   final PermissionRequestSettings _settings;
-  final BackgroundMessageHandler _backgroundMessageHandler;
+  final FirebaseMessaging _messaging;
+  final BackgroundMessageHandler? _backgroundMessageHandler;
 
   @override
   FutureOr<void> load(Configurator configurator) {
@@ -48,15 +51,15 @@ class FirebaseMessagingExtension implements DependenceExtension {
     /// Register callback func onTokenRefresh
     /// to notify if token is changed and update value
     /// to [FirebaseTokenProvider] state
-    FirebaseMessaging.instance.onTokenRefresh.listen((token) {
-      container.read(firebaseTokenProvider.notifier).state = token;
+    _messaging.onTokenRefresh.listen((token) {
+      container.read(tokenProvider.notifier).state = token;
     });
 
     /// This will get [Firebase Token] for the 1st boot
     /// Since token won't change unless it expires
-    final token = await FirebaseMessaging.instance.getToken();
+    final token = await _messaging.getToken();
 
-    container.read(firebaseTokenProvider.notifier).state = token;
+    container.read(tokenProvider.notifier).state = token;
     container.read(loggerProvider).d('Firebase Messaging Token: $token');
 
     if (_requestStrategy == PermissionRequestStrategy.init) {
@@ -80,32 +83,20 @@ class FirebaseMessagingExtension implements DependenceExtension {
   Future<void> _permissionRequest(ProviderContainer container) async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await container
-          .read(firebaseMessagingPermissionProvider)
+          .read(permissionRequestServiceProvider)
           .requestPermission();
     });
   }
 
-  /// Subscribe to a topic in order to receive messages
-  /// If any new messages released on the topic
-  Future<void> subscribeToTopic(String topic) async {
-    await FirebaseMessaging.instance.subscribeToTopic(topic);
-  }
-
-  /// Unsubscribe to a topic
-  /// No longer receives any messages on the subscribed topic
-  Future<void> unsubscribeFromTopic(String topic) async {
-    await FirebaseMessaging.instance.unsubscribeFromTopic(topic);
-  }
-
   Override _permissionOverride() {
-    return firebaseMessagingPermissionProvider.overrideWith((ref) {
-      return PermissionRequestService(_settings);
+    return permissionRequestServiceProvider.overrideWith((ref) {
+      return PermissionRequestService(_settings, _messaging);
     });
   }
 
   /// Override Firebase Token
   Override _firebaseTokenOverride() {
-    return firebaseTokenProvider.overrideWith((ref) => null);
+    return tokenProvider.overrideWith((ref) => null);
   }
 
   Future<void> _listenerRegister(EventManager manager) async {
@@ -113,7 +104,7 @@ class FirebaseMessagingExtension implements DependenceExtension {
     /// And user tap on incoming Notification,
     /// This will result starting application
     /// App is opened from Ternimated state
-    final initMessage = await FirebaseMessaging.instance.getInitialMessage();
+    final initMessage = await _messaging.getInitialMessage();
 
     if (initMessage != null) {
       manager.dispatchEvent(
@@ -137,12 +128,11 @@ class FirebaseMessagingExtension implements DependenceExtension {
     });
 
     /// Register background messaging handler
-    FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
+    if (_backgroundMessageHandler != null) {
+      FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler!);
+    }
   }
 }
-
-@pragma('vm:entry-point')
-Future<void> _bgMessageHandler(RemoteMessage message) async {}
 
 /// {@template firebase_messaging.on_message_event}
 /// An event will be dispatch when messages comes from Firebase Cloud Messaging

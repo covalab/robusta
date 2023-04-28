@@ -10,6 +10,7 @@ environment:
   flutter: 3.3.0
 
 dependencies:
+  build_runner: ^2.3.0
   firebase_messaging: ^14.4.0
   flutter:
     sdk: flutter
@@ -22,4 +23,5 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mockito: ^5.0.0
   very_good_analysis: ^4.0.0+1

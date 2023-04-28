@@ -3,8 +3,9 @@ import 'package:flutter_robusta/flutter_robusta.dart';
 import 'package:robusta_firebase_core/robusta_firebase_core.dart';
 import 'package:robusta_firebase_messaging/robusta_firebase_messaging.dart';
 
+/// Handle background message from Firebase Messaging
 @pragma('vm:entry-point')
-Future<void> _bgMessageHandler(RemoteMessage message) async {
+Future<void> bgMessageHandler(RemoteMessage message) async {
   if (kDebugMode) {
     print('HI FROM BG: ${message.notification?.title}');
   }
@@ -24,7 +25,7 @@ final runner = Runner(
       },
     ),
     const FirebaseCoreExtension(),
-    FirebaseMessagingExtension(backgroundMessageHandler: _bgMessageHandler),
+    FirebaseMessagingExtension(backgroundMessageHandler: bgMessageHandler),
   ],
 );
 

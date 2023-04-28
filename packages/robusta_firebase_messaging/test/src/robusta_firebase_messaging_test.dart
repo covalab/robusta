@@ -1,11 +1,16 @@
-// ignore_for_file: prefer_const_constructors
-
+import 'package:firebase_core_platform_interface/firebase_core_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:robusta_firebase_core/robusta_firebase_core.dart';
 import 'package:robusta_firebase_messaging/robusta_firebase_messaging.dart';
+import 'package:robusta_firebase_messaging/src/provider.dart';
 import 'package:robusta_runner/robusta_runner.dart';
 
+import 'mocks/firebase_messaging_mock.mocks.dart';
+
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('Firebase Cloud Messaging Extension', () {
     test('Cannot be used without FirebaseCoreExtension', () {
       expect(
@@ -16,67 +21,79 @@ void main() {
       );
     });
 
-    test('Can be used with FirebaseCoreExtension initialized', () {
-      final runner = Runner(
-        extensions: [FirebaseMessagingExtension(), FirebaseCoreExtension()],
+    test('Work with Firebase Messaging Extension', () async {
+      OnMessageEvent? fakeEvent;
+      const fakeToken = 'fake-token';
+      const fakeTokenOnRefresh = 'fake-token-on-refresh';
+      const initMessageData = {'initMessage': 'Test init Message'};
+
+      final mockFirebaseMessaging = MockFirebaseMessaging();
+
+      when(mockFirebaseMessaging.getInitialMessage()).thenAnswer(
+        (_) => Future.value(
+          const RemoteMessage(
+            data: initMessageData,
+          ),
+        ),
       );
 
-      expectLater(() => runner.run, returnsNormally);
-    });
+      when(mockFirebaseMessaging.onTokenRefresh).thenAnswer(
+        (_) => Stream<String>.fromIterable(<String>[fakeTokenOnRefresh]),
+      );
 
-    test('Get Message from Cloud Messaging', () async {
-      // Assuming we have Notification Permission
-      // Opt out [FirebaseMessaging.onMessage.listen(.....)]
+      when(mockFirebaseMessaging.getToken()).thenAnswer(
+        (_) => Future.value(fakeToken),
+      );
 
-      var remoteMessage = RemoteMessage();
+      setupFirebaseCoreMocks();
 
-      final em = DefaultEventManager();
+      await mockFirebaseMessaging.getToken();
 
-      final mockRemoteMessage = RemoteMessage(data: {'test': 123});
+      final changes = await mockFirebaseMessaging.onTokenRefresh.first;
 
-      em
-        ..addEventListener<OnMessageEventMock>(
-          (mEvent) => remoteMessage = mEvent.rMessage,
-        )
-        ..dispatchEvent(
-          OnMessageEventMock(mockRemoteMessage),
-        );
+      await mockFirebaseMessaging.getInitialMessage();
 
-      await expectLater(remoteMessage, equals(mockRemoteMessage));
-    });
+      final runner = Runner(
+        extensions: [
+          const FirebaseCoreExtension(),
+          FirebaseMessagingExtension(
+            messaging: mockFirebaseMessaging,
+            requestStrategy: PermissionRequestStrategy.later,
+          ),
+          EventExtension(
+            configurator: (em, container) {
+              em.addEventListener((OnMessageEvent event) {
+                fakeEvent = event;
 
-    test('Get background Message from Cloud Messaging', () async {
-      // Assuming we have Notification Permission
-      // Opt out [FirebaseMessage.onBackgroundMessage(....)]
+                /// Compare token
+                final token = container.read(tokenProvider.notifier).state;
 
-      var remoteMessage = RemoteMessage();
+                expect(token, isNotNull);
+                expect(token, fakeToken);
 
-      final em = DefaultEventManager();
+                /// Compare token On Refresh
+                expect(changes, fakeTokenOnRefresh);
 
-      final mockBackgroundMessage =
-          RemoteMessage(data: {'background': 'message'});
+                /// Check Permission
+                final currentPermission =
+                    container.read(permissionRequestServiceProvider);
 
-      em
-        ..addEventListener<OnBackgroundMessageEventMock>(
-          (bgEvent) => remoteMessage = bgEvent.rMessage,
-        )
-        ..dispatchEvent(
-          OnBackgroundMessageEventMock(mockBackgroundMessage),
-        );
+                expect(
+                  currentPermission.settings.alert,
+                  isTrue,
+                );
 
-      await expectLater(remoteMessage, equals(mockBackgroundMessage));
+                /// Check initial message
+                if (event.source == OnMessageSource.initialMessage) {
+                  expect(event.message.data, initMessageData);
+                }
+              });
+            },
+          ),
+        ],
+      );
+
+      await expectLater(runner.run(), completes);
     });
   });
-}
-
-class OnMessageEventMock extends Event {
-  OnMessageEventMock(this.rMessage);
-
-  RemoteMessage rMessage;
-}
-
-class OnBackgroundMessageEventMock extends Event {
-  OnBackgroundMessageEventMock(this.rMessage);
-
-  RemoteMessage rMessage;
 }
