@@ -63,16 +63,18 @@ class FirebaseMessagingExtension implements DependenceExtension {
     container.read(loggerProvider).d('Firebase Messaging Token: $token');
 
     if (_requestStrategy == PermissionRequestStrategy.init) {
-      await _permissionRequest(container);
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) async => {
+          await _permissionRequest(container),
+        },
+      );
     }
 
     final manager = container.read(eventManagerProvider);
 
     if (_requestStrategy == PermissionRequestStrategy.loggedIn) {
       manager.addEventListener<LoggedInEvent>((event) async {
-        if (event.credentials.isNotEmpty) {
-          await _permissionRequest(container);
-        }
+        await _permissionRequest(container);
       });
     }
 
@@ -81,11 +83,7 @@ class FirebaseMessagingExtension implements DependenceExtension {
 
   /// Request Notification Permission
   Future<void> _permissionRequest(ProviderContainer container) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await container
-          .read(permissionRequestServiceProvider)
-          .requestPermission();
-    });
+    await container.read(permissionRequestServiceProvider).requestPermission();
   }
 
   Override _permissionOverride() {
