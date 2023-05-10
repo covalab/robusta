@@ -7,8 +7,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
     title: 'Robusta',
-    tagline: 'The robust framework for Flutter/Dart',
-    favicon: 'img/favicon.ico',
+    tagline: 'Where your faviourite packages are made to be ready',
+    favicon: 'img/coffee-bean-icon.ico',
 
     // Set the production url of your site here
     url: 'https://your-docusaurus-test-site.com',
@@ -44,7 +44,7 @@ const config = {
                     editUrl: ({locale, versionDocsDirPath, docPath, version}) => {
                         return `https://github.com/covalab/robusta/edit/main/website/${versionDocsDirPath}/${docPath}`;
                     },
-                    routeBasePath: '/',
+                    // routeBasePath: '/',
                     showLastUpdateAuthor: true,
                     showLastUpdateTime: true,
                 },
@@ -62,13 +62,31 @@ const config = {
         ],
     ],
 
+    plugins: [
+        async function myPlugin(context, options) {
+          return {
+            name: "docusaurus-tailwindcss",
+            configurePostCss(postcssOptions) {
+              // Appends TailwindCSS and AutoPrefixer.
+              postcssOptions.plugins.push(require("tailwindcss"));
+              postcssOptions.plugins.push(require("autoprefixer"));
+              return postcssOptions;
+            },
+          };
+        },
+      ],
+
     themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
         ({
             // Replace with your project's social card
-            image: 'img/docusaurus-social-card.jpg',
+            image: './img/coffee-bean-icon.png',
             navbar: {
                 title: 'Robusta',
+                logo: {
+                    alt: 'Robusta Logo',
+                    src: 'img/coffee-bean-icon.png'
+                },
                 items: [
                     {
                         href: 'https://github.com/covalab/robusta',
