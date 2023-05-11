@@ -71,13 +71,15 @@ class FirebaseMessagingExtension implements DependenceExtension {
       if (_requestStrategy == PermissionRequestStrategy.init) {
         await _permissionRequest(container);
       }
+    });
 
-      if (_requestStrategy == PermissionRequestStrategy.loggedIn) {
-        manager.addEventListener<LoggedInEvent>((event) async {
+    if (_requestStrategy == PermissionRequestStrategy.loggedIn) {
+      manager.addEventListener<LoggedInEvent>((event) async {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
           await _permissionRequest(container);
         });
-      }
-    });
+      });
+    }
 
     await _listenerRegister(manager);
   }
