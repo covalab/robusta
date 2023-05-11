@@ -21,9 +21,11 @@ class FirebaseMessagingExtension implements DependenceExtension {
     PermissionRequestSettings? settings,
     PermissionRequestStrategy? requestStrategy,
     FirebaseMessaging? messaging,
+    String? vapidKey,
     BackgroundMessageHandler? backgroundMessageHandler,
   })  : _requestStrategy = requestStrategy ?? PermissionRequestStrategy.init,
         _settings = settings ?? const PermissionRequestSettings(),
+        _vapidKey = vapidKey,
         _messaging = messaging ?? FirebaseMessaging.instance,
         _backgroundMessageHandler = backgroundMessageHandler;
 
@@ -31,6 +33,7 @@ class FirebaseMessagingExtension implements DependenceExtension {
   final PermissionRequestSettings _settings;
   final FirebaseMessaging _messaging;
   final BackgroundMessageHandler? _backgroundMessageHandler;
+  final String? _vapidKey;
 
   @override
   FutureOr<void> load(Configurator configurator) {
@@ -55,28 +58,26 @@ class FirebaseMessagingExtension implements DependenceExtension {
       container.read(tokenProvider.notifier).state = token;
     });
 
-    /// This will get [Firebase Token] for the 1st boot
-    /// Since token won't change unless it expires
-    final token = await _messaging.getToken();
-
-    container.read(tokenProvider.notifier).state = token;
-    container.read(loggerProvider).d('Firebase Messaging Token: $token');
-
-    if (_requestStrategy == PermissionRequestStrategy.init) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) async => {
-          await _permissionRequest(container),
-        },
-      );
-    }
-
     final manager = container.read(eventManagerProvider);
 
-    if (_requestStrategy == PermissionRequestStrategy.loggedIn) {
-      manager.addEventListener<LoggedInEvent>((event) async {
+    /// This will get [Firebase Token] for the 1st boot
+    /// Since token won't change unless it expires
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final token = await _messaging.getToken(vapidKey: _vapidKey);
+
+      container.read(tokenProvider.notifier).state = token;
+      container.read(loggerProvider).d('Firebase Messaging Token: $token');
+
+      if (_requestStrategy == PermissionRequestStrategy.init) {
         await _permissionRequest(container);
-      });
-    }
+      }
+
+      if (_requestStrategy == PermissionRequestStrategy.loggedIn) {
+        manager.addEventListener<LoggedInEvent>((event) async {
+          await _permissionRequest(container);
+        });
+      }
+    });
 
     await _listenerRegister(manager);
   }

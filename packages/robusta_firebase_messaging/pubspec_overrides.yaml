@@ -1,4 +1,4 @@
-# melos_managed_dependency_overrides: robusta_events,robusta_runner
+# melos_managed_dependency_overrides: robusta_events,robusta_runner,flutter_robusta
 dependency_overrides:
   robusta_events:
     path: ../robusta_events
@@ -8,3 +8,5 @@ dependency_overrides:
     path: ../robusta_firebase_core
   flutter_robusta_auth:
     path: ../flutter_robusta_auth
+  flutter_robusta:
+    path: ../flutter_robusta
