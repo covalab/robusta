@@ -43,7 +43,6 @@ abstract class _$MaterialAppSettingsCWProxy {
     Map<Type, Action<Intent>>? actions,
     String? restorationScopeId,
     ScrollBehavior? scrollBehavior,
-    bool? useInheritedMediaQuery,
   });
 }
 
@@ -90,7 +89,6 @@ class _$MaterialAppSettingsCWProxyImpl implements _$MaterialAppSettingsCWProxy {
     Object? actions = const $CopyWithPlaceholder(),
     Object? restorationScopeId = const $CopyWithPlaceholder(),
     Object? scrollBehavior = const $CopyWithPlaceholder(),
-    Object? useInheritedMediaQuery = const $CopyWithPlaceholder(),
   }) {
     return MaterialAppSettings(
       key: key == const $CopyWithPlaceholder()
@@ -228,12 +226,6 @@ class _$MaterialAppSettingsCWProxyImpl implements _$MaterialAppSettingsCWProxy {
           ? _value.scrollBehavior
           // ignore: cast_nullable_to_non_nullable
           : scrollBehavior as ScrollBehavior?,
-      useInheritedMediaQuery:
-          useInheritedMediaQuery == const $CopyWithPlaceholder() ||
-                  useInheritedMediaQuery == null
-              ? _value.useInheritedMediaQuery
-              // ignore: cast_nullable_to_non_nullable
-              : useInheritedMediaQuery as bool,
     );
   }
 }

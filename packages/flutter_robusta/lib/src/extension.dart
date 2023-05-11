@@ -127,7 +127,6 @@ class FlutterAppExtension implements Extension {
         actions: settings.actions,
         restorationScopeId: settings.restorationScopeId,
         scrollBehavior: settings.scrollBehavior,
-        useInheritedMediaQuery: settings.useInheritedMediaQuery,
       );
     }
 
@@ -155,7 +154,6 @@ class FlutterAppExtension implements Extension {
       actions: settings.actions,
       restorationScopeId: settings.restorationScopeId,
       scrollBehavior: settings.scrollBehavior,
-      useInheritedMediaQuery: settings.useInheritedMediaQuery,
     );
   }
 
