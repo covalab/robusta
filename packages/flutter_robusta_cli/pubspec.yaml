@@ -1,0 +1,26 @@
+name: flutter_robusta_cli
+homepage: https://robusta.covalab.io
+repository: https://github.com/covalab/robusta
+issue_tracker: https://github.com/covalab/robusta/issues
+description: Robusta CLI help to create new projects and generate codes for your apps.
+version: 0.2.0-dev.1
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+
+dependencies:
+  args: ^2.4.0
+  interact: ^2.2.0
+  logger: ^1.3.0
+  mason: ^0.1.0-dev.49
+  pub_updater: ^0.3.0
+  pubspec_parse: ^1.2.2
+  riverpod: ^2.3.0
+  robusta_runner: ^0.2.0
+
+dev_dependencies:
+  test: ^1.19.2
+  very_good_analysis: ^4.0.0+1
+
+executables:
+  robusta: flutter_robusta_cli

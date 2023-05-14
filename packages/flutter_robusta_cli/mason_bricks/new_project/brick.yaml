@@ -1,0 +1,9 @@
+name: robusta_new_project
+description: Robusta new project template
+version: 0.0.0
+environment:
+  mason: ">=0.1.0-dev.49 <0.1.0"
+
+vars:
+  package_name:
+    type: string

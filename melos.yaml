@@ -10,6 +10,14 @@ command:
     usePubspecOverrides: true
 
 scripts:
+  make_mason_bundles:
+    run: |
+      dart ./scripts/generate_mason_bricks.dart
+
+  update_cli_versions:
+    run: |
+      dart ./scripts/generate_flutter_robusta_cli_version.dart
+
   analyze:
     run: |
       melos exec -c 1 -- \

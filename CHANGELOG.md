@@ -3,6 +3,108 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 2023-04-17
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`flutter_robusta_cli` - `v0.2.0-dev.1`](#flutter_robusta_cli---v020-dev1)
+
+---
+
+#### `flutter_robusta_cli` - `v0.2.0-dev.1`
+
+ - **FEAT**: completes new project command. ([c5ced3c5](https://github.com/covalab/robusta/commit/c5ced3c52e034521c32f3da2193cbfa5ad7034c3))
+ - **FEAT**: completes new project brick. ([16a95c07](https://github.com/covalab/robusta/commit/16a95c0775fbef87df66e122d61b770bc6b34583))
+ - **FEAT**: integrate with Mason for generating new project. ([c05902b8](https://github.com/covalab/robusta/commit/c05902b8d4cb7b153c733271abe5c8d6a479b77d))
+ - **FEAT**: add Robusta dependencies when create Flutter app. ([f11d86ba](https://github.com/covalab/robusta/commit/f11d86ba5ef059a801cbba527744932370a013a6))
+ - **FEAT**: add version control commands. ([07981053](https://github.com/covalab/robusta/commit/07981053b368476c3460995817f52ed6cf7d1b89))
+ - **FEAT**: initial flutter_robusta_cli. ([64b1d35e](https://github.com/covalab/robusta/commit/64b1d35eda5f2676d517e013f1d38008c8958cc0))
+
+
+## 2023-04-17
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - There are no breaking changes in this release.
+
+Packages with other changes:
+
+ - [`flutter_robusta_cli` - `v0.1.1`](#flutter_robusta_cli---v011)
+
+---
+
+#### `flutter_robusta_cli` - `v0.1.1`
+
+ - **FEAT**: completes new project command. ([c5ced3c5](https://github.com/covalab/robusta/commit/c5ced3c52e034521c32f3da2193cbfa5ad7034c3))
+ - **FEAT**: completes new project brick. ([16a95c07](https://github.com/covalab/robusta/commit/16a95c0775fbef87df66e122d61b770bc6b34583))
+ - **FEAT**: integrate with Mason for generating new project. ([c05902b8](https://github.com/covalab/robusta/commit/c05902b8d4cb7b153c733271abe5c8d6a479b77d))
+ - **FEAT**: add Robusta dependencies when create Flutter app. ([f11d86ba](https://github.com/covalab/robusta/commit/f11d86ba5ef059a801cbba527744932370a013a6))
+ - **FEAT**: add version control commands. ([07981053](https://github.com/covalab/robusta/commit/07981053b368476c3460995817f52ed6cf7d1b89))
+ - **FEAT**: initial flutter_robusta_cli. ([64b1d35e](https://github.com/covalab/robusta/commit/64b1d35eda5f2676d517e013f1d38008c8958cc0))
+
+
+## 2023-04-14
+
+### Changes
+
+---
+
+Packages with breaking changes:
+
+ - [`flutter_robusta_graphql` - `v0.2.0`](#flutter_robusta_graphql---v020)
+ - [`robusta_dio` - `v0.1.0`](#robusta_dio---v010)
+
+Packages with other changes:
+
+ - [`flutter_robusta_auth` - `v0.1.0+1`](#flutter_robusta_auth---v0101)
+ - [`flutter_robusta_hive` - `v0.1.0+1`](#flutter_robusta_hive---v0101)
+ - [`flutter_robusta_hive_auth` - `v0.1.1+1`](#flutter_robusta_hive_auth---v0111)
+ - [`robusta_firebase_core` - `v0.1.1`](#robusta_firebase_core---v011)
+
+---
+
+#### `flutter_robusta_graphql` - `v0.2.0`
+
+ - **DOCS**: add licenses. ([22658820](https://github.com/covalab/robusta/commit/2265882024f3c7ea03b1b564128b84fb458e9830))
+ - **BREAKING** **FEAT**: simplify graphql settings ([#28](https://github.com/covalab/robusta/issues/28)). ([e2b8ac51](https://github.com/covalab/robusta/commit/e2b8ac517e7333f5dac3f0512a2920582ef34e55))
+
+#### `robusta_dio` - `v0.1.0`
+
+ - **FIX**: lints. ([e8cb38cd](https://github.com/covalab/robusta/commit/e8cb38cddf79defa0e68d54dcdd471e618ac32e0))
+ - **FEAT**: add robusta_dio package. ([2f0e6644](https://github.com/covalab/robusta/commit/2f0e664481373593a0753f75ae7b4cba42d10c5e))
+ - **BREAKING** **FEAT**: mark final for _dio. ([27daeda4](https://github.com/covalab/robusta/commit/27daeda41a02f6c4125bf8a11b3e02763a793502))
+
+#### `flutter_robusta_auth` - `v0.1.0+1`
+
+ - **DOCS**: add licenses. ([22658820](https://github.com/covalab/robusta/commit/2265882024f3c7ea03b1b564128b84fb458e9830))
+
+#### `flutter_robusta_hive` - `v0.1.0+1`
+
+ - **DOCS**: add licenses. ([22658820](https://github.com/covalab/robusta/commit/2265882024f3c7ea03b1b564128b84fb458e9830))
+
+#### `flutter_robusta_hive_auth` - `v0.1.1+1`
+
+ - **DOCS**: add licenses. ([22658820](https://github.com/covalab/robusta/commit/2265882024f3c7ea03b1b564128b84fb458e9830))
+
+#### `robusta_firebase_core` - `v0.1.1`
+
+ - **FIX**: lints. ([14bf0b6a](https://github.com/covalab/robusta/commit/14bf0b6a3a7d6b29e7d22cd1787fdb4b44c079bb))
+ - **FEAT**: add firebase core extensions ([#14](https://github.com/covalab/robusta/issues/14)). ([1ab477ed](https://github.com/covalab/robusta/commit/1ab477eda60ffbc80f85199955ca98f4705f28c0))
+ - **DOCS**: add license. ([4e14f100](https://github.com/covalab/robusta/commit/4e14f10040942e98bc67888a1e5c0a27976dbc1f))
+
+
 ## 2023-04-11
 
 ### Changes

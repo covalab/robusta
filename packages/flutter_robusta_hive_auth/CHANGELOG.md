@@ -1,3 +1,7 @@
+## 0.1.1+1
+
+ - **DOCS**: add licenses. ([22658820](https://github.com/covalab/robusta/commit/2265882024f3c7ea03b1b564128b84fb458e9830))
+
 ## 0.1.1
 
  - **FEAT**: add flutter_robusta_hive_auth package. ([717d40f7](https://github.com/covalab/robusta/commit/717d40f7c087e06ce88ad62209ed6d1a3201cc1c))
