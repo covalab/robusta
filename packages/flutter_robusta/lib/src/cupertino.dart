@@ -32,7 +32,6 @@ class CupertinoAppSettings {
     this.actions,
     this.restorationScopeId,
     this.scrollBehavior,
-    this.useInheritedMediaQuery = false,
   });
 
   /// Alias of [CupertinoApp.key]
@@ -94,7 +93,4 @@ class CupertinoAppSettings {
 
   /// Alias of [CupertinoApp.scrollBehavior]
   final ScrollBehavior? scrollBehavior;
-
-  /// Alias of [CupertinoApp.useInheritedMediaQuery]
-  final bool useInheritedMediaQuery;
 }
