@@ -1,0 +1,12 @@
+# melos_managed_dependency_overrides: robusta_events,robusta_runner
+dependency_overrides:
+  robusta_events:
+    path: ../../robusta_events
+  robusta_runner:
+    path: ../../robusta_runner
+  robusta_firebase_core:
+    path: ../../robusta_firebase_core
+  flutter_robusta_auth:
+    path: ../../flutter_robusta_auth
+  robusta_firebase_messaging:
+    path: ../

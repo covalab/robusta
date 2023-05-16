@@ -40,7 +40,6 @@ class MaterialAppSettings {
     this.actions,
     this.restorationScopeId,
     this.scrollBehavior,
-    this.useInheritedMediaQuery = false,
   });
 
   /// Alias of [MaterialApp.key]
@@ -126,7 +125,4 @@ class MaterialAppSettings {
 
   /// Alias of [MaterialApp.debugShowMaterialGrid]
   final bool debugShowMaterialGrid;
-
-  /// Alias of [MaterialApp.useInheritedMediaQuery]
-  final bool useInheritedMediaQuery;
 }
