@@ -18,6 +18,15 @@ With traditional flutter app creation, it is inevitably to add more packages and
 
 However with **Robusta**, it accelerates the process of adding and configurating packages within only one line of command.
 
+![hello_robusta](https://github.com/qu0cquyen/robusta/assets/28641819/b36e54b9-602f-4b19-aa56-8a488692bf0e)
+
+
+
+
+
+
+
+
 ### Prerequites 📝
 
 **[Dart](https://dart.dev/get-dart)** and **[Flutter](https://docs.flutter.dev/get-started/install)** must be installed on your machine
