@@ -9,8 +9,14 @@ sidebar_position: 1
 Robusta is a framework where it can:
 
 - Run and extend your awesome **Dart/Flutter** apps.
-- Control services dependencies and state base on **[Riverpod](https://riverpod.dev/)**.
+- Control services dependencies and states base on **[Riverpod](https://riverpod.dev/)**.
 - Providing **[Event Driven Architecture](https://aws.amazon.com/event-driven-architecture/)** to manage your apps lifecycles.
+
+### Why Robusta?
+
+With traditional flutter app creation, it is inevitably to add more packages and to handle the configuration complexity that associated with those packages.
+
+However with **Robusta**, it accelerates the process of adding and configurating packages within only one line of command.
 
 ### Prerequites 📝
 
@@ -35,7 +41,10 @@ Global options:
 -h, --help    Print this usage information.
 
 Available commands:
-  new           Create new Flutter project uses Robusta
+  add           Help to quick add extensions
+  generate      Support to generate boilerplate code
+  init          Init skeleton for existing project
+  new           Create new Flutter project
   self-update   Uses to check and update Robusta CLI itself.
   version       Check current version of Robusta CLI
 
