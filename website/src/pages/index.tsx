@@ -60,7 +60,13 @@ function HomePageMainContent() {
         </div>
       </div>
 
-      <div className="w-full p-4">Image Reserved</div>
+      <div className="w-full p-4 flex justify-end">
+        <img
+          src="https://github.com/qu0cquyen/robusta/assets/28641819/b36e54b9-602f-4b19-aa56-8a488692bf0e
+"
+          alt="hello_robusta"
+        />
+      </div>
     </div>
   );
 }

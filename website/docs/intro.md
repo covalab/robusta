@@ -16,16 +16,9 @@ Robusta is a framework where it can:
 
 With traditional flutter app creation, it is inevitably to add more packages and to handle the configuration complexity that associated with those packages.
 
-However with **Robusta**, it accelerates the process of adding and configurating packages within only one line of command.
+However with **Robusta**, it accelerates the process of adding and configurating packages with one line command only.
 
 ![hello_robusta](https://github.com/qu0cquyen/robusta/assets/28641819/b36e54b9-602f-4b19-aa56-8a488692bf0e)
-
-
-
-
-
-
-
 
 ### Prerequites 📝
 
