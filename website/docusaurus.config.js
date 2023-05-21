@@ -89,6 +89,11 @@ const config = {
                 },
                 items: [
                     {
+                        label: 'Docs',
+                        to: 'https://robusta.covalab.io/docs/intro', 
+                        position: 'right',
+                    },
+                    {
                         href: 'https://github.com/covalab/robusta',
                         className: 'header-github-link',
                         'aria-label': 'GitHub repository',

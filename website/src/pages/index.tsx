@@ -33,8 +33,10 @@ function HomePageMainContent() {
   const { siteConfig } = useDocusaurusContext();
 
   return (
-    <div className={`flex justify-center items-center p-16 w-full h-full`}>
-      <div className="w-2/6 ">
+    <div
+      className={`md:flex md:justify-center md:items-center p-16 w-full h-full`}
+    >
+      <div className="md:w-2/6 ">
         <div className="flex">
           <img
             className="w-12 h-9"
@@ -52,7 +54,7 @@ function HomePageMainContent() {
                        colorMode === "light"
                          ? "shadow-primary-700"
                          : "shadow-lightPrimary-700"
-                     }  shadow-md`}
+                     }  shadow-md md:w-1/2`}
         >
           <Link to="/docs/intro" className="text-white">
             <h3 className="p-2">Get Started</h3>
@@ -60,7 +62,7 @@ function HomePageMainContent() {
         </div>
       </div>
 
-      <div className="w-full p-4 flex justify-end">
+      <div className="md:w-3/4 p-4 md:flex md:justify-end">
         <img
           src="https://github.com/qu0cquyen/robusta/assets/28641819/b36e54b9-602f-4b19-aa56-8a488692bf0e
 "
