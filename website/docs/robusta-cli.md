@@ -11,8 +11,7 @@ Not all the extensions are added from **Robusta** app creation command line. The
 ```sh
 robusta add [extension_name]
 ```
-
-[**Reserved to upload add-command gif**]
+![add-command](https://github.com/qu0cquyen/robusta/assets/28641819/58b77a11-7d47-4aee-9956-becd75c624a3)
 
 ### 2. Gen
 
@@ -27,7 +26,7 @@ Current **Robusta** offers 2 types of generation:
 robusta generate [type] [name]
 ```
 
-[**Reserved to upload gen command gif**]
+![generate-command](https://github.com/qu0cquyen/robusta/assets/28641819/8f630372-a841-4c1f-a75d-cf00ca4023ae)
 
 When generating **Repository**, you can choose either `GraphQL` or `Dio` to suit your usecase.
 
