@@ -6,16 +6,17 @@ sidebar_position: 4
 
 ### 1. Add
 
-Not all the extensions are added from **Robusta** app creation command line. The following command helps us quickly add any available extensions
+Not all the extensions are added by defult. The following command helps us quickly add any available extensions
 
 ```sh
 robusta add [extension_name]
 ```
+
 ![add-command](https://github.com/qu0cquyen/robusta/assets/28641819/58b77a11-7d47-4aee-9956-becd75c624a3)
 
 ### 2. Gen
 
-**Robusta** also support generating boilerplate code.
+**Robusta** also supports generating boilerplate code.
 
 Current **Robusta** offers 2 types of generation:
 
