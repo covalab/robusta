@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkwebsite=self.webpackChunkwebsite||[]).push([[480],{2403:e=>{e.exports=JSON.parse('{"title":"Extensions","slug":"/category/extensions","permalink":"/docs/category/extensions","navigation":{"previous":{"title":"Tutorial","permalink":"/docs/tutorial"},"next":{"title":"Flutter Robusta CLI","permalink":"/docs/extensions/flutter-robusta-cli"}}}')}}]);
