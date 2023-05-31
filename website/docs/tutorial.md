@@ -70,7 +70,7 @@ There are 2 ways of adding extensions:
 
 #### 2.2 app.dart
 
-In Robusta ecosystem, everything starts with `Extension`. Therefore, unlike convention main app entry point - `runApp(MyApp())`, in Robusta our main app entry point will be `FlutterAppExtension appExtension()` - which is default generated when we create a new Robusta Project.
+In Robusta ecosystem, everything starts with `Extension`. Therefore, unlike convention main app entry point - `runApp(MyApp())`, our main app entry point will be `FlutterAppExtension appExtension()` - which is default generated when we create a new Robusta Project.
 
 Your flutter app can be either `MaterialApp` or `CupertinoApp` by defining settings through given optional params in `FlutterAppExtension`
 
