@@ -16,16 +16,21 @@ void main() {
     test('can add listeners', () async {
       var counter = 0;
 
+      EventExtension eventExtension() {
+        return EventExtension(
+          configurator: (em, c) {
+            em
+              ..addEventListener<TestEvent>((_) => counter++, priority: 1)
+              ..addEventListener<TestEvent>(
+                (_) => counter += 2,
+                priority: 1,
+              );
+          },
+        );
+      }
+
       final runner = Runner(
-        extensions: [
-          EventExtension(
-            configurator: (em, c) {
-              em
-                ..addEventListener<TestEvent>((_) => counter++, priority: 1)
-                ..addEventListener<TestEvent>((_) => counter += 2, priority: 1);
-            },
-          ),
-        ],
+        extensions: [eventExtension],
         defineBoot: (def) {
           def((c) => c.read(eventManagerProvider).dispatchEvent(TestEvent()));
         },
@@ -43,7 +48,7 @@ void main() {
 
         final runner = Runner(
           extensions: [
-            ImplementingCallbackExtension(),
+            ImplementingCallbackExtension.new,
           ],
           defineBoot: (def) {
             def((c) => test = c.read(testProvider));

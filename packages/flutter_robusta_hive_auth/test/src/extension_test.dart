@@ -27,15 +27,15 @@ void main() {
 
     test('can not uses without FlutterHiveExtension', () {
       expect(
-        () => Runner(extensions: [FlutterHiveAuthExtension()]),
+        () => Runner(extensions: [FlutterHiveAuthExtension.new]),
         throwsA(isA<RunnerException>()),
       );
 
       expect(
         () => Runner(
           extensions: [
-            FlutterHiveAuthExtension(),
-            FlutterHiveExtension(),
+            FlutterHiveAuthExtension.new,
+            FlutterHiveExtension.new,
           ],
         ),
         returnsNormally,
@@ -50,31 +50,48 @@ void main() {
       );
 
       await storage.read(key: 'flutter_robusta_hive_auth');
+
+      FlutterAppExtension flutterAppExtension() {
+        return FlutterAppExtension(routerSettings: RouterSettings());
+      }
+
+      FlutterHiveAuthExtension flutterHiveAuthExtension() {
+        return FlutterHiveAuthExtension(
+          secureStorage: storage,
+        );
+      }
+
+      FlutterAuthExtension flutterAuthExtension() {
+        return FlutterAuthExtension(
+          credentialsStorageFactory: (c) => c.read(
+            credentialsHiveStorageProvider,
+          ),
+          identityProvider: (credentials, container) => Identity(
+            id: '1',
+            data: {},
+          ),
+        );
+      }
+
+      EventExtension eventExtension() {
+        return EventExtension(
+          configurator: (em, c) {
+            em.addEventListener<RunEvent>((e) async {
+              await c.read(authManagerProvider).loginByCrendentials(
+                {'access': 'token'},
+              );
+            });
+          },
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          FlutterAppExtension(routerSettings: RouterSettings()),
-          FlutterHiveAuthExtension(
-            secureStorage: storage,
-          ),
-          FlutterHiveExtension(),
-          FlutterAuthExtension(
-            credentialsStorageFactory: (c) => c.read(
-              credentialsHiveStorageProvider,
-            ),
-            identityProvider: (credentials, container) => Identity(
-              id: '1',
-              data: {},
-            ),
-          ),
-          EventExtension(
-            configurator: (em, c) {
-              em.addEventListener<RunEvent>((e) async {
-                await c.read(authManagerProvider).loginByCrendentials(
-                  {'access': 'token'},
-                );
-              });
-            },
-          ),
+          flutterAppExtension,
+          flutterHiveAuthExtension,
+          FlutterHiveExtension.new,
+          flutterAuthExtension,
+          eventExtension,
         ],
       );
 

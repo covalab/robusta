@@ -20,20 +20,22 @@ void main() {
     test('cause error when open box but not have extension', () async {
       var hasError = false;
 
+      EventExtension eventExtension() {
+        return EventExtension(
+          configurator: (em, c) {
+            em
+              ..addEventListener<RunEvent>(
+                (e) => Hive.openBox<String>('test'),
+              )
+              ..addEventListener<ErrorEvent>(
+                (e) => hasError = true,
+              );
+          },
+        );
+      }
+
       final runner = Runner(
-        extensions: [
-          EventExtension(
-            configurator: (em, c) {
-              em
-                ..addEventListener<RunEvent>(
-                  (e) => Hive.openBox<String>('test'),
-                )
-                ..addEventListener<ErrorEvent>(
-                  (e) => hasError = true,
-                );
-            },
-          )
-        ],
+        extensions: [eventExtension],
       );
 
       unawaited(runner.run());
@@ -45,16 +47,20 @@ void main() {
     });
 
     test('can open box when have extension', () async {
+      EventExtension eventExtension() {
+        return EventExtension(
+          configurator: (em, c) {
+            em.addEventListener<RunEvent>(
+              (e) => expectLater(Hive.openBox<String>('test'), completes),
+            );
+          },
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          FlutterHiveExtension(),
-          EventExtension(
-            configurator: (em, c) {
-              em.addEventListener<RunEvent>(
-                (e) => expectLater(Hive.openBox<String>('test'), completes),
-              );
-            },
-          )
+          FlutterHiveExtension.new,
+          eventExtension,
         ],
       );
 

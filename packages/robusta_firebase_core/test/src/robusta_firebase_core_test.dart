@@ -11,19 +11,21 @@ void main() {
     });
 
     test('calling firebase app with no extension provided', () async {
+      EventExtension eventExtension() {
+        return EventExtension(
+          configurator: (em, c) {
+            em.addEventListener<RunEvent>(
+              (e) => expect(
+                Firebase.app,
+                throwsA(isA<FirebaseException>()),
+              ),
+            );
+          },
+        );
+      }
+
       final runner = Runner(
-        extensions: [
-          EventExtension(
-            configurator: (em, c) {
-              em.addEventListener<RunEvent>(
-                (e) => expect(
-                  Firebase.app,
-                  throwsA(isA<FirebaseException>()),
-                ),
-              );
-            },
-          ),
-        ],
+        extensions: [eventExtension],
       );
 
       await runner.run();

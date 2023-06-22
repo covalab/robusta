@@ -17,16 +17,20 @@ class HomeScreen extends Screen implements InitialScreen {
   String get routePath => '/home';
 }
 
+FlutterAppExtension flutterAppExtension() {
+  return FlutterAppExtension(
+    routerSettings: RouterSettings(
+      screenFactories: [
+        (_) => HomeScreen(),
+      ],
+    ),
+  );
+}
+
 final runner = Runner(
   extensions: [
-    ImplementingCallbackExtension(),
-    FlutterAppExtension(
-      routerSettings: RouterSettings(
-        screenFactories: [
-          (_) => HomeScreen(),
-        ],
-      ),
-    ),
+    ImplementingCallbackExtension.new,
+    flutterAppExtension,
   ],
 );
 

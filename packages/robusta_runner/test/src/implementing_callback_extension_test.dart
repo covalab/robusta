@@ -14,14 +14,18 @@ void main() {
       var counter = 0;
       var num = 0;
 
+      ImplementingCallbackExtension callbackExtension() {
+        return ImplementingCallbackExtension(
+          define: (def) {
+            def<Test>((_, __) => counter++);
+          },
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          ImplementingCallbackExtension(
-            define: (def) {
-              def<Test>((_, __) => counter++);
-            },
-          ),
-          TestDependenceExtension(),
+          callbackExtension,
+          TestDependenceExtension.new,
         ],
         defineBoot: (def) {
           def((c) => num = c.read(testProvider).num);
@@ -39,11 +43,11 @@ void main() {
 
       final optOutRunner = Runner(
         extensions: [
-          ImplementingCallbackExtension(
-            enabledEventManagerAwareCallback: false,
-            enabledLoggerAwareCallback: false,
-          ),
-          TestDependenceExtension(),
+          () => ImplementingCallbackExtension(
+                enabledEventManagerAwareCallback: false,
+                enabledLoggerAwareCallback: false,
+              ),
+          TestDependenceExtension.new,
         ],
         defineBoot: (def) {
           def((c) => test = c.read(testProvider));
@@ -60,8 +64,8 @@ void main() {
 
       final optInRunner = Runner(
         extensions: [
-          ImplementingCallbackExtension(),
-          TestDependenceExtension(),
+          ImplementingCallbackExtension.new,
+          TestDependenceExtension.new,
         ],
         defineBoot: (def) {
           def((c) => test = c.read(testProvider));

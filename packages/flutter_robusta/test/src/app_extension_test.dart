@@ -12,10 +12,14 @@ void main() {
     });
 
     testWidgets('can boot and run default Material app', (tester) async {
+      FlutterAppExtension flutterAppExtension() {
+        return FlutterAppExtension(routerSettings: RouterSettings());
+      }
+
       final runner = Runner(
         extensions: [
-          TestExtension(),
-          FlutterAppExtension(routerSettings: RouterSettings()),
+          TestExtension.new,
+          flutterAppExtension,
         ],
       );
 
@@ -27,13 +31,17 @@ void main() {
     });
 
     testWidgets('can boot and run Cupertino App', (tester) async {
+      FlutterAppExtension flutterAppExtension() {
+        return FlutterAppExtension(
+          cupertinoAppSettings: CupertinoAppSettings(),
+          routerSettings: RouterSettings(),
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          TestExtension(),
-          FlutterAppExtension(
-            cupertinoAppSettings: CupertinoAppSettings(),
-            routerSettings: RouterSettings(),
-          ),
+          TestExtension.new,
+          flutterAppExtension,
         ],
       );
 
@@ -45,16 +53,20 @@ void main() {
     });
 
     testWidgets('can add app wrapper', (tester) async {
+      FlutterAppExtension flutterAppExtension() {
+        return FlutterAppExtension(
+          routerSettings: RouterSettings(),
+          wrappers: {
+            (widget) => const Text('Wrapped', textDirection: TextDirection.ltr):
+                0,
+          },
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          TestExtension(),
-          FlutterAppExtension(
-            routerSettings: RouterSettings(),
-            wrappers: {
-              (widget) =>
-                  const Text('Wrapped', textDirection: TextDirection.ltr): 0,
-            },
-          ),
+          TestExtension.new,
+          flutterAppExtension,
         ],
       );
 
@@ -66,24 +78,28 @@ void main() {
     });
 
     testWidgets('can use Riverpod features', (tester) async {
+      FlutterAppExtension flutterAppExtension() {
+        return FlutterAppExtension(
+          routerSettings: RouterSettings(),
+          wrappers: {
+            (widget) {
+              return Consumer(
+                builder: (ctx, ref, child) {
+                  return Text(
+                    ref.read(testState),
+                    textDirection: TextDirection.ltr,
+                  );
+                },
+              );
+            }: 0,
+          },
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          TestExtension(),
-          FlutterAppExtension(
-            routerSettings: RouterSettings(),
-            wrappers: {
-              (widget) {
-                return Consumer(
-                  builder: (ctx, ref, child) {
-                    return Text(
-                      ref.read(testState),
-                      textDirection: TextDirection.ltr,
-                    );
-                  },
-                );
-              }: 0,
-            },
-          ),
+          TestExtension.new,
+          flutterAppExtension,
         ],
       );
 
