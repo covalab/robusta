@@ -11,21 +11,31 @@ Future<void> bgMessageHandler(RemoteMessage message) async {
   }
 }
 
+/// Event Extension
+EventExtension eventExtension() {
+  return EventExtension(
+    configurator: (em, container) {
+      em.addEventListener<OnMessageEvent>((message) {
+        if (kDebugMode) {
+          print('Message Comes From FB: ${message.source.name} \n'
+              '- ${message.message.notification?.title}');
+        }
+      });
+    },
+  );
+}
+
+/// Firebase Messaging Extension
+FirebaseMessagingExtension firebaseMessagingExtension() {
+  return FirebaseMessagingExtension(backgroundMessageHandler: bgMessageHandler);
+}
+
 /// runner
 final runner = Runner(
   extensions: [
-    EventExtension(
-      configurator: (em, container) {
-        em.addEventListener<OnMessageEvent>((message) {
-          if (kDebugMode) {
-            print('Message Comes From FB: ${message.source.name} \n'
-                '- ${message.message.notification?.title}');
-          }
-        });
-      },
-    ),
-    const FirebaseCoreExtension(),
-    FirebaseMessagingExtension(backgroundMessageHandler: bgMessageHandler),
+    eventExtension,
+    FirebaseCoreExtension.new,
+    firebaseMessagingExtension,
   ],
 );
 

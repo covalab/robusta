@@ -17,22 +17,24 @@ void main() {
 
       Dio? dio;
 
+      DioExtension dioExtension() {
+        return DioExtension(
+          baseOptions: BaseOptions(baseUrl: 'dio://example'),
+          interceptorFactories: [
+            (c) => interceptorsWrapper,
+          ],
+          transformerFactory: (c) => transformer,
+          httpClientAdapterFactory: (c) => httpClientAdapter,
+        );
+      }
+
       final runner = Runner(
         defineBoot: (def) {
           def((container) {
             dio = container.read(dioProvider);
           });
         },
-        extensions: [
-          DioExtension(
-            baseOptions: BaseOptions(baseUrl: 'dio://example'),
-            interceptorFactories: [
-              (c) => interceptorsWrapper,
-            ],
-            transformerFactory: (c) => transformer,
-            httpClientAdapterFactory: (c) => httpClientAdapter,
-          ),
-        ],
+        extensions: [dioExtension],
       );
 
       await expectLater(runner.run(), completes);
@@ -54,8 +56,8 @@ void main() {
           });
         },
         extensions: [
-          DioExtension(),
-          ImplementingCallbackExtension(),
+          DioExtension.new,
+          ImplementingCallbackExtension.new,
         ],
       );
 
