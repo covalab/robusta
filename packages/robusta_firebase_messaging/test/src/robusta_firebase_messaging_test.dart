@@ -20,7 +20,7 @@ void main() {
       expect(
         () => Runner(
           extensions: [FirebaseMessagingExtension.new],
-        ),
+        ).run(),
         throwsA(isA<RunnerException>()),
       );
     });

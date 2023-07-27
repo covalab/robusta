@@ -86,7 +86,8 @@ class Runner {
     // This will start initing all the properties passed through extension
     // constructor
     for (final factory in factories) {
-      extensions.add(await factory());
+      final f = await factory();
+      extensions.add(f);
     }
 
     for (final extension in extensions) {
@@ -110,17 +111,32 @@ class Runner {
 
   /// Run your application.
   /// This should be your app starting point
-  Future<void> run() async => runZonedGuarded(_rawRun, _errorHandle);
-  // Future<void> run() async => _rawRun();
+
+  Future<void> run() {
+    final completer = Completer<void>();
+
+    runZonedGuarded(() async {
+      try {
+        await _rawRun();
+        completer.complete();
+      } catch (exception, stack) {
+        completer.completeError(exception, stack);
+
+        rethrow;
+      }
+    }, (error, stack) async {
+      await _errorHandle(error, stack);
+    });
+
+    return completer.future;
+  }
 
   /// This function will reposnsible for booting up any
   /// services/utils/extensions,...
   /// before your application runs.
   Future<void> _rawRun() async {
-    // systemBoot?.call();
     await _initExtensions(_listExtension);
-    // extension().load(Configurator._(this));
-    // extension.load(Configurator._(this));
+
     await _boot();
 
     _logger.d('Running...');

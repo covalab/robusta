@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_robusta_hive/flutter_robusta_hive.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -27,9 +25,9 @@ void main() {
               ..addEventListener<RunEvent>(
                 (e) => Hive.openBox<String>('test'),
               )
-              ..addEventListener<ErrorEvent>(
-                (e) => hasError = true,
-              );
+              ..addEventListener<ErrorEvent>((e) {
+                hasError = true;
+              });
           },
         );
       }
@@ -38,7 +36,11 @@ void main() {
         extensions: [eventExtension],
       );
 
-      unawaited(runner.run());
+      // unawaited(runner.run());
+
+      await expectLater(runner.run(), throwsA(isA<HiveError>()));
+
+      // expect(hasError, isTrue);
 
       await expectLater(
         Future.delayed(Duration.zero, () => hasError),

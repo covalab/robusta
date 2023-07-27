@@ -17,21 +17,23 @@ void main() {
       );
     });
 
-    test('extension dependency', () {
+    test('extension dependency', () async {
       FlutterAuthExtension flutterAuthExtension() {
         return FlutterAuthExtension(
           identityProvider: (_, __) => throw UnimplementedError(),
         );
       }
 
-      final extension = flutterAuthExtension;
+      final extension = flutterAuthExtension();
 
-      expect(extension.call().dependsOn(), equals([FlutterAppExtension]));
+      expect(extension.dependsOn(), equals([FlutterAppExtension]));
 
-      expect(
-        () => Runner(
-          extensions: [extension],
-        ),
+      final runner = Runner(extensions: [flutterAuthExtension]);
+
+      // expect(runner.run(), throwsA(isA<RunnerException>()));
+
+      await expectLater(
+        runner.run(),
         throwsA(isA<RunnerException>()),
       );
     });
@@ -66,6 +68,7 @@ void main() {
       );
 
       await expectLater(runner.run(), completes);
+      // expect(runner.run(), completes);
 
       expect(canReadProviders, isTrue);
     });
@@ -93,6 +96,7 @@ void main() {
       );
 
       await expectLater(runner.run(), completes);
+      // expect(runner.run, returnsNormally);
 
       await tester.pumpAndSettle();
 

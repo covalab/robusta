@@ -46,7 +46,7 @@ void main() {
       expect(
         () => Runner(
           extensions: [flutterGraphQLExtension],
-        ),
+        ).run(),
         throwsA(isA<RunnerException>()),
       );
     });

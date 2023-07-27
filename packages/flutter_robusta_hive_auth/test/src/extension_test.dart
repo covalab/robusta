@@ -27,8 +27,10 @@ void main() {
 
     test('can not uses without FlutterHiveExtension', () {
       expect(
-        () => Runner(extensions: [FlutterHiveAuthExtension.new]),
-        throwsA(isA<RunnerException>()),
+        () async => Runner(extensions: [FlutterHiveAuthExtension.new]).run(),
+        throwsA(
+          isA<RunnerException>(),
+        ),
       );
 
       expect(

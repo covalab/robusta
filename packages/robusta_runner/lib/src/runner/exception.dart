@@ -17,7 +17,7 @@ class RunnerException implements Exception {
   /// Throw in case user forgot to add dependencies of extension.
   factory RunnerException.missingExtensionDependencies(DependenceExtension e) =>
       RunnerException._(
-        'Extension $e depends on ${e.dependsOn()}, do you forgot to add them?',
+        'Extension $e depends on ${e.dependsOn()}, do you forget to add them?',
       );
 
   final String _msg;

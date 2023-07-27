@@ -90,7 +90,8 @@ void main() {
 
       expect(counter, equals(0));
 
-      unawaited(r.run());
+      // unawaited(r.run());
+      await expectLater(r.run(), throwsA(isA<Exception>()));
 
       await expectLater(
         Future.delayed(Duration.zero, () => counter),
@@ -163,7 +164,7 @@ void main() {
           extensions: [
             TestDependenceExtension.new,
           ],
-        ),
+        ).run(),
         throwsA(
           predicate(
             (e) => e is RunnerException && e.toString().contains('depends on'),
