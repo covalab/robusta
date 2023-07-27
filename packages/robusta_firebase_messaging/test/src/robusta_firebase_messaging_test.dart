@@ -19,8 +19,8 @@ void main() {
 
       expect(
         () => Runner(
-          extensions: [FirebaseMessagingExtension()],
-        ),
+          extensions: [FirebaseMessagingExtension.new],
+        ).run(),
         throwsA(isA<RunnerException>()),
       );
     });
@@ -56,41 +56,49 @@ void main() {
 
       await mockFirebaseMessaging.getInitialMessage();
 
+      FirebaseMessagingExtension messagingExtension() {
+        return FirebaseMessagingExtension(
+          messaging: mockFirebaseMessaging,
+          requestStrategy: PermissionRequestStrategy.later,
+        );
+      }
+
+      EventExtension eventExtension() {
+        return EventExtension(
+          configurator: (em, container) {
+            em.addEventListener((OnMessageEvent event) {
+              /// Compare token
+              final token = container.read(tokenProvider.notifier).state;
+
+              expect(token, isNotNull);
+              expect(token, fakeToken);
+
+              /// Compare token On Refresh
+              expect(changes, fakeTokenOnRefresh);
+
+              /// Check Permission
+              final currentPermission =
+                  container.read(permissionRequestServiceProvider);
+
+              expect(
+                currentPermission.settings.alert,
+                isTrue,
+              );
+
+              /// Check initial message
+              if (event.source == OnMessageSource.initialMessage) {
+                expect(event.message.data, initMessageData);
+              }
+            });
+          },
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          const FirebaseCoreExtension(),
-          FirebaseMessagingExtension(
-            messaging: mockFirebaseMessaging,
-            requestStrategy: PermissionRequestStrategy.later,
-          ),
-          EventExtension(
-            configurator: (em, container) {
-              em.addEventListener((OnMessageEvent event) {
-                /// Compare token
-                final token = container.read(tokenProvider.notifier).state;
-
-                expect(token, isNotNull);
-                expect(token, fakeToken);
-
-                /// Compare token On Refresh
-                expect(changes, fakeTokenOnRefresh);
-
-                /// Check Permission
-                final currentPermission =
-                    container.read(permissionRequestServiceProvider);
-
-                expect(
-                  currentPermission.settings.alert,
-                  isTrue,
-                );
-
-                /// Check initial message
-                if (event.source == OnMessageSource.initialMessage) {
-                  expect(event.message.data, initMessageData);
-                }
-              });
-            },
-          ),
+          FirebaseCoreExtension.new,
+          messagingExtension,
+          eventExtension,
         ],
       );
 

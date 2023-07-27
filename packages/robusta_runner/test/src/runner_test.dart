@@ -63,32 +63,35 @@ void main() {
     test('work with extensions', () async {
       var counter = 0;
 
+      EventExtension eventExtension() {
+        return EventExtension(
+          configurator: (em, c) {
+            em
+              ..addEventListener<RunEvent>(
+                // ignore: void_checks
+                (e) {
+                  counter += 1;
+                  throw Exception();
+                },
+              )
+              ..addEventListener<ErrorEvent>((e) {
+                counter++;
+              });
+          },
+        );
+      }
+
       final r = Runner(
         logger: Logger(
           output: MemoryOutput(),
         ),
-        extensions: [
-          EventExtension(
-            configurator: (em, c) {
-              em
-                ..addEventListener<RunEvent>(
-                  // ignore: void_checks
-                  (e) {
-                    counter += 1;
-                    throw Exception();
-                  },
-                )
-                ..addEventListener<ErrorEvent>((e) {
-                  counter++;
-                });
-            },
-          ),
-        ],
+        extensions: [eventExtension],
       );
 
       expect(counter, equals(0));
 
-      unawaited(r.run());
+      // unawaited(r.run());
+      await expectLater(r.run(), throwsA(isA<Exception>()));
 
       await expectLater(
         Future.delayed(Duration.zero, () => counter),
@@ -159,9 +162,9 @@ void main() {
       expect(
         () => Runner(
           extensions: [
-            TestDependenceExtension(),
+            TestDependenceExtension.new,
           ],
-        ),
+        ).run(),
         throwsA(
           predicate(
             (e) => e is RunnerException && e.toString().contains('depends on'),
@@ -174,8 +177,8 @@ void main() {
       expect(
         () => Runner(
           extensions: [
-            ImplementingCallbackExtension(),
-            TestDependenceExtension(),
+            ImplementingCallbackExtension.new,
+            TestDependenceExtension.new,
           ],
         ),
         returnsNormally,

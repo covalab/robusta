@@ -29,32 +29,40 @@ void main() {
         ..define('editor', (_, [__]) => true)
         ..define('manager', (_, [__]) => true);
 
+      FlutterAuthExtension flutterAuthExtension() {
+        return FlutterAuthExtension(
+          identityProvider: (_, __) => Identity(id: '1', data: {}),
+        );
+      }
+
+      FlutterAppExtension flutterAppExtension() {
+        return FlutterAppExtension(
+          routerSettings: routerSettings.copyWith(
+            refreshNotifierFactories: [
+              (_) => accessManager,
+            ],
+            redirectorFactories: [
+              (_) {
+                return ScreenAccessRedirector(
+                  fallbackLocation: '/fallback',
+                  locationPattern: '/guest',
+                  abilities: [
+                    ScreenAccessAbility(ability: 'editor'),
+                    ScreenAccessAbility(ability: 'manager'),
+                  ],
+                  strategy: AccessDecisionStrategy.any,
+                  accessControl: accessManager,
+                );
+              }
+            ],
+          ),
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          FlutterAuthExtension(
-            identityProvider: (_, __) => Identity(id: '1', data: {}),
-          ),
-          FlutterAppExtension(
-            routerSettings: routerSettings.copyWith(
-              refreshNotifierFactories: [
-                (_) => accessManager,
-              ],
-              redirectorFactories: [
-                (_) {
-                  return ScreenAccessRedirector(
-                    fallbackLocation: '/fallback',
-                    locationPattern: '/guest',
-                    abilities: [
-                      ScreenAccessAbility(ability: 'editor'),
-                      ScreenAccessAbility(ability: 'manager'),
-                    ],
-                    strategy: AccessDecisionStrategy.any,
-                    accessControl: accessManager,
-                  );
-                }
-              ],
-            ),
-          ),
+          flutterAuthExtension,
+          flutterAppExtension,
         ],
       );
 
@@ -82,32 +90,40 @@ void main() {
         ..define('editor', (_, [__]) => true)
         ..define('manager', (_, [__]) => true);
 
+      FlutterAuthExtension flutterAuthExtension() {
+        return FlutterAuthExtension(
+          identityProvider: (_, __) => Identity(id: '1', data: {}),
+        );
+      }
+
+      FlutterAppExtension flutterAppExtension() {
+        return FlutterAppExtension(
+          routerSettings: routerSettings.copyWith(
+            refreshNotifierFactories: [
+              (_) => accessManager,
+            ],
+            redirectorFactories: [
+              (_) {
+                return ScreenAccessRedirector(
+                  fallbackLocation: '/fallback',
+                  locationPattern: '/guest',
+                  abilities: [
+                    ScreenAccessAbility(ability: 'editor'),
+                    ScreenAccessAbility(ability: 'manager'),
+                  ],
+                  strategy: AccessDecisionStrategy.every,
+                  accessControl: accessManager,
+                );
+              }
+            ],
+          ),
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          FlutterAuthExtension(
-            identityProvider: (_, __) => Identity(id: '1', data: {}),
-          ),
-          FlutterAppExtension(
-            routerSettings: routerSettings.copyWith(
-              refreshNotifierFactories: [
-                (_) => accessManager,
-              ],
-              redirectorFactories: [
-                (_) {
-                  return ScreenAccessRedirector(
-                    fallbackLocation: '/fallback',
-                    locationPattern: '/guest',
-                    abilities: [
-                      ScreenAccessAbility(ability: 'editor'),
-                      ScreenAccessAbility(ability: 'manager'),
-                    ],
-                    strategy: AccessDecisionStrategy.every,
-                    accessControl: accessManager,
-                  );
-                }
-              ],
-            ),
-          ),
+          flutterAuthExtension,
+          flutterAppExtension,
         ],
       );
 

@@ -26,6 +26,9 @@ typedef BootDefinition = void Function(Bootable, {int priority});
 /// Callback function uses to define boots via [BootDefinition].
 typedef DefineBoot = void Function(BootDefinition);
 
+/// Callback function uses to define extension function via [ExtensionFactory]
+typedef ExtensionFactory = FutureOr<Extension> Function();
+
 /// Runner class creates an instance to run your application,
 /// with this runner your app will be easy to scale, extend and maintain.
 @sealed
@@ -35,12 +38,12 @@ class Runner {
     DefineBoot? defineBoot,
     EventManager? eventManager,
     Logger? logger,
-    List<Extension> extensions = const [],
+    List<ExtensionFactory> extensions = const [],
     ContainerOptions? containerOptions,
   })  : _logger = logger ?? Logger(),
-        _containerOptions = containerOptions ?? ContainerOptions() {
+        _containerOptions = containerOptions ?? ContainerOptions(),
+        _listExtension = extensions {
     _eventManager = eventManager ?? DefaultEventManager(logger: _logger);
-    _initExtensions(extensions);
 
     if (null != defineBoot) {
       defineBoot(
@@ -68,12 +71,24 @@ class Runner {
 
   late final Map<Type, Extension> _extensions;
 
+  final List<ExtensionFactory> _listExtension;
+
   /// Stores incoming list of extensions
   /// Notice that each extension should be unquie
   /// If the same extensions are initalized
   /// an exception will be thrown - duplicateExtension
-  void _initExtensions(List<Extension> extensions) {
+  Future<void> _initExtensions(List<ExtensionFactory> factories) async {
     _extensions = {};
+
+    final extensions = <Extension>[];
+
+    // Create array which calls all the factory element in extension
+    // This will start initing all the properties passed through extension
+    // constructor
+    for (final factory in factories) {
+      final f = await factory();
+      extensions.add(f);
+    }
 
     for (final extension in extensions) {
       if (_extensions.containsKey(extension.runtimeType)) {
@@ -96,12 +111,32 @@ class Runner {
 
   /// Run your application.
   /// This should be your app starting point
-  Future<void> run() async => runZonedGuarded(_rawRun, _errorHandle);
+
+  Future<void> run() {
+    final completer = Completer<void>();
+
+    runZonedGuarded(() async {
+      try {
+        await _rawRun();
+        completer.complete();
+      } catch (exception, stack) {
+        completer.completeError(exception, stack);
+
+        rethrow;
+      }
+    }, (error, stack) async {
+      await _errorHandle(error, stack);
+    });
+
+    return completer.future;
+  }
 
   /// This function will reposnsible for booting up any
   /// services/utils/extensions,...
   /// before your application runs.
   Future<void> _rawRun() async {
+    await _initExtensions(_listExtension);
+
     await _boot();
 
     _logger.d('Running...');

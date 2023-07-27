@@ -3,6 +3,10 @@ import 'package:logger/logger.dart';
 import 'package:robusta_runner/robusta_runner.dart';
 
 Future<void> main(List<String> arguments) async {
+  FlutterCliExtension flutterCliExtension() {
+    return FlutterCliExtension(args: arguments);
+  }
+
   final runner = Runner(
     logger: Logger(
       level: Level.info,
@@ -14,8 +18,8 @@ Future<void> main(List<String> arguments) async {
       ),
     ),
     extensions: [
-      ImplementingCallbackExtension(),
-      FlutterCliExtension(args: arguments),
+      ImplementingCallbackExtension.new,
+      flutterCliExtension,
     ],
   );
 

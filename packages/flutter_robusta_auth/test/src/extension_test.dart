@@ -17,29 +17,43 @@ void main() {
       );
     });
 
-    test('extension dependency', () {
-      final extension = FlutterAuthExtension(
-        identityProvider: (_, __) => throw UnimplementedError(),
-      );
+    test('extension dependency', () async {
+      FlutterAuthExtension flutterAuthExtension() {
+        return FlutterAuthExtension(
+          identityProvider: (_, __) => throw UnimplementedError(),
+        );
+      }
+
+      final extension = flutterAuthExtension();
 
       expect(extension.dependsOn(), equals([FlutterAppExtension]));
 
-      expect(
-        () => Runner(
-          extensions: [extension],
-        ),
+      final runner = Runner(extensions: [flutterAuthExtension]);
+
+      // expect(runner.run(), throwsA(isA<RunnerException>()));
+
+      await expectLater(
+        runner.run(),
         throwsA(isA<RunnerException>()),
       );
     });
 
     testWidgets('providers had implemented when run', (tester) async {
+      FlutterAppExtension flutterAppExtension() {
+        return FlutterAppExtension(routerSettings: RouterSettings());
+      }
+
+      FlutterAuthExtension flutterAuthExtension() {
+        return FlutterAuthExtension(
+          identityProvider: (_, __) => throw UnimplementedError(),
+        );
+      }
+
       var canReadProviders = false;
       final runner = Runner(
         extensions: [
-          FlutterAppExtension(routerSettings: RouterSettings()),
-          FlutterAuthExtension(
-            identityProvider: (_, __) => throw UnimplementedError(),
-          ),
+          flutterAppExtension,
+          flutterAuthExtension,
         ],
         defineBoot: (def) {
           def((c) {
@@ -54,25 +68,35 @@ void main() {
       );
 
       await expectLater(runner.run(), completes);
+      // expect(runner.run(), completes);
 
       expect(canReadProviders, isTrue);
     });
 
     testWidgets('screen access control can work perfectly', (tester) async {
+      FlutterAppExtension flutterAppExtension() {
+        return FlutterAppExtension(
+          routerSettings: routerSettings,
+        );
+      }
+
+      FlutterAuthExtension flutterAuthExtension() {
+        return FlutterAuthExtension(
+          identityProvider: (_, __) => Identity(id: '1', data: {}),
+          defineAccess: AccessDefiner(),
+          defineScreenAccess: ScreenAccessDefiner(),
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          FlutterAppExtension(
-            routerSettings: routerSettings,
-          ),
-          FlutterAuthExtension(
-            identityProvider: (_, __) => Identity(id: '1', data: {}),
-            defineAccess: AccessDefiner(),
-            defineScreenAccess: ScreenAccessDefiner(),
-          ),
+          flutterAppExtension,
+          flutterAuthExtension,
         ],
       );
 
       await expectLater(runner.run(), completes);
+      // expect(runner.run, returnsNormally);
 
       await tester.pumpAndSettle();
 
@@ -94,16 +118,24 @@ void main() {
     testWidgets('widget rebuild when refresh identity', (tester) async {
       final data = {'id': '1'};
 
+      FlutterAppExtension flutterAppExtension() {
+        return FlutterAppExtension(
+          routerSettings: routerSettings,
+        );
+      }
+
+      FlutterAuthExtension flutterAuthExtension() {
+        return FlutterAuthExtension(
+          identityProvider: (_, __) => Identity(id: data['id']!, data: data),
+          defineAccess: AccessDefiner(),
+          defineScreenAccess: ScreenAccessDefiner(),
+        );
+      }
+
       final runner = Runner(
         extensions: [
-          FlutterAppExtension(
-            routerSettings: routerSettings,
-          ),
-          FlutterAuthExtension(
-            identityProvider: (_, __) => Identity(id: data['id']!, data: data),
-            defineAccess: AccessDefiner(),
-            defineScreenAccess: ScreenAccessDefiner(),
-          ),
+          flutterAppExtension,
+          flutterAuthExtension,
         ],
       );
 
